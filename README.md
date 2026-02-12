@@ -1,627 +1,886 @@
-﻿<!DOCTYPE html>
-<html lang="ru">
+﻿<html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>iOS Печать - Xprinter XP-P323B</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Xprinter iOS - Печать ценников</title>
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- iOS specific meta tags -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Xprinter">
+    <meta name="format-detection" content="telephone=no">
+    
+    <!-- iOS Icons -->
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <link rel="apple-touch-startup-image" href="icon-512.png">
+    
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
             background: #f5f5f5;
+            padding: 20px;
+            padding-bottom: 40px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
         
         .container {
+            max-width: 600px;
+            width: 100%;
             background: white;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
         }
         
         h1 {
             font-size: 24px;
+            font-weight: 600;
             color: #333;
             margin-bottom: 20px;
-            text-align: center;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
         
-        .printer-card {
+        .install-prompt {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 16px;
+            margin-bottom: 25px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(102,126,234,0.3);
+            display: none;
+        }
+        
+        .install-prompt.show {
+            display: block;
+            animation: slideIn 0.5s ease-out;
+        }
+        
+        .install-prompt h3 {
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+        
+        .install-prompt p {
+            font-size: 16px;
+            margin-bottom: 20px;
+            opacity: 0.95;
+        }
+        
+        .install-btn {
+            background: white;
+            color: #667eea;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 30px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: transform 0.2s;
+        }
+        
+        .install-btn:active {
+            transform: scale(0.95);
+        }
+        
+        .bluetooth-status {
             background: #f8f9fa;
-            border-radius: 12px;
+            border-radius: 16px;
             padding: 20px;
             margin-bottom: 20px;
             border-left: 4px solid #4CAF50;
         }
         
-        .printer-name {
-            font-size: 18px;
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 5px;
-        }
-        
-        .printer-status {
+        .status-title {
             font-size: 14px;
             color: #666;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .status-value {
+            font-size: 18px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .printer-card {
+            background: #fff;
+            border: 2px solid #e0e0e0;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+        }
+        
+        .printer-card.connected {
+            border-color: #4CAF50;
+            background: #f1f8e9;
+        }
+        
+        .printer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 10px;
         }
         
-        .connected {
-            color: #4CAF50;
-            font-weight: bold;
+        .printer-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
         }
         
-        .disconnected {
+        .printer-status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .badge-disconnected {
+            background: #ffebee;
             color: #f44336;
-            font-weight: bold;
+        }
+        
+        .badge-connected {
+            background: #e8f5e9;
+            color: #4CAF50;
+        }
+        
+        .printer-details {
+            font-size: 14px;
+            color: #666;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #eee;
         }
         
         .btn {
-            background: #4CAF50;
-            color: white;
-            border: none;
-            padding: 15px 25px;
-            border-radius: 10px;
-            font-size: 16px;
-            font-weight: 600;
             width: 100%;
-            margin-bottom: 10px;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 12px;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
         }
         
         .btn:active {
             transform: scale(0.98);
         }
         
-        .btn.blue {
+        .btn-primary {
+            background: #4CAF50;
+            color: white;
+            box-shadow: 0 4px 15px rgba(76,175,80,0.3);
+        }
+        
+        .btn-secondary {
             background: #2196F3;
+            color: white;
+            box-shadow: 0 4px 15px rgba(33,150,243,0.3);
+        }
+        
+        .btn-warning {
+            background: #FF9800;
+            color: white;
+            box-shadow: 0 4px 15px rgba(255,152,0,0.3);
         }
         
         .btn:disabled {
-            background: #ccc;
+            opacity: 0.5;
+            transform: none;
+            box-shadow: none;
             cursor: not-allowed;
         }
         
-        .instructions {
-            background: #e3f2fd;
-            padding: 15px;
-            border-radius: 10px;
+        .product-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            padding: 25px;
             margin-bottom: 20px;
+            color: white;
+        }
+        
+        .product-article {
             font-size: 14px;
-            color: #0c5460;
+            opacity: 0.9;
+            margin-bottom: 8px;
         }
         
-        .product-info {
-            background: white;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            padding: 15px;
+        .product-name {
+            font-size: 20px;
+            font-weight: 600;
             margin-bottom: 20px;
+            line-height: 1.4;
         }
         
-        .product-title {
-            font-size: 16px;
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 10px;
-        }
-        
-        .product-detail {
+        .product-price-row {
             display: flex;
             justify-content: space-between;
-            padding: 5px 0;
-            border-bottom: 1px solid #eee;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
         }
         
-        .price {
-            color: #e74c3c;
-            font-weight: bold;
-            font-size: 18px;
+        .product-price-row:last-child {
+            border-bottom: none;
         }
         
-        .debug-log {
-            background: #1e1e1e;
-            color: #00ff00;
-            font-family: monospace;
-            padding: 15px;
-            border-radius: 10px;
-            font-size: 12px;
-            max-height: 200px;
-            overflow-y: auto;
+        .price-label {
+            font-size: 16px;
+            opacity: 0.95;
+        }
+        
+        .price-value {
+            font-size: 24px;
+            font-weight: 700;
+        }
+        
+        .debug-panel {
             margin-top: 20px;
+            padding: 15px;
+            background: #1e1e1e;
+            border-radius: 12px;
             display: none;
         }
         
+        .debug-panel.show {
+            display: block;
+        }
+        
+        .debug-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            color: #00ff00;
+            font-family: monospace;
+        }
+        
+        .debug-content {
+            background: #2d2d2d;
+            padding: 15px;
+            border-radius: 8px;
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 12px;
+            color: #00ff00;
+        }
+        
         .debug-line {
-            margin: 2px 0;
+            margin: 4px 0;
             word-break: break-all;
         }
         
-        .warning {
-            background: #fff3cd;
-            border-left: 4px solid #ffc107;
-            padding: 15px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            font-size: 14px;
+        .toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100%);
+            background: #333;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-weight: 500;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            z-index: 1000;
+            transition: transform 0.3s;
+            max-width: 90%;
+            text-align: center;
+        }
+        
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+        
+        .toast.success {
+            background: #4CAF50;
+        }
+        
+        .toast.error {
+            background: #f44336;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
         }
         
         @media (prefers-color-scheme: dark) {
             body { background: #1a1a1a; }
             .container { background: #2d2d2d; }
             h1 { color: #fff; }
-            .printer-card { background: #333; }
+            .bluetooth-status { background: #333; }
+            .status-title { color: #aaa; }
+            .printer-card { background: #333; border-color: #444; }
             .printer-name { color: #fff; }
-            .product-info { background: #333; border-color: #444; }
-            .product-title { color: #fff; }
-            .product-detail { color: #ddd; border-bottom-color: #444; }
+            .printer-details { color: #aaa; border-top-color: #444; }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🖨️ iOS Печать Xprinter</h1>
+        <h1>
+            <span>🖨️ Xprinter XP-P323B</span>
+        </h1>
         
-        <div class="warning">
-            <strong>⚠️ Важно для iOS:</strong><br>
-            1. Убедитесь, что Bluetooth включен в настройках iPhone<br>
-            2. Принтер Xprinter XP-P323B должен быть включен<br>
-            3. Нажмите "Подключить принтер" и выберите устройство из списка<br>
-            4. После подключения нажмите "Печать"
-        </div>
-        
-        <div class="instructions" id="bluetoothStatus">
-            🔵 Bluetooth: Проверка...
-        </div>
-        
-        <div class="printer-card">
-            <div class="printer-name">Xprinter XP-P323B</div>
-            <div class="printer-status" id="printerStatus">
-                <span class="disconnected">❌ Не подключен</span>
-            </div>
-            <div id="printerInfo" style="display: none; margin-top: 10px; padding: 10px; background: #e8f5e9; border-radius: 8px;">
-                <span style="color: #2e7d32;">✅ Подключено к: <span id="deviceName"></span></span>
-            </div>
-        </div>
-        
-        <button class="btn blue" id="connectBtn" onclick="connectPrinter()">
-            🔍 Найти и подключить принтер
-        </button>
-        
-        <div id="productSection" style="display: none;">
-            <div class="product-info">
-                <div class="product-title" id="productArticle">Артикул: 620-107K</div>
-                <div id="productName" style="margin-bottom: 10px;">Портмоне + зажим "SOMUCH" мат, цв: черный</div>
-                <div class="product-detail">
-                    <span>Оптовая:</span>
-                    <span class="price" id="wholesalePrice">570 руб.</span>
-                </div>
-                <div class="product-detail">
-                    <span>Розничная:</span>
-                    <span class="price" id="retailPrice">750 руб.</span>
-                </div>
-            </div>
-            
-            <button class="btn" id="printBtn" onclick="printLabel()" disabled>
-                🖨️ Печать ценника
+        <!-- PWA Install Prompt -->
+        <div class="install-prompt" id="installPrompt">
+            <h3>📱 Добавьте на главный экран</h3>
+            <p>Для работы Bluetooth на iOS необходимо добавить сайт на главный экран</p>
+            <button class="install-btn" id="installPwaBtn">
+                Нажмите: Поделиться → На экран «Домой»
             </button>
         </div>
         
-        <button class="btn" id="testBtn" onclick="testConnection()" style="background: #9C27B0; margin-top: 10px;">
-            🧪 Тест подключения
+        <!-- Bluetooth Status -->
+        <div class="bluetooth-status">
+            <div class="status-title">Состояние Bluetooth</div>
+            <div class="status-value" id="btStatus">
+                ⚡ Проверка...
+            </div>
+        </div>
+        
+        <!-- PWA Status -->
+        <div class="bluetooth-status" style="border-left-color: #FF9800;" id="pwaStatus">
+            <div class="status-title">Режим работы</div>
+            <div class="status-value" id="pwaMode">
+                🌐 Обычный режим
+            </div>
+        </div>
+        
+        <!-- Printer Card -->
+        <div class="printer-card" id="printerCard">
+            <div class="printer-header">
+                <span class="printer-name">Xprinter XP-P323B</span>
+                <span class="printer-status-badge badge-disconnected" id="printerBadge">
+                    ❌ Не подключен
+                </span>
+            </div>
+            <div class="printer-details" id="printerDetails">
+                Статус: ожидание подключения
+            </div>
+        </div>
+        
+        <!-- Actions -->
+        <button class="btn btn-primary" id="connectBtn">
+            🔍 Найти и подключить принтер
         </button>
         
-        <button class="btn" id="debugBtn" onclick="toggleDebug()" style="background: #607D8B;">
+        <!-- Product Card -->
+        <div class="product-card">
+            <div class="product-article" id="productArticle">Артикул: 620-107K</div>
+            <div class="product-name" id="productName">
+                Портмоне + зажим "SOMUCH" мат, цв: черный
+            </div>
+            <div class="product-price-row">
+                <span class="price-label">Розничная цена</span>
+                <span class="price-value" id="retailPrice">750 ₽</span>
+            </div>
+            <div class="product-price-row">
+                <span class="price-label">Оптовая цена</span>
+                <span class="price-value" id="wholesalePrice">570 ₽</span>
+            </div>
+        </div>
+        
+        <!-- Print Button -->
+        <button class="btn btn-secondary" id="printBtn" disabled>
+            🖨️ Напечатать ценник
+        </button>
+        
+        <!-- Test Button -->
+        <button class="btn btn-warning" id="testBtn">
+            🧪 Проверить Bluetooth
+        </button>
+        
+        <!-- Debug Toggle -->
+        <button class="btn" id="debugBtn" style="background: #607D8B; color: white;">
             📋 Показать отладку
         </button>
         
-        <div class="debug-log" id="debugLog"></div>
+        <!-- Debug Panel -->
+        <div class="debug-panel" id="debugPanel">
+            <div class="debug-header">
+                <span>📋 Отладочная информация</span>
+                <span style="cursor: pointer;" onclick="clearDebug()">🗑️</span>
+            </div>
+            <div class="debug-content" id="debugContent"></div>
+        </div>
     </div>
-
+    
     <script>
-        // Переменные для Bluetooth
+        // ========== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ==========
         let bluetoothDevice = null;
         let bluetoothCharacteristic = null;
         let isConnected = false;
         let debugEnabled = false;
+        let isStandalone = false;
         
-        // UUID для Xprinter
-        const PRINTER_UUIDS = {
+        // UUID для Xprinter (точные как в нативном приложении)
+        const PRINTER_SERVICE_UUID = '0000ff00-0000-1000-8000-00805f9b34fb';
+        const PRINTER_CHAR_UUID = '0000ff01-0000-1000-8000-00805f9b34fb';
+        
+        // Альтернативные UUID
+        const ALTERNATIVE_UUIDS = {
             services: [
                 '0000ff00-0000-1000-8000-00805f9b34fb',
                 '000018f0-0000-1000-8000-00805f9b34fb',
                 '6e400001-b5a3-f393-e0a9-e50e24dcca9e',
                 '0000ae30-0000-1000-8000-00805f9b34fb'
             ],
-            writeChars: [
+            characteristics: [
                 '0000ff01-0000-1000-8000-00805f9b34fb',
                 '6e400002-b5a3-f393-e0a9-e50e24dcca9e',
                 '0000ae01-0000-1000-8000-00805f9b34fb'
             ]
         };
-
-        // Товар для печати
-        let currentProduct = {
+        
+        // Тестовый товар
+        const currentProduct = {
             article: '620-107K',
             name: 'Портмоне + зажим "SOMUCH" мат, цв: черный',
-            wholesalePrice: '570,00',
-            retailPrice: '750,00'
+            wholesale: '570',
+            retail: '750'
         };
-
-        // Функция для отладки
+        
+        // ========== PWA / STANDALONE DETECTION ==========
+        function checkIfStandalone() {
+            isStandalone = window.navigator.standalone === true || 
+                          window.matchMedia('(display-mode: standalone)').matches;
+            
+            const pwaModeEl = document.getElementById('pwaMode');
+            const installPrompt = document.getElementById('installPrompt');
+            
+            if (isStandalone) {
+                pwaModeEl.innerHTML = '📱 PWA режим (с главного экрана) ✅';
+                pwaModeEl.style.color = '#4CAF50';
+                installPrompt.classList.remove('show');
+                debug('✅ PWA режим активирован - Bluetooth должен работать');
+            } else {
+                pwaModeEl.innerHTML = '🌐 Обычный браузер - ❗ НУЖНО ДОБАВИТЬ НА ГЛАВНЫЙ ЭКРАН';
+                pwaModeEl.style.color = '#FF9800';
+                installPrompt.classList.add('show');
+                debug('⚠️ Не PWA режим - Bluetooth может не работать');
+            }
+        }
+        
+        // ========== ФУНКЦИИ ОТЛАДКИ ==========
         function debug(message) {
             console.log(message);
             if (!debugEnabled) return;
             
-            const log = document.getElementById('debugLog');
+            const content = document.getElementById('debugContent');
             const line = document.createElement('div');
             line.className = 'debug-line';
             line.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
-            log.appendChild(line);
-            log.scrollTop = log.scrollHeight;
+            content.appendChild(line);
+            content.scrollTop = content.scrollHeight;
         }
-
-        function toggleDebug() {
-            debugEnabled = !debugEnabled;
-            const log = document.getElementById('debugLog');
-            const btn = document.getElementById('debugBtn');
-            
-            if (debugEnabled) {
-                log.style.display = 'block';
-                btn.textContent = '📋 Скрыть отладку';
-                debug('Отладка включена');
-            } else {
-                log.style.display = 'none';
-                btn.textContent = '📋 Показать отладку';
-            }
+        
+        function clearDebug() {
+            document.getElementById('debugContent').innerHTML = '';
         }
-
-        // Проверка поддержки Web Bluetooth
-        function checkBluetoothSupport() {
-            const status = document.getElementById('bluetoothStatus');
+        
+        // ========== УВЕДОМЛЕНИЯ ==========
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
             
-            if (navigator.bluetooth) {
-                status.innerHTML = '🔵 Bluetooth: <span style="color: #4CAF50;">✓ Поддерживается</span>';
-                debug('Web Bluetooth поддерживается');
-                return true;
-            } else {
-                status.innerHTML = '🔵 Bluetooth: <span style="color: #f44336;">✗ НЕ поддерживается</span><br>' +
-                                 'Используйте Safari на iOS с HTTPS';
-                debug('Web Bluetooth НЕ поддерживается');
+            setTimeout(() => toast.classList.add('show'), 10);
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+        
+        // ========== ПРОВЕРКА BLUETOOTH ==========
+        async function checkBluetooth() {
+            const btStatus = document.getElementById('btStatus');
+            
+            if (!navigator.bluetooth) {
+                btStatus.innerHTML = '❌ Web Bluetooth НЕ ПОДДЕРЖИВАЕТСЯ';
+                btStatus.style.color = '#f44336';
+                debug('❌ Web Bluetooth не поддерживается');
                 return false;
             }
+            
+            btStatus.innerHTML = '✅ Web Bluetooth поддерживается';
+            btStatus.style.color = '#4CAF50';
+            debug('✅ Web Bluetooth поддерживается');
+            
+            // Проверяем сохраненные устройства
+            try {
+                const devices = await navigator.bluetooth.getDevices();
+                debug(`📱 Сохраненных устройств: ${devices.length}`);
+                
+                if (devices.length > 0) {
+                    devices.forEach((d, i) => {
+                        debug(`   ${i+1}. ${d.name || 'Без имени'} (${d.id})`);
+                    });
+                    
+                    // Ищем сохраненный принтер
+                    const savedId = localStorage.getItem('xprinter_device_id');
+                    if (savedId) {
+                        const savedDevice = devices.find(d => d.id === savedId);
+                        if (savedDevice) {
+                            debug(`✅ Найден сохраненный принтер: ${savedDevice.name}`);
+                            bluetoothDevice = savedDevice;
+                        }
+                    }
+                }
+            } catch (e) {
+                debug(`⚠️ Ошибка получения устройств: ${e.message}`);
+            }
+            
+            return true;
         }
-
-        // Подключение к принтеру
+        
+        // ========== ПОДКЛЮЧЕНИЕ К ПРИНТЕРУ ==========
         async function connectPrinter() {
-            debug('Начинаем поиск принтера...');
+            debug('🚀 Начинаем поиск принтера...');
             
             try {
                 if (!navigator.bluetooth) {
                     throw new Error('Web Bluetooth не поддерживается');
                 }
-
-                // Показываем системное окно выбора устройств
-                debug('Запрашиваем устройство...');
+                
+                if (!isStandalone) {
+                    const confirm = window.confirm(
+                        'Для работы Bluetooth необходимо добавить сайт на главный экран.\n\n' +
+                        '1. Нажмите кнопку "Поделиться" (⎙)\n' +
+                        '2. Выберите "На экран «Домой»"\n' +
+                        '3. Запустите приложение с главного экрана\n\n' +
+                        'Продолжить поиск в браузере?'
+                    );
+                    if (!confirm) return;
+                }
+                
+                showToast('🔍 Ищем принтеры...', 'info');
                 
                 const device = await navigator.bluetooth.requestDevice({
                     acceptAllDevices: true,
-                    optionalServices: PRINTER_UUIDS.services
+                    optionalServices: ALTERNATIVE_UUIDS.services
                 });
-
-                debug(`Выбрано устройство: ${device.name || 'Без имени'}`);
-                debug(`ID устройства: ${device.id}`);
-
+                
+                debug(`✅ Выбрано устройство: ${device.name || 'Без имени'}`);
+                debug(`   ID: ${device.id}`);
+                
                 bluetoothDevice = device;
                 
-                // Сохраняем в localStorage
+                // Сохраняем устройство
                 try {
-                    localStorage.setItem('savedPrinterId', device.id);
-                    localStorage.setItem('savedPrinterName', device.name || 'Xprinter');
-                    debug('Устройство сохранено');
+                    localStorage.setItem('xprinter_device_id', device.id);
+                    localStorage.setItem('xprinter_device_name', device.name || 'Xprinter');
+                    debug('💾 Устройство сохранено');
                 } catch (e) {
-                    debug('Ошибка сохранения: ' + e.message);
+                    debug(`⚠️ Ошибка сохранения: ${e.message}`);
                 }
-
-                // Подключаемся
+                
                 await connectToDevice(device);
-
+                
             } catch (error) {
-                debug('Ошибка: ' + error.message);
+                debug(`❌ Ошибка: ${error.message}`);
                 
                 if (error.message.includes('User cancelled')) {
-                    alert('Поиск отменен. Нажмите кнопку еще раз и выберите принтер из списка.');
+                    showToast('❌ Поиск отменен', 'error');
                 } else {
-                    alert('Ошибка: ' + error.message);
+                    showToast(`❌ ${error.message}`, 'error');
                 }
             }
         }
-
-        // Подключение к устройству
+        
         async function connectToDevice(device) {
             try {
-                debug('Подключение к GATT серверу...');
+                debug('🔄 Подключение к GATT серверу...');
+                showToast('🔄 Подключение к принтеру...', 'info');
                 
-                // Добавляем обработчик отключения
                 device.addEventListener('gattserverdisconnected', onDisconnected);
                 
-                // Подключаемся
                 const server = await device.gatt.connect();
-                debug('GATT сервер подключен');
+                debug('✅ GATT сервер подключен');
                 
                 // Ищем сервис
                 let service = null;
-                for (const uuid of PRINTER_UUIDS.services) {
+                for (const uuid of ALTERNATIVE_UUIDS.services) {
                     try {
-                        debug(`Пробуем сервис: ${uuid}`);
+                        debug(`   Пробуем сервис: ${uuid}`);
                         service = await server.getPrimaryService(uuid);
-                        debug(`✓ Сервис найден: ${uuid}`);
+                        debug(`   ✅ Найден сервис: ${uuid}`);
                         break;
                     } catch (e) {
-                        debug(`✗ Сервис не найден: ${uuid}`);
+                        debug(`   ❌ Сервис не найден: ${uuid}`);
                     }
                 }
-
+                
                 if (!service) {
                     throw new Error('Не найден сервис принтера');
                 }
-
-                // Ищем характеристику для записи
+                
+                // Ищем характеристику
                 let characteristic = null;
-                for (const uuid of PRINTER_UUIDS.writeChars) {
+                for (const uuid of ALTERNATIVE_UUIDS.characteristics) {
                     try {
-                        debug(`Пробуем характеристику: ${uuid}`);
+                        debug(`   Пробуем характеристику: ${uuid}`);
                         characteristic = await service.getCharacteristic(uuid);
-                        debug(`✓ Характеристика найдена: ${uuid}`);
+                        debug(`   ✅ Найдена характеристика: ${uuid}`);
                         break;
                     } catch (e) {
-                        debug(`✗ Характеристика не найдена: ${uuid}`);
+                        debug(`   ❌ Характеристика не найдена: ${uuid}`);
                     }
                 }
-
+                
                 if (!characteristic) {
                     throw new Error('Не найдена характеристика для печати');
                 }
-
+                
                 bluetoothCharacteristic = characteristic;
                 isConnected = true;
                 
                 // Обновляем UI
-                document.getElementById('printerStatus').innerHTML = 
-                    '<span class="connected">✅ Подключен</span>';
-                document.getElementById('printerInfo').style.display = 'block';
-                document.getElementById('deviceName').textContent = device.name || 'Xprinter XP-P323B';
-                document.getElementById('productSection').style.display = 'block';
+                document.getElementById('printerCard').classList.add('connected');
+                document.getElementById('printerBadge').innerHTML = '✅ Подключен';
+                document.getElementById('printerBadge').className = 'printer-status-badge badge-connected';
+                document.getElementById('printerDetails').innerHTML = 
+                    `Подключено: ${device.name || 'Xprinter XP-P323B'}<br>ID: ${device.id.substr(0, 8)}...`;
                 document.getElementById('printBtn').disabled = false;
                 
-                debug('✓ Принтер успешно подключен!');
-
+                showToast('✅ Принтер подключен!', 'success');
+                debug('🎉 Принтер готов к работе!');
+                
             } catch (error) {
-                debug('Ошибка подключения: ' + error.message);
+                debug(`❌ Ошибка подключения: ${error.message}`);
+                showToast(`❌ ${error.message}`, 'error');
                 throw error;
             }
         }
-
-        // Обработчик отключения
+        
         function onDisconnected(event) {
-            debug('Принтер отключен');
+            debug('🔌 Принтер отключен');
             isConnected = false;
             bluetoothCharacteristic = null;
             
-            document.getElementById('printerStatus').innerHTML = 
-                '<span class="disconnected">❌ Отключен</span>';
-            document.getElementById('printerInfo').style.display = 'none';
+            document.getElementById('printerCard').classList.remove('connected');
+            document.getElementById('printerBadge').innerHTML = '❌ Не подключен';
+            document.getElementById('printerBadge').className = 'printer-status-badge badge-disconnected';
+            document.getElementById('printerDetails').innerHTML = 'Статус: ожидание подключения';
             document.getElementById('printBtn').disabled = true;
+            
+            showToast('🔌 Принтер отключен', 'error');
         }
-
-        // Тест подключения
-        async function testConnection() {
-            debug('=== ТЕСТ ПОДКЛЮЧЕНИЯ ===');
-            
-            if (!navigator.bluetooth) {
-                debug('✗ Web Bluetooth НЕ поддерживается');
-                alert('Web Bluetooth не поддерживается. Используйте Safari.');
-                return;
-            }
-            
-            debug('✓ Web Bluetooth поддерживается');
-            
-            try {
-                const devices = await navigator.bluetooth.getDevices();
-                debug(`Сохраненных устройств: ${devices.length}`);
-                
-                devices.forEach((d, i) => {
-                    debug(`${i + 1}. ${d.name || 'Без имени'} (${d.id})`);
-                });
-                
-                // Проверяем сохраненный принтер
-                const savedId = localStorage.getItem('savedPrinterId');
-                if (savedId) {
-                    debug(`Сохраненный принтер ID: ${savedId}`);
-                    const savedName = localStorage.getItem('savedPrinterName');
-                    debug(`Имя: ${savedName}`);
-                    
-                    const savedDevice = devices.find(d => d.id === savedId);
-                    if (savedDevice) {
-                        debug('✓ Сохраненный принтер найден');
-                    } else {
-                        debug('✗ Сохраненный принтер не найден');
-                    }
-                } else {
-                    debug('Нет сохраненных принтеров');
-                }
-                
-            } catch (e) {
-                debug('Ошибка: ' + e.message);
-            }
-            
-            debug('=== КОНЕЦ ТЕСТА ===');
-        }
-
-        // Формирование команды печати
+        
+        // ========== ФОРМИРОВАНИЕ КОМАНДЫ ПЕЧАТИ ==========
         function createPrintCommand() {
-            debug('Формирование команды печати...');
+            debug('📄 Формирование команды печати...');
             
-            // ESC/POS команды
             const ESC = 0x1B;
             const GS = 0x1D;
             
-            // Инициализация
-            const init = new Uint8Array([ESC, 0x40]);
-            
-            // Текст
             const textEncoder = new TextEncoder();
+            let command = new Uint8Array(0);
             
-            // Собираем команду
-            let parts = [];
+            function append(bytes) {
+                const newArray = new Uint8Array(command.length + bytes.length);
+                newArray.set(command, 0);
+                newArray.set(bytes, command.length);
+                command = newArray;
+            }
             
             // Инициализация
-            parts.push(init);
+            append(new Uint8Array([ESC, 0x40]));
             
             // Центрирование
-            parts.push(new Uint8Array([ESC, 0x61, 0x01]));
+            append(new Uint8Array([ESC, 0x61, 0x01]));
             
-            // Артикул - жирный
-            parts.push(new Uint8Array([ESC, 0x45, 0x01])); // Жирный вкл
-            parts.push(textEncoder.encode(currentProduct.article + '\n'));
-            parts.push(new Uint8Array([ESC, 0x45, 0x00])); // Жирный выкл
+            // Жирный текст для артикула
+            append(new Uint8Array([ESC, 0x45, 0x01]));
+            append(textEncoder.encode(currentProduct.article + '\n'));
+            append(new Uint8Array([ESC, 0x45, 0x00]));
             
-            // Разделитель
-            parts.push(textEncoder.encode('================================\n'));
+            // Линия
+            append(textEncoder.encode('='.repeat(32) + '\n'));
             
             // Название товара
-            parts.push(textEncoder.encode(currentProduct.name + '\n'));
+            append(textEncoder.encode(currentProduct.name + '\n'));
             
-            // Разделитель
-            parts.push(textEncoder.encode('================================\n'));
+            // Линия
+            append(textEncoder.encode('='.repeat(32) + '\n'));
             
             // Цены
-            parts.push(textEncoder.encode('РОЗНИЦА: ' + currentProduct.retailPrice + ' руб.\n'));
-            parts.push(textEncoder.encode('ОПТ: ' + currentProduct.wholesalePrice + ' руб.\n'));
+            append(textEncoder.encode('\n'));
+            append(textEncoder.encode(`РОЗНИЦА: ${currentProduct.retail} руб.\n`));
+            append(textEncoder.encode(`ОПТОВАЯ: ${currentProduct.wholesale} руб.\n`));
+            append(textEncoder.encode('\n'));
             
-            // Разделитель
-            parts.push(textEncoder.encode('================================\n'));
+            // Линия
+            append(textEncoder.encode('='.repeat(32) + '\n'));
             
             // Дата
-            const now = new Date();
-            const dateStr = now.toLocaleDateString('ru-RU');
-            parts.push(textEncoder.encode(dateStr + '\n'));
+            const date = new Date();
+            append(textEncoder.encode(date.toLocaleDateString('ru-RU') + '\n'));
             
-            // Разделитель
-            parts.push(textEncoder.encode('================================\n'));
+            // Линия
+            append(textEncoder.encode('='.repeat(32) + '\n'));
             
-            // Название магазина
-            parts.push(textEncoder.encode('ИП Мааруф Р.\n'));
+            // Магазин
+            append(textEncoder.encode('ИП Мааруф Р.\n'));
+            append(textEncoder.encode('\n\n'));
             
-            // Отрезаем бумагу
-            parts.push(new Uint8Array([GS, 0x56, 0x00]));
+            // Отрезка
+            append(new Uint8Array([GS, 0x56, 0x00]));
             
-            // Объединяем все части
-            const totalLength = parts.reduce((sum, p) => sum + p.length, 0);
-            const result = new Uint8Array(totalLength);
-            
-            let offset = 0;
-            parts.forEach(p => {
-                result.set(p, offset);
-                offset += p.length;
-            });
-            
-            debug(`Команда сформирована, размер: ${result.length} байт`);
-            return result;
+            debug(`📊 Размер команды: ${command.length} байт`);
+            return command;
         }
-
-        // Печать
+        
+        // ========== ПЕЧАТЬ ==========
         async function printLabel() {
             if (!isConnected || !bluetoothCharacteristic) {
-                alert('Сначала подключите принтер');
+                showToast('❌ Принтер не подключен', 'error');
                 return;
             }
             
-            debug('Начинаем печать...');
-            
             try {
-                const command = createPrintCommand();
+                debug('🖨️ Отправка команды печати...');
+                showToast('🖨️ Печать...', 'info');
                 
-                // Отправляем команду
+                const command = createPrintCommand();
                 await bluetoothCharacteristic.writeValue(command);
                 
-                debug('✓ Команда отправлена');
-                showNotification('✅ Ценник отправлен на печать!', 'success');
+                debug('✅ Команда отправлена');
+                showToast('✅ Ценник отправлен на печать!', 'success');
                 
             } catch (error) {
-                debug('Ошибка печати: ' + error.message);
-                showNotification('❌ Ошибка печати: ' + error.message, 'error');
+                debug(`❌ Ошибка печати: ${error.message}`);
+                showToast(`❌ ${error.message}`, 'error');
             }
         }
-
-        // Уведомление
-        function showNotification(message, type) {
-            const notification = document.createElement('div');
-            notification.style.cssText = `
-                position: fixed;
-                top: 20px;
-                left: 50%;
-                transform: translateX(-50%);
-                background: ${type === 'success' ? '#4CAF50' : '#f44336'};
-                color: white;
-                padding: 15px 25px;
-                border-radius: 10px;
-                font-weight: bold;
-                z-index: 1000;
-                box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-                animation: slideDown 0.3s ease-out;
-            `;
-            notification.textContent = message;
+        
+        // ========== ТЕСТ BLUETOOTH ==========
+        async function testBluetooth() {
+            debug('🧪 ЗАПУСК ТЕСТА BLUETOOTH');
             
-            document.body.appendChild(notification);
+            // 1. Проверка поддержки
+            debug(`1. Web Bluetooth: ${navigator.bluetooth ? '✅' : '❌'}`);
             
-            setTimeout(() => {
-                notification.style.animation = 'slideUp 0.3s ease-out';
-                setTimeout(() => notification.remove(), 300);
-            }, 3000);
-        }
-
-        // Добавляем стили для анимации
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes slideDown {
-                from { transform: translateX(-50%) translateY(-100%); opacity: 0; }
-                to { transform: translateX(-50%) translateY(0); opacity: 1; }
-            }
-            @keyframes slideUp {
-                from { transform: translateX(-50%) translateY(0); opacity: 1; }
-                to { transform: translateX(-50%) translateY(-100%); opacity: 0; }
-            }
-        `;
-        document.head.appendChild(style);
-
-        // Инициализация при загрузке
-        window.onload = function() {
-            debugEnabled = true;
-            toggleDebug();
+            // 2. Проверка PWA режима
+            debug(`2. PWA режим: ${isStandalone ? '✅' : '❌'}`);
             
-            // Проверяем поддержку Bluetooth
-            checkBluetoothSupport();
-            
-            // Показываем товар
-            document.getElementById('productArticle').textContent = `Артикул: ${currentProduct.article}`;
-            document.getElementById('productName').textContent = currentProduct.name;
-            document.getElementById('wholesalePrice').textContent = `${currentProduct.wholesalePrice} руб.`;
-            document.getElementById('retailPrice').textContent = `${currentProduct.retailPrice} руб.`;
-            
-            // Проверяем сохраненный принтер
+            // 3. Проверка сохраненных устройств
             try {
-                const savedId = localStorage.getItem('savedPrinterId');
-                if (savedId) {
-                    debug('Найден сохраненный принтер: ' + savedId);
+                const devices = await navigator.bluetooth.getDevices();
+                debug(`3. Сохраненных устройств: ${devices.length}`);
+                
+                devices.forEach((d, i) => {
+                    debug(`   ${i+1}. ${d.name || 'Без имени'} (${d.id})`);
+                });
+                
+                if (devices.length === 0) {
+                    debug('   ➡️ Нет сохраненных устройств. Нажмите "Найти принтер"');
                 }
-            } catch (e) {}
+                
+            } catch (e) {
+                debug(`3. Ошибка: ${e.message}`);
+            }
             
-            debug('Страница загружена');
+            // 4. Проверка текущего подключения
+            debug(`4. Текущее подключение: ${isConnected ? '✅' : '❌'}`);
+            
+            // 5. Инструкция
+            debug('\n📋 ИНСТРУКЦИЯ:');
+            debug('   1. Убедитесь, что сайт добавлен на главный экран');
+            debug('   2. Запустите с главного экрана');
+            debug('   3. Включите Bluetooth на iPhone');
+            debug('   4. Включите принтер');
+            debug('   5. Нажмите "Найти принтер"');
+            debug('   6. Выберите Xprinter из списка');
+            
+            showToast('🧪 Тест завершен, смотрите отладку', 'info');
+        }
+        
+        // ========== ИНИЦИАЛИЗАЦИЯ ==========
+        window.onload = async function() {
+            // Включаем отладку
+            debugEnabled = true;
+            
+            // Проверяем PWA режим
+            checkIfStandalone();
+            
+            // Проверяем Bluetooth
+            await checkBluetooth();
+            
+            // Загружаем данные товара
+            document.getElementById('productArticle').innerHTML = `Артикул: ${currentProduct.article}`;
+            document.getElementById('productName').innerHTML = currentProduct.name;
+            document.getElementById('retailPrice').innerHTML = `${currentProduct.retail} ₽`;
+            document.getElementById('wholesalePrice').innerHTML = `${currentProduct.wholesale} ₽`;
+            
+            debug('✅ Страница загружена');
+            debug(`🌐 URL: ${window.location.href}`);
+            debug(`📱 PWA: ${isStandalone ? 'Да' : 'Нет'}`);
         };
+        
+        // ========== ОБРАБОТЧИКИ СОБЫТИЙ ==========
+        document.getElementById('connectBtn').addEventListener('click', connectPrinter);
+        document.getElementById('printBtn').addEventListener('click', printLabel);
+        document.getElementById('testBtn').addEventListener('click', testBluetooth);
+        
+        document.getElementById('debugBtn').addEventListener('click', function() {
+            const panel = document.getElementById('debugPanel');
+            const btn = document.getElementById('debugBtn');
+            
+            if (panel.classList.contains('show')) {
+                panel.classList.remove('show');
+                btn.innerHTML = '📋 Показать отладку';
+                debugEnabled = false;
+            } else {
+                panel.classList.add('show');
+                btn.innerHTML = '📋 Скрыть отладку';
+                debugEnabled = true;
+            }
+        });
+        
+        document.getElementById('installPwaBtn').addEventListener('click', function() {
+            showToast('1. Нажмите кнопку "Поделиться" (⎙)\n2. Выберите "На экран «Домой»"', 'info');
+        });
+        
+        // Слушаем изменение режима отображения
+        window.matchMedia('(display-mode: standalone)').addListener(checkIfStandalone);
     </script>
 </body>
 </html>
