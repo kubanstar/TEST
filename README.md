@@ -1,12 +1,12 @@
 ﻿<html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Поиск товаров</title>
     <script src="https://unpkg.com/html5-qrcode"></script>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             max-width: 800px;
             margin: 0 auto;
             padding: 20px;
@@ -414,6 +414,11 @@
             transform: scale(1.1);
         }
 
+        .print-button:active {
+            background-color: #e0e0e0;
+            transform: scale(0.95);
+        }
+
         .image-button {
             background: none;
             border: none;
@@ -487,6 +492,7 @@
             justify-content: center;
             align-items: center;
             z-index: 2000;
+            backdrop-filter: blur(5px);
         }
         
         .print-modal-content-new {
@@ -497,6 +503,8 @@
             max-width: 450px;
             width: 90%;
             box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            max-height: 90vh;
+            overflow-y: auto;
         }
         
         .print-status {
@@ -576,6 +584,8 @@
             margin-bottom: 15px;
             font-size: 14px;
             font-weight: bold;
+            white-space: pre-line;
+            text-align: left;
         }
         
         .printer-connected {
@@ -607,6 +617,7 @@
             justify-content: center;
             align-items: center;
             z-index: 1000;
+            backdrop-filter: blur(5px);
         }
         
         .modal-frame {
@@ -961,7 +972,6 @@
             margin-bottom: 5px;
         }
 
-        /* Стили для iOS сканера */
         .ios-scanner-modal {
             display: none;
             position: fixed;
@@ -993,7 +1003,6 @@
             position: relative;
         }
         
-        /* Кастомные стили для Html5-QRCode */
         #ios-html5-qrcode-anchor-scan-type-change,
         #ios-html5qr-code-full-region__scan_region {
             display: none !important;
@@ -1195,17 +1204,17 @@
             display: none;
         }
         
-        /* Стили для iOS Bluetooth печати */
         .ble-printer-list {
             max-height: 300px;
             overflow-y: auto;
             margin: 15px 0;
             border: 1px solid #ddd;
             border-radius: 8px;
+            background: white;
         }
         
         .ble-printer-item {
-            padding: 12px 15px;
+            padding: 15px;
             border-bottom: 1px solid #eee;
             display: flex;
             justify-content: space-between;
@@ -1225,6 +1234,7 @@
         .ble-printer-name {
             font-weight: bold;
             color: #333;
+            font-size: 16px;
         }
         
         .ble-printer-id {
@@ -1237,9 +1247,10 @@
             background-color: #4CAF50;
             color: white;
             border: none;
-            padding: 6px 12px;
-            border-radius: 4px;
-            font-size: 12px;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
             cursor: pointer;
         }
         
@@ -1254,7 +1265,78 @@
         
         .ble-saved-device {
             background-color: #e8f5e9;
-            border-left: 3px solid #4CAF50;
+            border-left: 4px solid #4CAF50;
+        }
+        
+        .ble-no-devices {
+            padding: 20px;
+            text-align: center;
+            color: #666;
+            font-style: italic;
+        }
+        
+        .connected-printer-info {
+            margin-bottom: 15px;
+            padding: 15px;
+            background-color: #e8f5e9;
+            border-radius: 8px;
+            border-left: 4px solid #4CAF50;
+            text-align: left;
+        }
+        
+        .connected-printer-title {
+            font-weight: bold;
+            color: #2e7d32;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+        
+        .connected-printer-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .bluetooth-hint {
+            background-color: #e3f2fd;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 14px;
+            color: #0c5460;
+            text-align: left;
+            border-left: 4px solid #2196F3;
+        }
+        
+        .bluetooth-hint i {
+            font-style: normal;
+            font-weight: bold;
+        }
+        
+        @media (prefers-color-scheme: dark) {
+            body {
+                background-color: #1a1a1a;
+            }
+            
+            .search-container {
+                background-color: #2d2d2d;
+                color: #fff;
+            }
+            
+            .product-card {
+                background-color: #333;
+                color: #fff;
+            }
+            
+            .modal-frame {
+                background-color: #2d2d2d;
+                color: #fff;
+            }
+            
+            .print-modal-content-new {
+                background-color: #2d2d2d;
+                color: #fff;
+            }
         }
     </style>
 </head>
@@ -1268,7 +1350,7 @@
                    id="searchInput" 
                    placeholder="Введите артикул для поиска..."
                    autocomplete="off">
-            <button class="clear-search-btn" id="clearSearchBtn" title="Очистить поле поиска">&#10060;</button>
+            <button class="clear-search-btn" id="clearSearchBtn" title="Очистить поле поиска">✕</button>
         </div>
         
         <div class="combined-search-fields" id="combinedSearchFields">
@@ -1320,10 +1402,10 @@
         <div class="buttons-container">
             <button class="search-button" id="searchButton">Найти</button>
             <button class="scan-button scan-button-android" id="scanButtonAndroid" style="display: none;">
-                <span class="scan-icon">&#128247;</span> Сканировать штрихкод
+                <span class="scan-icon">📷</span> Сканировать штрихкод
             </button>
             <button class="scan-button scan-button-ios" id="scanButtonIOS" style="display: none;">
-                <span class="scan-icon">&#128247;</span> Сканировать штрихкод
+                <span class="scan-icon">📷</span> Сканировать штрихкод
             </button>
         </div>
 
@@ -1333,15 +1415,11 @@
 
         <div id="printStatus" class="print-status"></div>
         
-        <div class="results-container" id="resultsContainer">
-            <!-- Результаты поиска будут здесь -->
-        </div>
+        <div class="results-container" id="resultsContainer"></div>
     </div>
 
-    <!-- Кнопка "Наверх" -->
-    <button class="scroll-to-top-btn" id="scrollToTopBtn" title="Наверх">&#9650;</button>
+    <button class="scroll-to-top-btn" id="scrollToTopBtn" title="Наверх">▲</button>
 
-    <!-- Модальное окно камеры для Android -->
     <div class="modal-overlay" id="cameraModal">
         <div class="modal-frame">
             <h3>Сканирование штрихкода</h3>
@@ -1358,7 +1436,6 @@
         </div>
     </div>
 
-    <!-- Модальное окно сканера для iOS -->
     <div class="ios-scanner-modal" id="iosScannerModal">
         <div class="ios-scanner-content">
             <div class="ios-scanner-container">
@@ -1375,7 +1452,7 @@
                 </div>
                 
                 <div class="ios-status-message" id="iosScannerStatus"></div>
-                <div class="ios-loader" id="iosScannerLoader">Загрузка...</div>
+                <div class="ios-loader" id="iosScannerLoader"></div>
                 
                 <div class="ios-no-camera" id="iosNoCameraMessage">
                     <h3 style="color: #ff3b30; margin-bottom:15px;">Камера недоступна</h3>
@@ -1391,24 +1468,19 @@
                     ✕ Закрыть сканер
                 </button>
                 <button class="ios-modal-btn ios-modal-btn-primary" id="switchIOSCamera" style="display: none;">
-                    Переключить камеру
+                    🔄 Переключить камеру
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- Модальное окно результатов сканирования -->
     <div class="modal-overlay" id="resultModal">
         <div class="modal-frame scan-result-frame">
-            <div class="scan-result-products" id="resultProducts">
-                <!-- Список товаров будет здесь -->
-            </div>
-            <div class="scan-result-count" id="resultCount">
-                <!-- Количество найденных товаров -->
-            </div>
+            <div class="scan-result-products" id="resultProducts"></div>
+            <div class="scan-result-count" id="resultCount"></div>
             <div class="scan-result-actions">
                 <button class="action-btn continue-scan-btn" id="continueScanBtn">
-                    &#128247; Сканировать еще
+                    📷 Сканировать еще
                 </button>
                 <button class="action-btn close-result-btn" id="closeResultBtn">
                     Закрыть
@@ -1417,10 +1489,9 @@
         </div>
     </div>
 
-    <!-- Модальное окно печати для Android (Web Serial) -->
     <div class="print-modal-new" id="printModal">
         <div class="print-modal-content-new">
-            <h3>Печать ценника</h3>
+            <h3>Печать ценника (Android)</h3>
             
             <div id="printerStatus" class="printer-status printer-connecting">
                 Подключаюсь к принтеру...
@@ -1431,7 +1502,7 @@
             </div>
             
             <button class="print-action-btn" id="printActionBtn" disabled>
-                Распечатать
+                🖨️ Распечатать
             </button>
             
             <button class="close-modal" id="closePrintModal" style="margin-top: 15px;">
@@ -1440,27 +1511,25 @@
         </div>
     </div>
 
-    <!-- Модальное окно печати для iOS (Web Bluetooth) -->
     <div class="print-modal-new" id="printModalIOS">
         <div class="print-modal-content-new">
             <h3>Печать ценника (iOS)</h3>
             
             <div id="printerStatusIOS" class="printer-status printer-disconnected">
-                Принтер не подключен
+                ❌ Принтер не подключен
             </div>
 
-            <div id="blePrinterListContainer" style="display: none;">
-                <p style="font-size: 14px; color: #666; margin-bottom: 10px;">Доступные принтеры:</p>
-                <div id="blePrinterList" class="ble-printer-list">
-                    <!-- Список принтеров будет здесь -->
-                </div>
+            <div class="bluetooth-hint">
+                <strong>🔵 Bluetooth</strong><br>
+                Убедитесь, что принтер включен и находится рядом.
+                Нажмите "Найти принтер" и выберите Xprinter из списка.
             </div>
 
-            <div id="connectedPrinterInfoIOS" style="display: none; margin-bottom: 15px; padding: 10px; background-color: #e8f5e9; border-radius: 8px;">
-                <div style="font-weight: bold; color: #2e7d32;">✅ Подключено:</div>
-                <div id="connectedPrinterNameIOS" style="font-size: 14px; margin-top: 5px;"></div>
+            <div id="connectedPrinterInfoIOS" class="connected-printer-info" style="display: none;">
+                <div class="connected-printer-title">✅ Подключено:</div>
+                <div id="connectedPrinterNameIOS" class="connected-printer-name">Xprinter XP-P323B</div>
             </div>
-            
+
             <div class="price-tag-preview">
                 <canvas id="priceTagPreviewCanvasIOS" class="price-tag-canvas" width="440" height="284"></canvas>
             </div>
@@ -1480,16 +1549,13 @@
         </div>
     </div>
 
-    <!-- Модальное окно с датами изменения файлов -->
     <div class="modal-overlay" id="datesModal">
         <div class="modal-frame dates-modal">
             <div class="dates-header">
                 <div class="current-date-display" id="modalCurrentDate">Дата обновления: 04.02.2026</div>
                 <div class="data-update-container" id="dataUpdateContainer">Данные на : 14:07</div>
             </div>
-            <div id="datesContent" class="dates-content">
-                <!-- Содержимое будет сгенерировано JavaScript -->
-            </div>
+            <div id="datesContent" class="dates-content"></div>
             <button class="close-modal" id="closeDatesModal" style="margin-top: 15px;">
                 Закрыть
             </button>
@@ -1498,15 +1564,10 @@
 
     <script>
         // ===== КОНФИГУРАЦИЯ =====
-        const SHOW_WHOLESALE_PLUS = false; // false - скрыть, true - показать строку Оптовая+
- 
-		// ===== ДАТА =====
-        const DATA_UPDATE_DATE = ""; // Будет заполнена AHK скриптом: "03.02.2025"
- 
-        // ===== ДАТЫ ИЗМЕНЕНИЯ ФАЙЛОВ =====
-        // Эти данные будут заполняться AHK скриптом
-        const URAL_OFFICE_DATE = ""; // Будет заполнена AHK скриптом: "03.02.2026 14:32"
-        const URAL_DATE = ""; // Будет заполнена AHK скриптом: "04.02.2026 8:19"
+        const SHOW_WHOLESALE_PLUS = false;
+        const DATA_UPDATE_DATE = "";
+        const URAL_OFFICE_DATE = "";
+        const URAL_DATE = "";
 
         // ===== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ =====
         let stream = null;
@@ -1529,19 +1590,45 @@
         let currentProductForPrint = null;
         let currentProductForPrintIOS = null;
         
-        // ===== ПЕРЕМЕННЫЕ ДЛЯ iOS СКАНЕРА =====
+        // Переменные для iOS сканера
         let iosHtml5QrCode = null;
         let iosIsScanning = false;
         let iosLastScannedCode = '';
         let iosCurrentFacingMode = 'environment';
         
+        // UUID для Bluetooth принтера
+        const PRINTER_SERVICE_UUIDS = [
+            '0000ff00-0000-1000-8000-00805f9b34fb',
+            '000018f0-0000-1000-8000-00805f9b34fb',
+            '6e400001-b5a3-f393-e0a9-e50e24dcca9e',
+            '0000ae30-0000-1000-8000-00805f9b34fb',
+            '49535343-fe7d-4ae5-8fa9-9fafd205e455'
+        ];
+
+        const PRINTER_CHARACTERISTIC_UUIDS = [
+            '0000ff01-0000-1000-8000-00805f9b34fb',
+            '0000ff02-0000-1000-8000-00805f9b34fb',
+            '6e400002-b5a3-f393-e0a9-e50e24dcca9e',
+            '6e400003-b5a3-f393-e0a9-e50e24dcca9e',
+            '49535343-8841-43f4-a8d4-ecbe34729bb3',
+            '0000ae01-0000-1000-8000-00805f9b34fb'
+        ];
+
         // Пример данных
         const productsData = `2002000149572;620-107K;Портмоне + зажим "SOMUCH" мат, цв: черный;570,00;750,00;587,00;;;;;;;;Sk000009622_1;
 2002000149589;411;Сумочка на пояс GOLD CORAL кожа, цв.: черный;800,00;1050,00;824,00;;;;;;;;Sk000009623_1;
 2002000149596;BL-S018-1;Портмоне+зажим "HETINO" глянец, тонкое, цв: черный;630,00;850,00;649,00;;;;;;;;Sk000009624_1;
 2002000149602;ST6749-3;Сумка мужская POLO А5+, цвет: чёрный;940,00;1250,00;968,00;;;;;;;;Sk000009625_1;
-2002000149626;S1394-5;Сумка мужская SOMUCH А4+, вертикальная, цвет: чёрный;1600,00;2400,00;1648,00;6;;11-1/B-5.2;;;;;Sk000009627_1;
-`;
+2002000149626;S1394-5;Сумка мужская SOMUCH А4+, вертикальная, цвет: чёрный;1600,00;2400,00;1648,00;6;;11-1/B-5.2;;;;;Sk000009627_1;`;
+
+        // ===== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ =====
+        function isIOS() {
+            return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+        }
+
+        function isAndroid() {
+            return /Android/.test(navigator.userAgent);
+        }
 
         function parseStockValue(value) {
             if (!value) return 0;
@@ -1582,10 +1669,6 @@
                 return Math.round(number).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
             }
             return Math.round(number).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
-        }
-
-        function formatCoefficient(num) {
-            return num.toFixed(3).replace('.', ',');
         }
 
         function parseProductsData(data) {
@@ -1634,15 +1717,11 @@
             return products;
         }
 
-        function createProductKey(product) {
-            return `${product.article}|${product.name}|${product.wholesalePrice}|${product.retailPrice}|${product.wholesalePlusPrice}|${product.stocks.warehouse1}|${product.stocks.warehouse2}|${product.discountPercent}|${product.discountPriceOpt}|${product.discountPriceRetail}|${product.storageLocation}|${product.imageCode}|${product.alternativeImageCode}`;
-        }
-
         function groupProductsByKey(products) {
             const groups = {};
             
             products.forEach(product => {
-                const key = createProductKey(product);
+                const key = `${product.article}|${product.name}|${product.wholesalePrice}|${product.retailPrice}|${product.wholesalePlusPrice}|${product.stocks.warehouse1}|${product.stocks.warehouse2}|${product.discountPercent}|${product.discountPriceOpt}|${product.discountPriceRetail}|${product.storageLocation}|${product.imageCode}|${product.alternativeImageCode}`;
                 
                 if (!groups[key]) {
                     groups[key] = {
@@ -1659,569 +1738,102 @@
             return Object.values(groups);
         }
 
-        function formatPriceWithDiscount(product) {
-            const hasDiscount = product.discountPercent && product.discountPercent.trim() !== '';
-            
-            if (!hasDiscount) {
-                let html = `
-                    <div class="price-container">
-                        <div class="price-line">
-                            <span class="price-label">Оптовая:</span>
-                            <span class="price-value">${product.wholesalePrice} руб.</span>
-                        </div>
-                        <div class="price-line">
-                            <span class="price-label">Розничная:</span>
-                            <span class="price-value">${product.retailPrice} руб.</span>
-                        </div>
-                `;
-                
-                if (SHOW_WHOLESALE_PLUS) {
-                    html += `
-                        <div class="price-line">
-                            <span class="price-label">Оптовая+:</span>
-                            <span class="price-value">${product.wholesalePlusPrice} руб.</span>
-                        </div>
-                    `;
-                }
-                
-                html += `</div>`;
-                return html;
-            }
-            
-            const discountPercent = product.discountPercent;
-            const discountPriceOpt = product.discountPriceOpt || product.wholesalePrice;
-            const discountPriceRetail = product.discountPriceRetail || product.retailPrice;
-            
-            let html = `
-                <div class="price-container">
-                    <div class="price-line">
-                        <span class="price-label">Оптовая:</span>
-                        <span class="discount-price">${discountPriceOpt} руб.</span>
-                    </div>
-                    <div class="old-price-container">
-                        <span class="original-price">${product.wholesalePrice} руб.</span>
-                        <span class="discount-percent">-${discountPercent}% &#128165;</span>
-                    </div>
-                    <div class="price-line">
-                        <span class="price-label">Розничная:</span>
-                        <span class="discount-price">${discountPriceRetail} руб.</span>
-                    </div>
-                    <div class="old-price-container">
-                        <span class="original-price">${product.retailPrice} руб.</span>
-                        <span class="discount-percent">-${discountPercent}% &#128165;</span>
-                    </div>
-            `;
-            
-            if (SHOW_WHOLESALE_PLUS) {
-                html += `
-                    <div class="price-line">
-                        <span class="price-label">Оптовая+:</span>
-                        <span class="price-value">${product.wholesalePlusPrice} руб.</span>
-                    </div>
-                `;
-            }
-            
-            html += `</div>`;
-            return html;
-        }
-
-        function formatPriceWithDiscountModal(product) {
-            const hasDiscount = product.discountPercent && product.discountPercent.trim() !== '';
-            
-            if (!hasDiscount) {
-                let html = `
-                    <div class="scan-price-container">
-                        <div class="scan-price-line">
-                            <span class="price-label">Оптовая:</span>
-                            <span class="price-value">${product.wholesalePrice} руб.</span>
-                        </div>
-                        <div class="scan-price-line">
-                            <span class="price-label">Розничная:</span>
-                            <span class="price-value">${product.retailPrice} руб.</span>
-                        </div>
-                `;
-                
-                if (SHOW_WHOLESALE_PLUS) {
-                    html += `
-                        <div class="scan-price-line">
-                            <span class="price-label">Оптовая+:</span>
-                            <span class="price-value">${product.wholesalePlusPrice} руб.</span>
-                        </div>
-                    `;
-                }
-                
-                html += `</div>`;
-                return html;
-            }
-            
-            const discountPercent = product.discountPercent;
-            const discountPriceOpt = product.discountPriceOpt || product.wholesalePrice;
-            const discountPriceRetail = product.discountPriceRetail || product.retailPrice;
-            
-            let html = `
-                <div class="scan-price-container">
-                    <div class="scan-price-line">
-                        <span class="price-label">Оптовая:</span>
-                        <span class="scan-discount-price">${discountPriceOpt} руб.</span>
-                    </div>
-                    <div class="scan-old-price-container">
-                        <span class="scan-original-price">${product.wholesalePrice} руб.</span>
-                        <span class="scan-discount-percent">-${discountPercent}% &#128165;</span>
-                    </div>
-                    <div class="scan-price-line">
-                        <span class="price-label">Розничная:</span>
-                        <span class="scan-discount-price">${discountPriceRetail} руб.</span>
-                    </div>
-                    <div class="scan-old-price-container">
-                        <span class="scan-original-price">${product.retailPrice} руб.</span>
-                        <span class="scan-discount-percent">-${discountPercent}% &#128165;</span>
-                    </div>
-            `;
-            
-            if (SHOW_WHOLESALE_PLUS) {
-                html += `
-                    <div class="scan-price-line">
-                        <span class="price-label">Оптовая+:</span>
-                        <span class="price-value">${product.wholesalePlusPrice} руб.</span>
-                    </div>
-                `;
-            }
-            
-            html += `</div>`;
-            return html;
-        }
-
-        // ===== ФУНКЦИИ ДЛЯ РАБОТЫ С СЕРИАЛЬНЫМ ПОРТОМ (Android) =====
-
-        function updatePrinterStatus(message, type = 'connecting') {
-            const statusEl = document.getElementById('printerStatus');
-            if (!statusEl) return;
-            statusEl.textContent = message;
-            
-            statusEl.classList.remove('printer-connected', 'printer-disconnected', 'printer-connecting');
-            
-            switch(type) {
-                case 'connected':
-                    statusEl.classList.add('printer-connected');
-                    statusEl.innerHTML = '&#9989; ' + message;
-                    break;
-                case 'disconnected':
-                    statusEl.classList.add('printer-disconnected');
-                    statusEl.innerHTML = '&#10060; ' + message;
-                    break;
-                case 'connecting':
-                    statusEl.classList.add('printer-connecting');
-                    statusEl.innerHTML = '&#9203; ' + message;
-                    break;
-            }
-        }
-
-        async function connectToPrinter() {
-            try {
-                updatePrinterStatus('Подключаюсь к принтеру...', 'connecting');
-                
-                if (!navigator.serial) {
-                    throw new Error('Ваш браузер не поддерживает Web Serial. Используйте Chrome/Edge 89+');
-                }
-                
-                const ports = await navigator.serial.getPorts();
-                
-                if (ports.length > 0) {
-                    serialPort = ports[0];
-                } else {
-                    serialPort = await navigator.serial.requestPort();
-                }
-                
-                await serialPort.open({
-                    baudRate: 115200,
-                    dataBits: 8,
-                    stopBits: 1,
-                    parity: 'none'
-                });
-                
-                serialWriter = serialPort.writable.getWriter();
-                isPrinterConnected = true;
-                
-                updatePrinterStatus('Принтер подключен', 'connected');
-                return true;
-                
-            } catch (error) {
-                console.error('Ошибка подключения к принтеру:', error);
-                updatePrinterStatus(`Ошибка: ${error.message}`, 'disconnected');
-                return false;
-            }
-        }
-
-        async function disconnectFromPrinter() {
-            try {
-                if (serialWriter) {
-                    serialWriter.releaseLock();
-                    serialWriter = null;
-                }
-                
-                if (serialPort) {
-                    await serialPort.close();
-                    serialPort = null;
-                }
-                
-                isPrinterConnected = false;
-                updatePrinterStatus('Принтер отключен', 'disconnected');
-                return true;
-                
-            } catch (error) {
-                console.error('Ошибка отключения:', error);
-                return false;
-            }
-        }
-
-        async function sendRawData(data) {
-            if (!isPrinterConnected || !serialWriter) {
-                throw new Error('Сначала подключите принтер');
-            }
-            
-            try {
-                await serialWriter.write(data);
-                return true;
-            } catch (error) {
-                console.error('Ошибка отправки данных:', error);
-                throw error;
-            }
-        }
-
-        // ===== НОВЫЕ ФУНКЦИИ ДЛЯ iOS (Web Bluetooth) =====
-
-        function updatePrinterStatusIOS(message, type = 'disconnected') {
-            const statusEl = document.getElementById('printerStatusIOS');
-            if (!statusEl) return;
-            statusEl.textContent = message;
-            
-            statusEl.classList.remove('printer-connected', 'printer-disconnected', 'printer-connecting');
-            
-            switch(type) {
-                case 'connected':
-                    statusEl.classList.add('printer-connected');
-                    statusEl.innerHTML = '&#9989; ' + message;
-                    break;
-                case 'disconnected':
-                    statusEl.classList.add('printer-disconnected');
-                    statusEl.innerHTML = '&#10060; ' + message;
-                    break;
-                case 'connecting':
-                    statusEl.classList.add('printer-connecting');
-                    statusEl.innerHTML = '&#9203; ' + message;
-                    break;
-            }
-        }
-
-        // UUID сервисов и характеристик для принтеров Xprinter (обычно используют стандартный UART)
-        const PRINTER_SERVICE_UUID = '0000ff00-0000-1000-8000-00805f9b34fb';
-        const PRINTER_WRITE_CHARACTERISTIC_UUID = '0000ff01-0000-1000-8000-00805f9b34fb';
-        const PRINTER_NOTIFY_CHARACTERISTIC_UUID = '0000ff02-0000-1000-8000-00805f9b34fb';
-        
-        // Альтернативные UUID (Nordic UART Service - часто используется в BLE принтерах)
-        const NORDIC_UART_SERVICE_UUID = '6e400001-b5a3-f393-e0a9-e50e24dcca9e';
-        const NORDIC_UART_WRITE_CHARACTERISTIC_UUID = '6e400002-b5a3-f393-e0a9-e50e24dcca9e';
-        const NORDIC_UART_NOTIFY_CHARACTERISTIC_UUID = '6e400003-b5a3-f393-e0a9-e50e24dcca9e';
-
-        async function scanForBLEPrinters() {
-            try {
-                updatePrinterStatusIOS('Поиск принтеров...', 'connecting');
-                
-                if (!navigator.bluetooth) {
-                    throw new Error('Web Bluetooth не поддерживается. Используйте Safari на iOS.');
-                }
-
-                const options = {
-                    acceptAllDevices: true,
-                    optionalServices: [
-                        PRINTER_SERVICE_UUID,
-                        NORDIC_UART_SERVICE_UUID,
-                        '000018f0-0000-1000-8000-00805f9b34fb', // Стандартный принтер
-                        '0000ff00-0000-1000-8000-00805f9b34fb'  // Xprinter
-                    ]
-                };
-
-                const device = await navigator.bluetooth.requestDevice(options);
-                
-                if (!device) {
-                    throw new Error('Принтер не выбран');
-                }
-
-                bluetoothDevice = device;
-                
-                // Сохраняем ID устройства
-                savedBluetoothDeviceId = device.id;
-                localStorage.setItem('savedPrinterId', device.id);
-                localStorage.setItem('savedPrinterName', device.name || 'Xprinter');
-
-                await connectToBLEPrinter(device);
-                
-                return true;
-
-            } catch (error) {
-                console.error('Ошибка поиска BLE принтера:', error);
-                updatePrinterStatusIOS(`Ошибка: ${error.message}`, 'disconnected');
-                return false;
-            }
-        }
-
-        async function connectToBLEPrinter(device) {
-            try {
-                updatePrinterStatusIOS('Подключение к принтеру...', 'connecting');
-                
-                const server = await device.gatt.connect();
-                
-                // Пытаемся найти сервис принтера
-                let service = null;
-                try {
-                    service = await server.getPrimaryService(PRINTER_SERVICE_UUID);
-                } catch (e) {
-                    try {
-                        service = await server.getPrimaryService(NORDIC_UART_SERVICE_UUID);
-                    } catch (e2) {
-                        throw new Error('Не найден сервис принтера');
-                    }
-                }
-
-                // Пытаемся найти характеристику для записи
-                let characteristic = null;
-                try {
-                    characteristic = await service.getCharacteristic(PRINTER_WRITE_CHARACTERISTIC_UUID);
-                } catch (e) {
-                    try {
-                        characteristic = await service.getCharacteristic(NORDIC_UART_WRITE_CHARACTERISTIC_UUID);
-                    } catch (e2) {
-                        throw new Error('Не найдена характеристика для печати');
-                    }
-                }
-
-                bluetoothCharacteristic = characteristic;
-                isBLEPrinterConnected = true;
-                
-                // Обновляем UI
-                updatePrinterStatusIOS('Принтер подключен', 'connected');
-                document.getElementById('connectedPrinterInfoIOS').style.display = 'block';
-                document.getElementById('connectedPrinterNameIOS').textContent = device.name || 'Xprinter XP-P323B';
-                document.getElementById('blePrinterListContainer').style.display = 'none';
-                document.getElementById('printActionBtnIOS').disabled = false;
-                
-                return true;
-
-            } catch (error) {
-                console.error('Ошибка подключения к BLE принтеру:', error);
-                updatePrinterStatusIOS(`Ошибка: ${error.message}`, 'disconnected');
-                return false;
-            }
-        }
-
-        async function disconnectFromBLEPrinter() {
-            try {
-                if (bluetoothDevice && bluetoothDevice.gatt.connected) {
-                    bluetoothDevice.gatt.disconnect();
-                }
-                
-                bluetoothCharacteristic = null;
-                isBLEPrinterConnected = false;
-                
-                updatePrinterStatusIOS('Принтер отключен', 'disconnected');
-                document.getElementById('connectedPrinterInfoIOS').style.display = 'none';
-                document.getElementById('printActionBtnIOS').disabled = true;
-                
-                return true;
-                
-            } catch (error) {
-                console.error('Ошибка отключения:', error);
-                return false;
-            }
-        }
-
-        async function sendBLEData(data) {
-            if (!isBLEPrinterConnected || !bluetoothCharacteristic) {
-                throw new Error('Сначала подключите принтер');
-            }
-            
-            try {
-                await bluetoothCharacteristic.writeValue(data);
-                return true;
-            } catch (error) {
-                console.error('Ошибка отправки данных через BLE:', error);
-                throw error;
-            }
-        }
-
-        async function printPriceTagIOS(product) {
-            try {
-                if (!isBLEPrinterConnected) {
-                    // Пробуем восстановить подключение
-                    if (savedBluetoothDeviceId) {
-                        try {
-                            const devices = await navigator.bluetooth.getDevices();
-                            const savedDevice = devices.find(d => d.id === savedBluetoothDeviceId);
-                            if (savedDevice) {
-                                bluetoothDevice = savedDevice;
-                                await connectToBLEPrinter(savedDevice);
-                            }
-                        } catch (e) {
-                            console.warn('Не удалось восстановить подключение:', e);
-                        }
-                    }
-                    
-                    if (!isBLEPrinterConnected) {
-                        throw new Error('Принтер не подключен');
-                    }
-                }
-                
-                const canvas = createPriceTagImage(product);
-                const bitmap = canvasToEscPosBitmap(canvas);
-                const imageCommand = createEscPosImageCommand(bitmap);
-                
-                const leftMargin = 0;
-                
-                const fullCommand = new Uint8Array(imageCommand.length + 10);
-                
-                fullCommand[0] = 0x1B;
-                fullCommand[1] = 0x40;
-                
-                fullCommand[2] = 0x1B;
-                fullCommand[3] = 0x6C;
-                fullCommand[4] = leftMargin;
-                
-                fullCommand.set(imageCommand, 5);
-                
-                const imageEnd = 5 + imageCommand.length;
-                fullCommand[imageEnd] = 0x0A;
-                fullCommand[imageEnd + 1] = 0x0A;
-                
-                await sendBLEData(fullCommand);
-                return true;
-                
-            } catch (error) {
-                console.error('Ошибка печати через BLE:', error);
-                throw error;
-            }
-        }
-
-        // ===== ФУНКЦИИ ДЛЯ СОЗДАНИЯ И ПЕЧАТИ ЦЕННИКА =====
-
+        // ===== ФУНКЦИИ ДЛЯ СОЗДАНИЯ ЦЕННИКА =====
         function createPriceTagImage(product) {
-        const canvas = document.createElement('canvas');
-		canvas.width = 440;
-		canvas.height = 240;
+            const canvas = document.createElement('canvas');
+            canvas.width = 440;
+            canvas.height = 240;
+            const ctx = canvas.getContext('2d');
 
-		const ctx = canvas.getContext('2d');
+            ctx.fillStyle = 'white';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = 'black';
+            ctx.textAlign = 'center';
 
-		ctx.fillStyle = 'white';
-		ctx.fillRect(0, 0, canvas.width, canvas.height);
+            const fonts = {
+                article: 25,
+                product: 19,
+                price: 22,
+                price2: 21,
+                date: 16,
+                company: 18
+            };
 
-		ctx.fillStyle = 'black';
-		ctx.textAlign = 'center';
+            ctx.font = `bold ${fonts.article}px "Arial"`;
+            ctx.fillText(product.article, canvas.width / 2, 35);
 
-		const textScale = 1.5;
+            ctx.beginPath();
+            ctx.moveTo(10, 45);
+            ctx.lineTo(canvas.width - 10, 45);
+            ctx.lineWidth = 3;
+            ctx.stroke();
 
-		const fonts = {
-			article: 17 * textScale,
-			product: 19 * textScale,
-			price: 22 * textScale,
-			price2: 21 * textScale,
-			date: 16 * textScale,
-			company: 18 * textScale
-		};
+            ctx.font = `${fonts.product}px "Arial"`;
+            
+            let lines = [];
+            if (product.name.length <= 35) {
+                lines.push(product.name);
+            } else {
+                let possibleTwoLines = splitIntoTwoLines(product.name, 35);
+                if (possibleTwoLines && possibleTwoLines.length === 2) {
+                    lines = possibleTwoLines;
+                } else {
+                    lines = splitIntoThreeLines(product.name, 35);
+                }
+            }
 
-		let yPos = 25 * textScale;
-		const lineHeight = 20 * textScale;
-		const thickLineHeight = 3;
+            let yPos = 70;
+            lines.forEach(line => {
+                ctx.fillText(line.trim(), canvas.width / 2, yPos);
+                yPos += 25;
+            });
 
-		ctx.font = `bold ${fonts.article}px "Arial"`;
-		ctx.fillText(product.article, canvas.width / 2, 21);
-		yPos += 5 * textScale + 5 * textScale;
+            ctx.beginPath();
+            ctx.moveTo(10, yPos - 5);
+            ctx.lineTo(canvas.width - 10, yPos - 5);
+            ctx.lineWidth = 3;
+            ctx.stroke();
 
-		ctx.beginPath();
-		ctx.moveTo(-8, 28);
-		ctx.lineTo(canvas.width - 0, 28);
-		ctx.lineWidth = thickLineHeight;
-		ctx.stroke();
+            ctx.font = `bold ${fonts.price}px "Arial"`;
+            const retailPriceFormatted = formatNumber(product.retailPrice, true);
+            ctx.fillText(`РОЗ: ${retailPriceFormatted} Руб.`, canvas.width / 2, 135);
 
-		ctx.font = `${fonts.product}px "Arial"`;
+            ctx.beginPath();
+            ctx.moveTo(10, 150);
+            ctx.lineTo(canvas.width - 10, 150);
+            ctx.lineWidth = 3;
+            ctx.stroke();
 
-		const productName = product.name;
-		const words = productName.split(' ');
+            ctx.font = `${fonts.price2}px "Arial"`;
+            const wholesalePriceNum = parseFloatValue(product.wholesalePrice);
+            const wholesalePriceFormatted = Math.round(wholesalePriceNum).toString();
+            const wholesaleCode = wholesalePriceFormatted.padStart(6, '0');
+            ctx.fillText(`АРТ000${wholesaleCode}`, canvas.width / 2, 180);
 
-		const maxCharsPerLine = 35;
+            ctx.beginPath();
+            ctx.moveTo(10, 190);
+            ctx.lineTo(canvas.width - 10, 190);
+            ctx.lineWidth = 3;
+            ctx.stroke();
 
-		let lines = [];
-		let currentLine = '';
+            const today = new Date();
+            const dateStr = `${today.getDate().toString().padStart(2, '0')}.${(today.getMonth()+1).toString().padStart(2, '0')}.${today.getFullYear()}`;
+            ctx.font = `bold ${fonts.date}px "Arial"`;
+            ctx.fillText(dateStr, canvas.width / 2, 215);
 
-		if (productName.length <= maxCharsPerLine) {
-			lines.push(productName);
-		} else {
-			let possibleTwoLines = splitIntoTwoLines(productName, maxCharsPerLine);
-    
-			if (possibleTwoLines && possibleTwoLines.length === 2) {
-				lines = possibleTwoLines;
-			} else {
-				lines = splitIntoThreeLines(productName, maxCharsPerLine);
-			}
-		}
+            ctx.beginPath();
+            ctx.moveTo(10, 225);
+            ctx.lineTo(canvas.width - 10, 225);
+            ctx.lineWidth = 3;
+            ctx.stroke();
 
-		lines.forEach(line => {
-			ctx.fillText(line.trim(), canvas.width / 2, yPos);
-			yPos += lineHeight;
-		});
-
-		ctx.beginPath();
-		ctx.moveTo(-8, 95);
-		ctx.lineTo(canvas.width - 0, 95);
-		ctx.lineWidth = thickLineHeight;
-		ctx.stroke();
-		yPos += 10 * textScale + 5 * textScale;
-
-		ctx.font = `bold ${fonts.price}px "Arial"`;
-
-		const retailPriceFormatted = formatNumber(product.retailPrice, true);
-		ctx.fillText(`РОЗ: ${retailPriceFormatted} Руб.`, canvas.width / 2, 127);
-
-		ctx.beginPath();
-		ctx.moveTo(-8, 139);
-		ctx.lineTo(canvas.width - 0, 139);
-		ctx.lineWidth = thickLineHeight;
-		ctx.stroke();
-		yPos += 10 * textScale + 5 * textScale;
-
-		ctx.font = `${fonts.price2}px "Arial"`;
-
-		const wholesalePriceNum = parseFloatValue(product.wholesalePrice);
-		const wholesalePriceFormatted = Math.round(wholesalePriceNum).toString();
-		const wholesaleCode = wholesalePriceFormatted.padStart(6, '0');
-		ctx.fillText(`АРТ000${wholesaleCode}`, canvas.width / 2, 167);
-
-		ctx.beginPath();
-		ctx.moveTo(-8, 173);
-		ctx.lineTo(canvas.width - 0, 173);
-		ctx.lineWidth = thickLineHeight;
-		ctx.stroke();
-
-		const today = new Date();
-		const dateStr = `${today.getDate().toString().padStart(2, '0')}.${(today.getMonth()+1).toString().padStart(2, '0')}.${today.getFullYear()}`;
-		ctx.font = `bold ${fonts.date}px "Arial"`;
-		ctx.fillText(dateStr, canvas.width / 2, 197);
-
-		ctx.beginPath();
-		ctx.moveTo(-8, 205);
-		ctx.lineTo(canvas.width - 0, 205);
-		ctx.lineWidth = thickLineHeight;
-		ctx.stroke();
-
-		ctx.font = `${fonts.company}px "Arial"`;
-		ctx.fillText('ИП Мааруф Р.', canvas.width / 2, 230);
+            ctx.font = `${fonts.company}px "Arial"`;
+            ctx.fillText('ИП Мааруф Р.', canvas.width / 2, 240);
             
             return canvas;
         }
 
         function splitIntoTwoLines(text, maxChars) {
-            const words = text.split(' ');
-            let lines = [];
-            let currentLine = '';
-            
             const middle = Math.floor(text.length / 2);
             let bestBreakIndex = -1;
             
@@ -2239,7 +1851,6 @@
                     return [line1, line2];
                 }
             }
-            
             return null;
         }
 
@@ -2253,13 +1864,10 @@
                     if (currentLine) currentLine += ' ';
                     currentLine += word;
                 } else {
-                    if (currentLine) {
-                        lines.push(currentLine);
-                    }
+                    if (currentLine) lines.push(currentLine);
                     currentLine = word;
                     
                     if (lines.length === 2) {
-                        currentLine = '';
                         const remainingWords = words.slice(words.indexOf(word));
                         lines.push(remainingWords.join(' '));
                         break;
@@ -2291,9 +1899,7 @@
                     const g = data[pixelIndex + 1];
                     const b = data[pixelIndex + 2];
                     
-                    const isBlack = (r + g + b) < 384;
-                    
-                    if (isBlack) {
+                    if ((r + g + b) < 384) {
                         const byteIndex = y * bytesPerLine + Math.floor(x / 8);
                         const bitPosition = 7 - (x % 8);
                         bitmap[byteIndex] |= (1 << bitPosition);
@@ -2310,9 +1916,8 @@
         }
 
         function createEscPosImageCommand(bitmap) {
-            const width = bitmap.width;
-            const height = bitmap.height;
             const bytesPerLine = bitmap.bytesPerLine;
+            const height = bitmap.height;
             
             const command = new Uint8Array(bitmap.data.length + 8);
             
@@ -2320,51 +1925,121 @@
             command[1] = 0x76;
             command[2] = 0x30;
             command[3] = 0x00;
-            
-            const xL = bytesPerLine & 0xFF;
-            const xH = (bytesPerLine >> 8) & 0xFF;
-            command[4] = xL;
-            command[5] = xH;
-            
-            const yL = height & 0xFF;
-            const yH = (height >> 8) & 0xFF;
-            command[6] = yL;
-            command[7] = yH;
+            command[4] = bytesPerLine & 0xFF;
+            command[5] = (bytesPerLine >> 8) & 0xFF;
+            command[6] = height & 0xFF;
+            command[7] = (height >> 8) & 0xFF;
             
             command.set(bitmap.data, 8);
             
             return command;
         }
 
+        // ===== ФУНКЦИИ ДЛЯ ANDROID (WEB SERIAL) =====
+        function updatePrinterStatus(message, type = 'connecting') {
+            const statusEl = document.getElementById('printerStatus');
+            if (!statusEl) return;
+            
+            statusEl.classList.remove('printer-connected', 'printer-disconnected', 'printer-connecting');
+            
+            switch(type) {
+                case 'connected':
+                    statusEl.classList.add('printer-connected');
+                    statusEl.innerHTML = '✅ ' + message;
+                    break;
+                case 'disconnected':
+                    statusEl.classList.add('printer-disconnected');
+                    statusEl.innerHTML = '❌ ' + message;
+                    break;
+                case 'connecting':
+                    statusEl.classList.add('printer-connecting');
+                    statusEl.innerHTML = '⏳ ' + message;
+                    break;
+                default:
+                    statusEl.textContent = message;
+            }
+        }
+
+        async function connectToPrinter() {
+            try {
+                updatePrinterStatus('Подключаюсь к принтеру...', 'connecting');
+                
+                if (!navigator.serial) {
+                    throw new Error('Web Serial не поддерживается');
+                }
+                
+                const ports = await navigator.serial.getPorts();
+                
+                if (ports.length > 0) {
+                    serialPort = ports[0];
+                } else {
+                    serialPort = await navigator.serial.requestPort();
+                }
+                
+                await serialPort.open({
+                    baudRate: 115200,
+                    dataBits: 8,
+                    stopBits: 1,
+                    parity: 'none'
+                });
+                
+                serialWriter = serialPort.writable.getWriter();
+                isPrinterConnected = true;
+                
+                updatePrinterStatus('Принтер подключен', 'connected');
+                return true;
+                
+            } catch (error) {
+                console.error('Ошибка подключения:', error);
+                updatePrinterStatus(`Ошибка: ${error.message}`, 'disconnected');
+                return false;
+            }
+        }
+
+        async function disconnectFromPrinter() {
+            try {
+                if (serialWriter) {
+                    serialWriter.releaseLock();
+                    serialWriter = null;
+                }
+                if (serialPort) {
+                    await serialPort.close();
+                    serialPort = null;
+                }
+                isPrinterConnected = false;
+                updatePrinterStatus('Принтер отключен', 'disconnected');
+                return true;
+            } catch (error) {
+                console.error('Ошибка отключения:', error);
+                return false;
+            }
+        }
+
+        async function sendRawData(data) {
+            if (!isPrinterConnected || !serialWriter) {
+                throw new Error('Принтер не подключен');
+            }
+            await serialWriter.write(data);
+            return true;
+        }
+
         async function printPriceTag(product) {
             try {
                 if (!isPrinterConnected) {
                     const connected = await connectToPrinter();
-                    if (!connected) {
-                        throw new Error('Не удалось подключиться к принтеру');
-                    }
+                    if (!connected) throw new Error('Не удалось подключиться к принтеру');
                 }
                 
                 const canvas = createPriceTagImage(product);
                 const bitmap = canvasToEscPosBitmap(canvas);
                 const imageCommand = createEscPosImageCommand(bitmap);
                 
-                const leftMargin = 0;
-                
                 const fullCommand = new Uint8Array(imageCommand.length + 10);
-                
                 fullCommand[0] = 0x1B;
                 fullCommand[1] = 0x40;
-                
-                fullCommand[2] = 0x1B;
-                fullCommand[3] = 0x6C;
-                fullCommand[4] = leftMargin;
-                
-                fullCommand.set(imageCommand, 5);
-                
-                const imageEnd = 5 + imageCommand.length;
-                fullCommand[imageEnd] = 0x0A;
-                fullCommand[imageEnd + 1] = 0x0A;
+                fullCommand.set(imageCommand, 2);
+                fullCommand[imageCommand.length + 2] = 0x0A;
+                fullCommand[imageCommand.length + 3] = 0x0A;
                 
                 await sendRawData(fullCommand);
                 return true;
@@ -2379,45 +2054,12 @@
             const canvas = document.getElementById('priceTagPreviewCanvas');
             if (!canvas) return;
             const ctx = canvas.getContext('2d');
-            
             ctx.fillStyle = 'white';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             
-            canvas.width = 440;
-            canvas.height = 284;
-            
-            const scale = 0.7;
-            ctx.save();
-            ctx.scale(scale, scale);
-            
             const previewCanvas = createPriceTagImage(product);
-            ctx.drawImage(previewCanvas, 0, 0);
-            
-            ctx.restore();
+            ctx.drawImage(previewCanvas, 0, 0, canvas.width, canvas.height);
         }
-
-        function updatePriceTagPreviewIOS(product) {
-            const canvas = document.getElementById('priceTagPreviewCanvasIOS');
-            if (!canvas) return;
-            const ctx = canvas.getContext('2d');
-            
-            ctx.fillStyle = 'white';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            
-            canvas.width = 440;
-            canvas.height = 284;
-            
-            const scale = 0.7;
-            ctx.save();
-            ctx.scale(scale, scale);
-            
-            const previewCanvas = createPriceTagImage(product);
-            ctx.drawImage(previewCanvas, 0, 0);
-            
-            ctx.restore();
-        }
-
-        // ===== ОБНОВЛЕННЫЕ ФУНКЦИИ ДЛЯ ПЕЧАТИ (Android) =====
 
         function showPrintStatus(message, type = 'info') {
             const statusEl = document.getElementById('printStatus');
@@ -2434,43 +2076,34 @@
         async function openPrintModal(product) {
             currentProductForPrint = product;
             document.getElementById('printModal').style.display = 'flex';
-            
             updatePriceTagPreview(product);
             
             const printBtn = document.getElementById('printActionBtn');
             printBtn.disabled = true;
-            printBtn.textContent = 'Подключаюсь к принтеру...';
+            printBtn.textContent = 'Подключаюсь...';
             
             try {
                 const connected = await connectToPrinter();
-                
                 if (connected) {
                     printBtn.disabled = false;
-                    printBtn.textContent = 'Распечатать';
+                    printBtn.textContent = '🖨️ Распечатать';
                 } else {
                     printBtn.disabled = true;
-                    printBtn.textContent = 'Не удалось подключиться';
+                    printBtn.textContent = '❌ Ошибка подключения';
                 }
             } catch (error) {
-                console.error('Ошибка при подключении:', error);
                 printBtn.disabled = true;
-                printBtn.textContent = 'Ошибка подключения';
+                printBtn.textContent = '❌ Ошибка';
             }
         }
 
         function closePrintModal() {
             document.getElementById('printModal').style.display = 'none';
-            
-            setTimeout(() => {
-                disconnectFromPrinter();
-            }, 1000);
+            setTimeout(() => disconnectFromPrinter(), 1000);
         }
 
         async function handlePrint() {
-            if (!currentProductForPrint) {
-                showPrintStatus('Товар не выбран', 'error');
-                return;
-            }
+            if (!currentProductForPrint) return;
             
             const printBtn = document.getElementById('printActionBtn');
             printBtn.disabled = true;
@@ -2478,66 +2111,303 @@
             
             try {
                 await printPriceTag(currentProductForPrint);
-                showPrintStatus('Ценник успешно отправлен на печать!', 'success');
-                
-                setTimeout(() => {
-                    closePrintModal();
-                }, 1500);
-                
+                showPrintStatus('✅ Ценник отправлен на печать!', 'success');
+                setTimeout(closePrintModal, 1500);
             } catch (error) {
-                console.error('Ошибка печати:', error);
-                showPrintStatus('Ошибка печати: ' + error.message, 'error');
+                showPrintStatus('❌ Ошибка: ' + error.message, 'error');
                 printBtn.disabled = false;
-                printBtn.textContent = 'Распечатать';
+                printBtn.textContent = '🖨️ Распечатать';
             }
         }
 
-        // ===== НОВЫЕ ФУНКЦИИ ДЛЯ ПЕЧАТИ НА iOS =====
+        // ===== ФУНКЦИИ ДЛЯ iOS (WEB BLUETOOTH) =====
+        function updatePrinterStatusIOS(message, type = 'disconnected') {
+            const statusEl = document.getElementById('printerStatusIOS');
+            if (!statusEl) return;
+            
+            statusEl.classList.remove('printer-connected', 'printer-disconnected', 'printer-connecting');
+            
+            switch(type) {
+                case 'connected':
+                    statusEl.classList.add('printer-connected');
+                    statusEl.innerHTML = '✅ ' + message;
+                    break;
+                case 'disconnected':
+                    statusEl.classList.add('printer-disconnected');
+                    statusEl.innerHTML = '❌ ' + message;
+                    break;
+                case 'connecting':
+                    statusEl.classList.add('printer-connecting');
+                    statusEl.innerHTML = '⏳ ' + message;
+                    break;
+                default:
+                    statusEl.textContent = message;
+            }
+        }
+
+        async function scanForBLEPrinters() {
+            try {
+                updatePrinterStatusIOS('Поиск принтеров...', 'connecting');
+                
+                if (!navigator.bluetooth) {
+                    throw new Error('Web Bluetooth не поддерживается.\nИспользуйте Safari с HTTPS');
+                }
+
+                const options = {
+                    acceptAllDevices: true,
+                    optionalServices: PRINTER_SERVICE_UUIDS
+                };
+
+                console.log('Запрос Bluetooth устройств...');
+                const device = await navigator.bluetooth.requestDevice(options);
+                
+                if (!device) {
+                    throw new Error('Принтер не выбран');
+                }
+
+                console.log('Выбрано устройство:', device.name || 'Xprinter');
+                bluetoothDevice = device;
+                
+                try {
+                    localStorage.setItem('savedPrinterId', device.id);
+                    localStorage.setItem('savedPrinterName', device.name || 'Xprinter');
+                } catch (e) {
+                    console.warn('Не удалось сохранить в localStorage');
+                }
+
+                await connectToBLEPrinter(device);
+                return true;
+
+            } catch (error) {
+                console.error('Ошибка поиска:', error);
+                
+                let errorMessage = 'Ошибка: ';
+                if (error.message.includes('User cancelled')) {
+                    errorMessage = 'Поиск отменен. Нажмите "Найти принтер" еще раз.';
+                } else if (error.message.includes('Bluetooth adapter')) {
+                    errorMessage = 'Bluetooth не доступен. Включите Bluetooth в настройках.';
+                } else {
+                    errorMessage += error.message;
+                }
+                
+                updatePrinterStatusIOS(errorMessage, 'disconnected');
+                return false;
+            }
+        }
+
+        async function connectToBLEPrinter(device) {
+            try {
+                updatePrinterStatusIOS('Подключение к принтеру...', 'connecting');
+                
+                device.addEventListener('gattserverdisconnected', onDeviceDisconnected);
+                
+                const server = await device.gatt.connect();
+                console.log('GATT сервер подключен');
+                
+                let characteristic = null;
+                let foundService = null;
+
+                for (const serviceUUID of PRINTER_SERVICE_UUIDS) {
+                    try {
+                        console.log('Пробуем сервис:', serviceUUID);
+                        foundService = await server.getPrimaryService(serviceUUID);
+                        console.log('Найден сервис:', serviceUUID);
+                        break;
+                    } catch (e) {
+                        console.log('Сервис не найден:', serviceUUID);
+                    }
+                }
+
+                if (!foundService) {
+                    throw new Error('Не найден сервис принтера');
+                }
+
+                for (const charUUID of PRINTER_CHARACTERISTIC_UUIDS) {
+                    try {
+                        console.log('Пробуем характеристику:', charUUID);
+                        characteristic = await foundService.getCharacteristic(charUUID);
+                        console.log('Найдена характеристика:', charUUID);
+                        break;
+                    } catch (e) {
+                        console.log('Характеристика не найдена:', charUUID);
+                    }
+                }
+
+                if (!characteristic) {
+                    throw new Error('Не найдена характеристика для печати');
+                }
+
+                bluetoothCharacteristic = characteristic;
+                isBLEPrinterConnected = true;
+                
+                updatePrinterStatusIOS('Принтер подключен', 'connected');
+                
+                const connectedInfo = document.getElementById('connectedPrinterInfoIOS');
+                if (connectedInfo) {
+                    connectedInfo.style.display = 'block';
+                    const nameEl = document.getElementById('connectedPrinterNameIOS');
+                    if (nameEl) nameEl.textContent = device.name || 'Xprinter XP-P323B';
+                }
+                
+                const printBtn = document.getElementById('printActionBtnIOS');
+                if (printBtn) printBtn.disabled = false;
+                
+                return true;
+
+            } catch (error) {
+                console.error('Ошибка подключения:', error);
+                updatePrinterStatusIOS(`Ошибка: ${error.message}`, 'disconnected');
+                return false;
+            }
+        }
+
+        function onDeviceDisconnected(event) {
+            console.log('Принтер отключился');
+            isBLEPrinterConnected = false;
+            bluetoothCharacteristic = null;
+            
+            updatePrinterStatusIOS('Принтер отключен', 'disconnected');
+            
+            const connectedInfo = document.getElementById('connectedPrinterInfoIOS');
+            if (connectedInfo) connectedInfo.style.display = 'none';
+            
+            const printBtn = document.getElementById('printActionBtnIOS');
+            if (printBtn) printBtn.disabled = true;
+        }
+
+        async function disconnectFromBLEPrinter() {
+            try {
+                if (bluetoothDevice && bluetoothDevice.gatt.connected) {
+                    bluetoothDevice.gatt.disconnect();
+                }
+                bluetoothCharacteristic = null;
+                isBLEPrinterConnected = false;
+                
+                updatePrinterStatusIOS('Принтер отключен', 'disconnected');
+                
+                const connectedInfo = document.getElementById('connectedPrinterInfoIOS');
+                if (connectedInfo) connectedInfo.style.display = 'none';
+                
+                const printBtn = document.getElementById('printActionBtnIOS');
+                if (printBtn) printBtn.disabled = true;
+                
+                return true;
+            } catch (error) {
+                console.error('Ошибка отключения:', error);
+                return false;
+            }
+        }
+
+        async function sendBLEData(data) {
+            if (!isBLEPrinterConnected || !bluetoothCharacteristic) {
+                throw new Error('Принтер не подключен');
+            }
+            
+            try {
+                await bluetoothCharacteristic.writeValue(data);
+                return true;
+            } catch (error) {
+                console.error('Ошибка отправки BLE:', error);
+                throw error;
+            }
+        }
+
+        async function printPriceTagIOS(product) {
+            try {
+                if (!isBLEPrinterConnected) {
+                    if (savedBluetoothDeviceId) {
+                        try {
+                            updatePrinterStatusIOS('Восстановление подключения...', 'connecting');
+                            const devices = await navigator.bluetooth.getDevices();
+                            const savedDevice = devices.find(d => d.id === savedBluetoothDeviceId);
+                            if (savedDevice) {
+                                bluetoothDevice = savedDevice;
+                                await connectToBLEPrinter(savedDevice);
+                            } else {
+                                throw new Error('Принтер не найден');
+                            }
+                        } catch (e) {
+                            throw new Error('Принтер не подключен. Нажмите "Найти принтер"');
+                        }
+                    } else {
+                        throw new Error('Принтер не подключен. Нажмите "Найти принтер"');
+                    }
+                }
+                
+                const canvas = createPriceTagImage(product);
+                const bitmap = canvasToEscPosBitmap(canvas);
+                const imageCommand = createEscPosImageCommand(bitmap);
+                
+                const fullCommand = new Uint8Array(imageCommand.length + 10);
+                fullCommand[0] = 0x1B;
+                fullCommand[1] = 0x40;
+                fullCommand.set(imageCommand, 2);
+                fullCommand[imageCommand.length + 2] = 0x0A;
+                fullCommand[imageCommand.length + 3] = 0x0A;
+                
+                await sendBLEData(fullCommand);
+                return true;
+                
+            } catch (error) {
+                console.error('Ошибка печати iOS:', error);
+                throw error;
+            }
+        }
+
+        function updatePriceTagPreviewIOS(product) {
+            const canvas = document.getElementById('priceTagPreviewCanvasIOS');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = 'white';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            const previewCanvas = createPriceTagImage(product);
+            ctx.drawImage(previewCanvas, 0, 0, canvas.width, canvas.height);
+        }
 
         async function openPrintModalIOS(product) {
             currentProductForPrintIOS = product;
-            document.getElementById('printModalIOS').style.display = 'flex';
+            const modal = document.getElementById('printModalIOS');
+            if (!modal) return;
             
+            modal.style.display = 'flex';
             updatePriceTagPreviewIOS(product);
             
             const printBtn = document.getElementById('printActionBtnIOS');
+            const statusEl = document.getElementById('printerStatusIOS');
+            
             printBtn.disabled = true;
             
-            // Проверяем поддержку Web Bluetooth
             if (!navigator.bluetooth) {
-                updatePrinterStatusIOS('Web Bluetooth не поддерживается. Используйте Safari.', 'disconnected');
-                document.getElementById('scanPrintersBtnIOS').disabled = true;
+                updatePrinterStatusIOS('❌ Web Bluetooth не поддерживается.\n\nИспользуйте Safari с HTTPS', 'disconnected');
                 return;
             }
             
-            // Пытаемся восстановить сохраненное подключение
-            const savedId = localStorage.getItem('savedPrinterId');
-            if (savedId && !isBLEPrinterConnected) {
-                try {
+            updatePrinterStatusIOS('Принтер не подключен. Нажмите "Найти принтер"', 'disconnected');
+            
+            try {
+                savedBluetoothDeviceId = localStorage.getItem('savedPrinterId');
+                if (savedBluetoothDeviceId && !isBLEPrinterConnected) {
+                    updatePrinterStatusIOS('Попытка восстановить подключение...', 'connecting');
                     const devices = await navigator.bluetooth.getDevices();
-                    const savedDevice = devices.find(d => d.id === savedId);
+                    const savedDevice = devices.find(d => d.id === savedBluetoothDeviceId);
                     if (savedDevice) {
                         bluetoothDevice = savedDevice;
                         await connectToBLEPrinter(savedDevice);
                     }
-                } catch (e) {
-                    console.warn('Не удалось восстановить подключение:', e);
                 }
+            } catch (e) {
+                console.warn('Не удалось восстановить подключение:', e);
             }
             
             if (isBLEPrinterConnected) {
                 printBtn.disabled = false;
-            } else {
-                document.getElementById('blePrinterListContainer').style.display = 'block';
             }
         }
 
         function closePrintModalIOS() {
             document.getElementById('printModalIOS').style.display = 'none';
-            
-            setTimeout(() => {
-                disconnectFromBLEPrinter();
-            }, 1000);
+            setTimeout(() => disconnectFromBLEPrinter(), 1000);
         }
 
         async function handlePrintIOS() {
@@ -2552,133 +2422,18 @@
             
             try {
                 await printPriceTagIOS(currentProductForPrintIOS);
-                showPrintStatus('Ценник успешно отправлен на печать!', 'success');
-                
-                setTimeout(() => {
-                    closePrintModalIOS();
-                }, 1500);
-                
+                showPrintStatus('✅ Ценник отправлен на печать!', 'success');
+                setTimeout(() => closePrintModalIOS(), 1500);
             } catch (error) {
-                console.error('Ошибка печати:', error);
-                showPrintStatus('Ошибка печати: ' + error.message, 'error');
+                showPrintStatus('❌ Ошибка: ' + error.message, 'error');
                 printBtn.disabled = false;
-                printBtn.textContent = 'Распечатать';
+                printBtn.textContent = '🖨️ Распечатать';
             }
         }
 
-        async function scanForPrintersIOS() {
-            try {
-                await scanForBLEPrinters();
-            } catch (error) {
-                console.error('Ошибка сканирования:', error);
-            }
-        }
-
-        // ===== ФУНКЦИИ ДЛЯ ОТОБРАЖЕНИЯ ДАТ ФАЙЛОВ =====
-
-		function getFileDatesData() {
-			let displayDate = "Дата не указана";
-			if (DATA_UPDATE_DATE) {
-				if (DATA_UPDATE_DATE.includes(" ")) {
-					displayDate = DATA_UPDATE_DATE.split(" ")[0];
-				} else {
-					displayDate = DATA_UPDATE_DATE;
-				}
-			}
-    
-			return {
-				currentDate: displayDate,
-				files: [
-					{
-						location: "Обмен",
-						items: [
-							{
-								label: "СКЛАД",
-								lastModified: URAL_OFFICE_DATE || "Дата не указана"
-							},
-							{
-								label: "Торговый зал",
-								lastModified: URAL_DATE || "Дата не указана"
-							}
-					]
-					}
-				]
-			};
-		}
-
-        function openDatesModal() {
-            const data = getFileDatesData();
-            const modal = document.getElementById('datesModal');
-            const content = document.getElementById('datesContent');
-            const modalCurrentDate = document.getElementById('modalCurrentDate');
-            const dataUpdateContainer = document.getElementById('dataUpdateContainer');
-            
-            modalCurrentDate.textContent = `Дата обновления: ${data.currentDate}`;
-            
-            let updateTime = "00:00";
-            
-            if (DATA_UPDATE_DATE && DATA_UPDATE_DATE.includes(" ")) {
-                const timeMatch = DATA_UPDATE_DATE.match(/\s(\d{2}:\d{2})$/);
-                if (timeMatch && timeMatch[1]) {
-                    updateTime = timeMatch[1];
-                }
-            } else {
-                const now = new Date();
-                updateTime = now.getHours().toString().padStart(2, '0') + ':' + 
-                            now.getMinutes().toString().padStart(2, '0');
-            }
-            
-            dataUpdateContainer.textContent = `Данные на : ${updateTime}`;
-            
-            let html = '';
-            
-            if (data.files && data.files.length > 0) {
-                data.files.forEach(section => {
-                    html += `<div class="date-section">
-                        <div class="date-section-title">${section.location}:</div>`;
-                    
-                    section.items.forEach(item => {
-                        html += `<div class="date-item">
-                            <div class="date-item-row">
-                                <div class="date-item-label">${item.label}:</div>
-                                <div class="date-item-time">${item.lastModified}</div>
-                            </div>
-                        </div>`;
-                    });
-                    
-                    html += `</div>`;
-                });
-            } else {
-                html += `<div class="no-dates-info">Информация о датах изменения файлов отсутствует</div>`;
-            }
-            
-            content.innerHTML = html;
-            modal.style.display = 'flex';
-        }
-
-        function closeDatesModal() {
-            document.getElementById('datesModal').style.display = 'none';
-        } 
-
-		// ===== ФУНКЦИИ ДЛЯ СКАНИРОВАНИЯ (Android) =====
-
-        function isIOS() {
-            return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-        }
-
-        function isAndroid() {
-            return /Android/.test(navigator.userAgent);
-        }
-
-        function isBarcodeDetectorSupported() {
-            return ('BarcodeDetector' in window);
-        }
-
+        // ===== ФУНКЦИИ ДЛЯ СКАНИРОВАНИЯ =====
         async function initBarcodeDetector() {
-            if (!isBarcodeDetectorSupported()) {
-                console.warn('BarcodeDetector API не поддерживается в этом браузере');
-                return null;
-            }
+            if (!('BarcodeDetector' in window)) return null;
             
             try {
                 const formats = await BarcodeDetector.getSupportedFormats();
@@ -2686,30 +2441,12 @@
                     ['ean_13', 'ean_8', 'upc_a', 'upc_e', 'code_39', 'code_128', 'codabar'].includes(format)
                 );
                 
-                if (supportedFormats.length === 0) {
-                    console.warn('Нет поддержки нужных форматов штрихкодов');
-                    return null;
-                }
-                
+                if (supportedFormats.length === 0) return null;
                 return new BarcodeDetector({ formats: supportedFormats });
             } catch (error) {
                 console.error('Ошибка инициализации BarcodeDetector:', error);
                 return null;
             }
-        }
-
-        function isHTTPS() {
-            return window.location.protocol === 'https:';
-        }
-
-        function isLocalhost() {
-            return window.location.hostname === 'localhost' || 
-                   window.location.hostname === '127.0.0.1' ||
-                   window.location.hostname === '';
-        }
-
-        function canUseCamera() {
-            return true;
         }
 
         function setupPlatformUI() {
@@ -2719,19 +2456,10 @@
             if (isIOS()) {
                 scanButtonAndroid.style.display = 'none';
                 scanButtonIOS.style.display = 'flex';
-                searchButton.style.maxWidth = '300px';
-            } else if (isAndroid()) {
-                scanButtonAndroid.style.display = 'flex';
-                scanButtonIOS.style.display = 'none';
-                setTimeout(() => {
-                    initBarcodeDetector();
-                }, 1000);
+                document.getElementById('searchButton').style.maxWidth = '300px';
             } else {
                 scanButtonAndroid.style.display = 'flex';
                 scanButtonIOS.style.display = 'none';
-                setTimeout(() => {
-                    initBarcodeDetector();
-                }, 1000);
             }
         }
 
@@ -2740,61 +2468,48 @@
                 stopCameraStream();
                 
                 const constraints = {
-                    video: {
-                        facingMode: 'environment',
-                        width: { ideal: 1280 },
-                        height: { ideal: 720 }
-                    },
+                    video: { facingMode: 'environment' },
                     audio: false
                 };
                 
                 stream = await navigator.mediaDevices.getUserMedia(constraints);
-                
-                cameraVideo.srcObject = stream;
-                cameraModal.style.display = 'flex';
-                
-                await cameraVideo.play();
+                const video = document.getElementById('cameraVideo');
+                video.srcObject = stream;
+                document.getElementById('cameraModal').style.display = 'flex';
+                await video.play();
                 
                 if (!barcodeDetector) {
                     barcodeDetector = await initBarcodeDetector();
                 }
                 
-                if (!barcodeDetector) {
-                    alert('Ваш браузер не поддерживает прямое сканирование штрихкодов.');
-                    stopCameraStream();
-                    return;
+                if (barcodeDetector) {
+                    startBarcodeDetection(barcodeDetector);
                 }
-                
-                startBarcodeDetection(barcodeDetector);
                 
             } catch (error) {
                 console.error('Ошибка доступа к камере:', error);
-                alert('Не удалось получить доступ к камере. Пожалуйста, разрешите доступ к камере в настройках браузера.');
+                alert('Не удалось получить доступ к камере');
             }
         }
 
         function startBarcodeDetection(detector) {
+            const video = document.getElementById('cameraVideo');
             const canvas = document.createElement('canvas');
             const context = canvas.getContext('2d');
             
             scanInterval = setInterval(async () => {
-                if (cameraVideo.readyState === cameraVideo.HAVE_ENOUGH_DATA) {
-                    canvas.width = cameraVideo.videoWidth;
-                    canvas.height = cameraVideo.videoHeight;
-                    
-                    context.drawImage(cameraVideo, 0, 0, canvas.width, canvas.height);
+                if (video.readyState === video.HAVE_ENOUGH_DATA) {
+                    canvas.width = video.videoWidth;
+                    canvas.height = video.videoHeight;
+                    context.drawImage(video, 0, 0, canvas.width, canvas.height);
                     
                     try {
                         const barcodes = await detector.detect(canvas);
-                        
                         if (barcodes && barcodes.length > 0) {
-                            const barcode = barcodes[0];
-                            handleScannedCode(barcode.rawValue);
-                            return;
+                            handleScannedCode(barcodes[0].rawValue);
                         }
-                        
                     } catch (error) {
-                        console.error('Ошибка детектирования штрихкода:', error);
+                        console.error('Ошибка детектирования:', error);
                     }
                 }
             }, 300);
@@ -2809,188 +2524,102 @@
                 clearInterval(scanInterval);
                 scanInterval = null;
             }
-            cameraVideo.srcObject = null;
+            const video = document.getElementById('cameraVideo');
+            if (video) video.srcObject = null;
         }
 
         function handleScannedCode(code) {
-            if (!code || code.trim().length === 0) return;
+            if (!code) return;
             
             stopCameraStream();
+            document.getElementById('cameraModal').style.display = 'none';
             document.getElementById('modeBarcode').checked = true;
             updateSearchUI();
             
             const cleanCode = code.toString().trim();
-            searchInput.value = cleanCode;
+            document.getElementById('searchInput').value = cleanCode;
             updateClearButton();
             
             const results = performSimpleSearch(cleanCode, 'barcode');
             showScanResults(cleanCode, results);
         }
 
-        // ===== НОВЫЕ ФУНКЦИИ ДЛЯ iOS СКАНЕРА =====
-
+        // ===== ФУНКЦИИ ДЛЯ iOS СКАНЕРА =====
         async function openIOSScanner() {
-            console.log('Открытие iOS сканера...');
-            
-            const iosModal = document.getElementById('iosScannerModal');
-            iosModal.style.display = 'block';
+            const modal = document.getElementById('iosScannerModal');
+            modal.style.display = 'block';
             
             document.getElementById('iosScannerLoader').style.display = 'block';
             showIOSScannerStatus('Инициализация камеры...');
             
-           
-            setTimeout(() => {
-                initIOSBarcodeScanner();
-            }, 300);
+            setTimeout(() => initIOSBarcodeScanner(), 300);
         }
 
-// ===== ИСПРАВЛЕННАЯ ФУНКЦИЯ ДЛЯ iOS (iPhone 11/12/13/14/15) =====
-function initIOSBarcodeScanner() {
-    try {
-        if (iosHtml5QrCode && iosIsScanning) {
-            iosHtml5QrCode.stop().then(() => {
-                iosHtml5QrCode.clear();
-                iosHtml5QrCode = null;
-            }).catch(() => {
-                iosHtml5QrCode = null;
-            });
-        }
-
-        // КОНФИГУРАЦИЯ: Убираем facingMode из первого параметра!
-        const config = {
-            fps: 10,
-            qrbox: { width: 250, height: 150 },
-            rememberLastUsedCamera: true,
-            supportedScanTypes: [Html5QrcodeScanType.SCAN_TYPE_CAMERA],
-            // ВАЖНО: Передаем constraints сюда, во второй аргумент!
-            videoConstraints: {
-                width: { min: 640, ideal: 1280, max: 1920 },
-                height: { min: 480, ideal: 720, max: 1080 },
-                facingMode: { ideal: "environment" }, // ideal, не exact
-                // Подсказываем браузеру, что нам нужна камера, которая умеет фокусироваться
-                advanced: [{
-                    focusMode: "continuous",
-                    // Для iOS 17+ можно добавить zoom, но для совместимости оставим ниже
-                }]
-            }
-        };
-
-        iosHtml5QrCode = new Html5Qrcode("ios-qr-reader");
-
-        // ВАЖНО: Первый аргумент - пустой объект!
-        iosHtml5QrCode.start(
-            { }, // НЕ передаем facingMode сюда! Оставляем пустым.
-            config,
-            onIOSScanSuccess,
-            onIOSScanError
-        ).then(() => {
-            console.log('iOS сканирование запущено успешно');
-            iosIsScanning = true;
-
-            document.getElementById('iosScannerLoader').style.display = 'none';
-            document.getElementById('iosNoCameraMessage').style.display = 'none';
-            hideIOSScannerStatus();
-
-            setTimeout(() => {
+        function initIOSBarcodeScanner() {
+            try {
                 if (iosHtml5QrCode && iosIsScanning) {
-                    try {
-                        // 1. Включаем постоянный автофокус
-                        iosHtml5QrCode.applyVideoConstraints({
-                            focusMode: "continuous"
-                        }).then(() => {
-                            console.log('Режим фокусировки установлен: continuous');
-                        }).catch(e => console.warn('Не удалось установить focusMode:', e));
-
-                        // 2. Для iPhone 11 и новее: увеличиваем масштаб (зум)
-                        //    Это компенсирует большую минимальную дистанцию фокуса!
-                        //    Значение 2.0 - 3.0 решает проблему "близко - не видит"
-                        const isNewIPhone = /iPhone 1[1-9]|iPhone 2[0-9]|iPhone 1[0-9] Pro/.test(navigator.userAgent);
-                        if (isNewIPhone) {
-                            setTimeout(() => {
-                                iosHtml5QrCode.applyVideoConstraints({
-                                    advanced: [{ zoom: 2.2 }] // Экспериментально: 2.2 отлично работает на 12 Pro Max
-                                }).then(() => {
-                                    console.log('Установлен zoom 2.2 для новой камеры');
-                                }).catch(e => console.warn('Зум не поддерживается:', e));
-                            }, 500); // Немного с задержкой после установки фокуса
-                        }
-
-                    } catch (e) {
-                        console.warn('Ошибка при настройке камеры:', e);
-                    }
+                    iosHtml5QrCode.stop().then(() => {
+                        iosHtml5QrCode.clear();
+                        iosHtml5QrCode = null;
+                    }).catch(() => {});
                 }
-            }, 1500); // Даем камере полностью инициализироваться
 
-        }).catch(err => {
-            console.error('Ошибка запуска iOS сканера:', err);
+                const config = {
+                    fps: 10,
+                    qrbox: { width: 250, height: 150 },
+                    rememberLastUsedCamera: true,
+                    supportedScanTypes: [Html5QrcodeScanType.SCAN_TYPE_CAMERA],
+                    videoConstraints: {
+                        facingMode: { ideal: "environment" }
+                    }
+                };
 
-            // --- ЗАПАСНОЙ ПЛАН: Пробуем без videoConstraints если не завелось ---
-            if (err.toString().includes('Overconstrained') || err.toString().includes('environment')) {
-                console.log('Запасной план: без сложных constraints');
-                showIOSScannerStatus('Настройка камеры...');
+                iosHtml5QrCode = new Html5Qrcode("ios-qr-reader");
 
                 iosHtml5QrCode.start(
                     { facingMode: "environment" },
-                    {
-                        fps: 10,
-                        qrbox: { width: 250, height: 150 },
-                        rememberLastUsedCamera: true
-                    },
+                    config,
                     onIOSScanSuccess,
                     onIOSScanError
                 ).then(() => {
                     iosIsScanning = true;
                     document.getElementById('iosScannerLoader').style.display = 'none';
+                    document.getElementById('iosNoCameraMessage').style.display = 'none';
                     hideIOSScannerStatus();
-                }).catch(err2 => {
-                    console.error('Запасной план тоже не сработал:', err2);
+                }).catch(err => {
+                    console.error('Ошибка запуска iOS сканера:', err);
                     showIOSNoCameraMessage();
                 });
-            } else {
+
+            } catch (error) {
+                console.error('Критическая ошибка:', error);
                 showIOSNoCameraMessage();
             }
-        });
+        }
 
-    } catch (error) {
-        console.error('Критическая ошибка инициализации iOS сканера:', error);
-        showIOSNoCameraMessage();
-    }
-}
-
-        function onIOSScanSuccess(decodedText, decodedResult) {
-            console.log('iOS сканирование успешно:', decodedText);
-            
-            if (iosLastScannedCode === decodedText) {
-                return;
-            }
-            
+        function onIOSScanSuccess(decodedText) {
+            if (iosLastScannedCode === decodedText) return;
             iosLastScannedCode = decodedText;
-
             
             if (iosHtml5QrCode && iosIsScanning) {
-                iosHtml5QrCode.stop().then(() => {
-                    iosIsScanning = false;
-                }).catch(() => {
-                    iosIsScanning = false;
-                });
+                iosHtml5QrCode.stop().then(() => iosIsScanning = false).catch(() => {});
             }
-				setTimeout(() => {           
+            
+            setTimeout(() => {           
                 closeIOSScanner();
                 
                 document.getElementById('modeBarcode').checked = true;
                 updateSearchUI();
                 
                 const cleanCode = decodedText.toString().trim();
-                searchInput.value = cleanCode;
+                document.getElementById('searchInput').value = cleanCode;
                 updateClearButton();
                 
                 const results = performSimpleSearch(cleanCode, 'barcode');
                 showScanResults(cleanCode, results);
                 
-                setTimeout(() => {
-                    iosLastScannedCode = '';
-                }, 3000);
-		}, 5);				
+                setTimeout(() => iosLastScannedCode = '', 3000);
+            }, 5);
         }
 
         function onIOSScanError(error) {
@@ -3006,266 +2635,33 @@ function initIOSBarcodeScanner() {
         }
 
         function closeIOSScanner() {
-            console.log('Закрытие iOS сканера...');
-            
             if (iosHtml5QrCode && iosIsScanning) {
                 iosHtml5QrCode.stop().then(() => {
-                    console.log('iOS сканирование остановлено');
                     iosHtml5QrCode.clear();
                     iosHtml5QrCode = null;
                     iosIsScanning = false;
-                }).catch(err => {
-                    console.log('Ошибка остановки iOS сканера:', err);
-                    iosHtml5QrCode = null;
-                    iosIsScanning = false;
-                });
+                }).catch(() => {});
             }
             
             document.getElementById('iosScannerModal').style.display = 'none';
             document.getElementById('iosNoCameraMessage').style.display = 'none';
             hideIOSScannerStatus();
-            
-            iosCurrentFacingMode = 'environment';
         }
 
         function showIOSScannerStatus(message) {
             const status = document.getElementById('iosScannerStatus');
-            status.textContent = message;
-            status.style.display = 'block';
+            if (status) {
+                status.textContent = message;
+                status.style.display = 'block';
+            }
         }
 
         function hideIOSScannerStatus() {
-            document.getElementById('iosScannerStatus').style.display = 'none';
+            const status = document.getElementById('iosScannerStatus');
+            if (status) status.style.display = 'none';
         }
 
-        function switchIOSCamera() {
-            if (!iosHtml5QrCode || !iosIsScanning) return;
-            
-            iosCurrentFacingMode = iosCurrentFacingMode === 'environment' ? 'user' : 'environment';
-            
-            showIOSScannerStatus('Переключение камеры...');
-            
-            iosHtml5QrCode.stop().then(() => {
-                iosHtml5QrCode.clear();
-                
-                const config = {
-                    fps: 10,
-                    qrbox: { width: 250, height: 150 },
-                    rememberLastUsedCamera: true,
-                    supportedScanTypes: [Html5QrcodeScanType.SCAN_TYPE_CAMERA]
-                };
-                
-                iosHtml5QrCode.start(
-                    { facingMode: iosCurrentFacingMode },
-                    config,
-                    onIOSScanSuccess,
-                    onIOSScanError
-                ).then(() => {
-                    hideIOSScannerStatus();
-                }).catch(err => {
-                    console.error('Ошибка переключения камеры:', err);
-                    showIOSScannerStatus('Ошибка переключения камеры');
-                });
-            }).catch(() => {});
-        }
-
-        // ===== ОБЩИЕ ФУНКЦИИ =====
-
-        function showScanResults(code, results) {
-            lastScannedCode = code;
-            
-            if (results.length === 0) {
-                resultCount.textContent = 'Товары не найдены';
-                resultCount.style.color = '#f44336';
-                resultProducts.innerHTML = '<div class="scan-result-card" style="text-align: center; color: #666; font-style: italic;">По этому штрихкоду товары не найдены в базе данных</div>';
-            } else {
-                const groupedResults = groupProductsByKey(results);
-                resultCount.textContent = `Найдено товаров: ${results.length} (${groupedResults.length} уникальных)`;
-                resultCount.style.color = '#4CAF50';
-                
-                resultProducts.innerHTML = '';
-                
-                groupedResults.forEach(product => {
-                    const productCard = document.createElement('div');
-                    productCard.className = 'scan-result-card';
-                    
-                    const hasImage = product.imageCode && product.imageCode.trim() !== '';
-                    
-                    // Используем соответствующую функцию для создания кнопки печати в зависимости от платформы
-                    let printButtonHTML;
-                    if (isIOS()) {
-                        printButtonHTML = `<button class="print-button" onclick="openPrintModalIOS(${JSON.stringify(product).replace(/"/g, '&quot;')})" title="Печать ценника (iOS)">&#129534;</button>`;
-                    } else {
-                        printButtonHTML = `<button class="print-button" onclick="openPrintModal(${JSON.stringify(product).replace(/"/g, '&quot;')})" title="Печать ценника">&#129534;</button>`;
-                    }
-
-                    productCard.innerHTML = `
-                        <div style="font-size: 12px; color: #666; margin-bottom: 5px;">
-                            <strong>Штрихкод:</strong> ${product.count > 1 ? `Несколько (${product.count})` : product.barcode}
-                        </div>
-                        <div style="font-weight: bold; color: #333; margin-bottom: 5px; display: flex; align-items: center; justify-content: space-between;">
-                            <div style="display: flex; align-items: center;" id="articleContainer_${product.article.replace(/[^a-zA-Z0-9]/g, '_')}">
-                                <strong>Артикул:</strong> ${product.article}
-                                ${hasImage ? '<button class="image-button" style="margin-left: 10px;">&#127750;</button>' : '<span class="no-image-text">(без изображения)</span>'}
-                            </div>
-                            ${printButtonHTML}
-                        </div>
-                        <div style="font-size: 16px; color: #222; margin-bottom: 8px;">
-                            ${product.name}
-                        </div>
-                        ${formatPriceWithDiscountModal(product)}
-                        ${formatStockInfoModal(product)}
-                    `;
-                    
-                    if (hasImage) {
-                        setTimeout(() => {
-                            const container = productCard.querySelector(`#articleContainer_${product.article.replace(/[^a-zA-Z0-9]/g, '_')}`);
-                            if (container) {
-                                const imageButton = container.querySelector('.image-button');
-                                if (imageButton) {
-                                    imageButton.onclick = function() {
-                                        showProductImage(product);
-                                    };
-                                }
-                            }
-                        }, 0);
-                    }
-                    
-                    resultProducts.appendChild(productCard);
-                });
-            }
-            
-            cameraModal.style.display = 'none';
-            document.getElementById('iosScannerModal').style.display = 'none';
-            resultModal.style.display = 'flex';
-        }
-
-        function formatStockInfoModal(product) {
-            const stocks = product.stocks;
-            const storageLocation = product.storageLocation;
-            const barcodes = product.barcodes;
-            const scannedCode = lastScannedCode;
-            
-            let html = '<div class="scan-result-stock">';
-            html += '<div style="font-weight: bold; color: #333; margin-bottom: 5px; font-size: 13px;">Остатки:</div>';
-            
-            html += `<div style="display: flex; justify-content: space-between; padding: 2px 0; font-size: 12px;">
-                <span style="color: #555;">ТОРГОВЫЙ ЗАЛ 10-11:</span>
-                <span style="color: ${stocks.warehouse1 < 0 ? '#f44336' : '#2e7d32'}; font-weight: bold;">${formatNumber(stocks.warehouse1)} шт.</span>
-            </div>`;
-            
-            html += `<div style="display: flex; justify-content: space-between; padding: 2px 0; font-size: 12px;">
-                <span style="color: #555;">СКЛАД кожгалантереи:</span>
-                <span style="color: ${stocks.warehouse2 < 0 ? '#f44336' : '#2e7d32'}; font-weight: bold;">${formatNumber(stocks.warehouse2)} шт.</span>
-            </div>`;
-            
-            html += '</div>';
-            
-            if (barcodes && barcodes.length > 1) {
-                html += createBarcodesListHTML(barcodes, scannedCode);
-            }
-            
-            if (storageLocation && storageLocation.trim() !== '') {
-                html += `<div class="scan-result-storage">
-                    <div style="font-weight: bold; color: #856404; margin-bottom: 3px; font-size: 12px;">Место хранения:</div>
-                    <div style="color: #333; font-weight: bold; font-size: 13px;">${storageLocation}</div>
-                </div>`;
-            }
-            
-            return html;
-        }
-
-        function createMultipleBarcodesHTML(barcodes, query) {
-            const uniqueBarcodes = [...new Set(barcodes)];
-            const barcodesCount = uniqueBarcodes.length;
-            
-            let html = `<span class="multiple-barcodes" onclick="showBarcodeTooltip(event, this)">Несколько (${barcodesCount})</span>`;
-            html += `<div class="barcode-tooltip">`;
-            html += `<div class="barcode-list">`;
-            
-            uniqueBarcodes.forEach(barcode => {
-                const highlightedBarcode = highlightMatch(barcode, query);
-                html += `<div class="barcode-item">${highlightedBarcode}</div>`;
-            });
-            
-            html += `</div>`;
-            html += `</div>`;
-            
-            return html;
-        }
-
-        function createBarcodesListHTML(barcodes, scannedCode) {
-            const uniqueBarcodes = [...new Set(barcodes)];
-            const barcodesCount = uniqueBarcodes.length;
-            
-            let html = `<div class="scan-result-barcodes" onclick="toggleBarcodesList(this)">`;
-            html += `<div class="scan-result-barcodes-title">`;
-            html += `<span>Штрихкоды (${barcodesCount}):</span>`;
-            html += `<span style="font-size: 10px; color: #666;">нажмите для просмотра</span>`;
-            html += `</div>`;
-            html += `<div class="scan-result-barcodes-list">`;
-            
-            uniqueBarcodes.forEach(barcode => {
-                const isScanned = barcode === scannedCode;
-                const barcodeClass = isScanned ? 'style="color: #e74c3c; font-weight: bold;"' : '';
-                html += `<div class="scan-result-barcode-item" ${barcodeClass}>${barcode}${isScanned ? ' ?' : ''}</div>`;
-            });
-            
-            html += `</div>`;
-            html += `</div>`;
-            
-            return html;
-        }
-
-        function showBarcodeTooltip(event, element) {
-            event.stopPropagation();
-            
-            document.querySelectorAll('.barcode-tooltip').forEach(tooltip => {
-                tooltip.style.display = 'none';
-            });
-            
-            const tooltip = element.nextElementSibling;
-            if (tooltip && tooltip.classList.contains('barcode-tooltip')) {
-                tooltip.style.display = 'block';
-                
-                const rect = element.getBoundingClientRect();
-                tooltip.style.position = 'fixed';
-                tooltip.style.left = Math.min(rect.left, window.innerWidth - 320) + 'px';
-                tooltip.style.top = (rect.bottom + 5) + 'px';
-                
-                const closeTooltip = (e) => {
-                    if (!tooltip.contains(e.target) && e.target !== element) {
-                        tooltip.style.display = 'none';
-                        document.removeEventListener('click', closeTooltip);
-                    }
-                };
-                
-                setTimeout(() => {
-                    document.addEventListener('click', closeTooltip);
-                }, 100);
-            }
-        }
-
-        function toggleBarcodesList(element) {
-            const list = element.querySelector('.scan-result-barcodes-list');
-            list.classList.toggle('expanded');
-            
-            const title = element.querySelector('.scan-result-barcodes-title span:last-child');
-            if (list.classList.contains('expanded')) {
-                title.textContent = 'нажмите для скрытия';
-            } else {
-                title.textContent = 'нажмите для просмотра';
-            }
-        }
-
-        function highlightMatch(text, searchTerm) {
-            if (!searchTerm || !text) return text;
-            const regex = new RegExp(`(${searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
-            return text.toString().replace(regex, '<mark>$1</mark>');
-        }
-
-        // ===== ОСТАЛЬНЫЕ ФУНКЦИИ =====
-
+        // ===== ФУНКЦИИ ПОИСКА =====
         function getCurrentSearchMode() {
             const selectedRadio = document.querySelector('input[name="searchMode"]:checked');
             return selectedRadio ? selectedRadio.value : 'article';
@@ -3289,23 +2685,17 @@ function initIOSBarcodeScanner() {
                 
                 if (articlePart && articlePart.trim() !== '') {
                     totalConditions++;
-                    if (product.article.toLowerCase().includes(articlePart.toLowerCase())) {
-                        matches++;
-                    }
+                    if (product.article.toLowerCase().includes(articlePart.toLowerCase())) matches++;
                 }
                 
                 if (namePart && namePart.trim() !== '') {
                     totalConditions++;
-                    if (product.name.toLowerCase().includes(namePart.toLowerCase())) {
-                        matches++;
-                    }
+                    if (product.name.toLowerCase().includes(namePart.toLowerCase())) matches++;
                 }
                 
                 if (barcodePart && barcodePart.trim() !== '') {
                     totalConditions++;
-                    if (product.barcode.includes(barcodePart)) {
-                        matches++;
-                    }
+                    if (product.barcode.includes(barcodePart)) matches++;
                 }
                 
                 return totalConditions > 0 && matches === totalConditions;
@@ -3318,13 +2708,10 @@ function initIOSBarcodeScanner() {
                 switch(mode) {
                     case 'article':
                         return product.article.toLowerCase().includes(searchTerm.toLowerCase());
-                    
                     case 'barcode':
                         return product.barcode.includes(searchTerm);
-                    
                     case 'name':
                         return product.name.toLowerCase().includes(searchTerm.toLowerCase());
-                    
                     default:
                         return product.article.toLowerCase().includes(searchTerm.toLowerCase());
                 }
@@ -3335,91 +2722,7 @@ function initIOSBarcodeScanner() {
             const productCard = document.createElement('div');
             productCard.className = 'product-card';
             
-            let highlightedName = product.name;
-            let highlightedArticle = product.article;
-            let highlightedBarcode = '';
-            
-            if (searchMode === 'комбинированный') {
-                if (query.article) {
-                    highlightedArticle = highlightMatch(product.article, query.article);
-                }
-                if (query.name) {
-                    highlightedName = highlightMatch(product.name, query.name);
-                }
-                if (query.barcode) {
-                    if (product.count > 1) {
-                        highlightedBarcode = createMultipleBarcodesHTML(product.barcodes, query.barcode);
-                    } else {
-                        highlightedBarcode = highlightMatch(product.barcode, query.barcode);
-                    }
-                }
-            } else {
-                if (searchMode === 'по артикулу' || searchMode === 'комбинированный') {
-                    highlightedArticle = highlightMatch(product.article, query);
-                }
-                if (searchMode === 'по наименованию' || searchMode === 'комбинированный') {
-                    highlightedName = highlightMatch(product.name, query);
-                }
-                if (searchMode === 'по штрихкоду') {
-                    if (product.count > 1) {
-                        highlightedBarcode = createMultipleBarcodesHTML(product.barcodes, query);
-                    } else {
-                        highlightedBarcode = highlightMatch(product.barcode, query);
-                    }
-                }
-            }
-            
-            if (!highlightedBarcode) {
-                if (product.count > 1) {
-                    highlightedBarcode = createMultipleBarcodesHTML(product.barcodes, '');
-                } else {
-                    highlightedBarcode = product.barcode;
-                }
-            }
-            
-            const container = document.createElement('div');
-            
-            const articleRow = document.createElement('div');
-            articleRow.className = 'article';
-            articleRow.innerHTML = `Артикул: ${highlightedArticle}`;
-            
             const hasImage = product.imageCode && product.imageCode.trim() !== '';
-            
-            if (hasImage) {
-                const imageButton = document.createElement('button');
-                imageButton.className = 'image-button';
-                imageButton.title = 'Показать изображение товара';
-                imageButton.innerHTML = '&#127750;';
-                imageButton.onclick = function() {
-                    showProductImage(product);
-                };
-                articleRow.appendChild(imageButton);
-            } else {
-                const noImageSpan = document.createElement('span');
-                noImageSpan.className = 'no-image-text';
-                noImageSpan.textContent = '(без изображения)';
-                articleRow.appendChild(noImageSpan);
-            }
-            
-            // Используем соответствующую функцию для создания кнопки печати в зависимости от платформы
-            let printButton;
-            if (isIOS()) {
-                printButton = document.createElement('button');
-                printButton.className = 'print-button';
-                printButton.title = 'Печать ценника (iOS)';
-                printButton.innerHTML = '&#129534;';
-                printButton.onclick = function() {
-                    openPrintModalIOS(product);
-                };
-            } else {
-                printButton = document.createElement('button');
-                printButton.className = 'print-button';
-                printButton.title = 'Печать ценника';
-                printButton.innerHTML = '&#129534;';
-                printButton.onclick = function() {
-                    openPrintModal(product);
-                };
-            }
             
             const articleContainer = document.createElement('div');
             articleContainer.style.display = 'flex';
@@ -3427,128 +2730,271 @@ function initIOSBarcodeScanner() {
             articleContainer.style.alignItems = 'center';
             articleContainer.style.marginBottom = '5px';
             
-            articleContainer.appendChild(articleRow);
-            articleContainer.appendChild(printButton);
+            const articleRow = document.createElement('div');
+            articleRow.className = 'article';
+            articleRow.innerHTML = `Артикул: ${product.article}`;
             
+            if (hasImage) {
+                const imageBtn = document.createElement('button');
+                imageBtn.className = 'image-button';
+                imageBtn.innerHTML = '🖼️';
+                imageBtn.onclick = () => showProductImage(product);
+                articleRow.appendChild(imageBtn);
+            }
+            
+            const printBtn = document.createElement('button');
+            printBtn.className = 'print-button';
+            printBtn.innerHTML = '🖨️';
+            
+            if (isIOS()) {
+                printBtn.onclick = () => openPrintModalIOS(product);
+                printBtn.title = 'Печать ценника (iOS)';
+            } else {
+                printBtn.onclick = () => openPrintModal(product);
+                printBtn.title = 'Печать ценника';
+            }
+            
+            articleContainer.appendChild(articleRow);
+            articleContainer.appendChild(printBtn);
+            
+            const container = document.createElement('div');
             container.innerHTML = `
-                <div class="product-field barcode">Штрихкод: ${highlightedBarcode}</div>
-                <div class="product-field name">${highlightedName}</div>
+                <div class="product-field barcode">Штрихкод: ${product.barcode}</div>
+                <div class="product-field name">${product.name}</div>
                 ${formatPriceWithDiscount(product)}
             `;
             
             container.insertBefore(articleContainer, container.firstChild);
+            productCard.appendChild(container);
+            productCard.appendChild(createStockInfo(product));
             
-            const stockInfo = document.createElement('div');
-            stockInfo.innerHTML = `
+            return productCard;
+        }
+
+        function createStockInfo(product) {
+            const div = document.createElement('div');
+            div.innerHTML = `
                 <div class="stock-info">
                     <div class="stock-title">Остатки:</div>
                     <div class="stock-item">
-                        <span class="stock-name">ТОРГОВЫЙ ЗАЛ 10-11:</span>
+                        <span class="stock-name">ТОРГОВЫЙ ЗАЛ:</span>
                         <span class="stock-quantity ${product.stocks.warehouse1 < 0 ? 'negative' : 'positive'}">
                             ${formatNumber(product.stocks.warehouse1)} шт.
                         </span>
                     </div>
                     <div class="stock-item">
-                        <span class="stock-name">СКЛАД кожгалантереи:</span>
+                        <span class="stock-name">СКЛАД:</span>
                         <span class="stock-quantity ${product.stocks.warehouse2 < 0 ? 'negative' : 'positive'}">
                             ${formatNumber(product.stocks.warehouse2)} шт.
                         </span>
                     </div>
                 </div>
-            `;
-            
-            if (product.storageLocation && product.storageLocation.trim() !== '') {
-                stockInfo.innerHTML += `
+                ${product.storageLocation ? `
                     <div class="storage-location">
                         <div class="storage-title">Место хранения:</div>
                         <div class="storage-value">${product.storageLocation}</div>
                     </div>
+                ` : ''}
+            `;
+            return div;
+        }
+
+        function formatPriceWithDiscount(product) {
+            const hasDiscount = product.discountPercent && product.discountPercent.trim() !== '';
+            
+            let html = '<div class="price-container">';
+            
+            if (hasDiscount) {
+                html += `
+                    <div class="price-line">
+                        <span class="price-label">Оптовая:</span>
+                        <span class="discount-price">${product.discountPriceOpt || product.wholesalePrice} руб.</span>
+                    </div>
+                    <div class="old-price-container">
+                        <span class="original-price">${product.wholesalePrice} руб.</span>
+                        <span class="discount-percent">-${product.discountPercent}%</span>
+                    </div>
+                    <div class="price-line">
+                        <span class="price-label">Розничная:</span>
+                        <span class="discount-price">${product.discountPriceRetail || product.retailPrice} руб.</span>
+                    </div>
+                    <div class="old-price-container">
+                        <span class="original-price">${product.retailPrice} руб.</span>
+                        <span class="discount-percent">-${product.discountPercent}%</span>
+                    </div>
+                `;
+            } else {
+                html += `
+                    <div class="price-line">
+                        <span class="price-label">Оптовая:</span>
+                        <span class="price-value">${product.wholesalePrice} руб.</span>
+                    </div>
+                    <div class="price-line">
+                        <span class="price-label">Розничная:</span>
+                        <span class="price-value">${product.retailPrice} руб.</span>
+                    </div>
                 `;
             }
             
-            productCard.appendChild(container);
-            productCard.appendChild(stockInfo);
+            if (SHOW_WHOLESALE_PLUS) {
+                html += `
+                    <div class="price-line">
+                        <span class="price-label">Оптовая+:</span>
+                        <span class="price-value">${product.wholesalePlusPrice} руб.</span>
+                    </div>
+                `;
+            }
             
-            return productCard;
+            html += '</div>';
+            return html;
         }
 
-        function scrollToResults() {
-            const resultsContainer = document.getElementById('resultsContainer');
-            if (resultsContainer.style.display === 'block') {
-                setTimeout(() => {
-                    resultsContainer.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }, 100);
+        function formatPriceWithDiscountModal(product) {
+            return formatPriceWithDiscount(product);
+        }
+
+        function formatStockInfoModal(product) {
+            const stocks = product.stocks;
+            const storageLocation = product.storageLocation;
+            
+            let html = '<div class="scan-result-stock">';
+            html += '<div style="font-weight: bold; margin-bottom: 5px;">Остатки:</div>';
+            
+            html += `<div style="display: flex; justify-content: space-between; padding: 2px 0;">
+                <span>ТОРГОВЫЙ ЗАЛ:</span>
+                <span style="color: ${stocks.warehouse1 < 0 ? '#f44336' : '#2e7d32'}; font-weight: bold;">
+                    ${formatNumber(stocks.warehouse1)} шт.
+                </span>
+            </div>`;
+            
+            html += `<div style="display: flex; justify-content: space-between; padding: 2px 0;">
+                <span>СКЛАД:</span>
+                <span style="color: ${stocks.warehouse2 < 0 ? '#f44336' : '#2e7d32'}; font-weight: bold;">
+                    ${formatNumber(stocks.warehouse2)} шт.
+                </span>
+            </div>`;
+            
+            html += '</div>';
+            
+            if (storageLocation && storageLocation.trim() !== '') {
+                html += `<div class="scan-result-storage">
+                    <div style="font-weight: bold; color: #856404;">Место хранения:</div>
+                    <div style="font-weight: bold;">${storageLocation}</div>
+                </div>`;
             }
+            
+            return html;
+        }
+
+        function showScanResults(code, results) {
+            lastScannedCode = code;
+            
+            const resultCount = document.getElementById('resultCount');
+            const resultProducts = document.getElementById('resultProducts');
+            
+            if (results.length === 0) {
+                resultCount.textContent = 'Товары не найдены';
+                resultCount.style.color = '#f44336';
+                resultProducts.innerHTML = '<div class="scan-result-card" style="text-align: center; color: #666;">По этому штрихкоду товары не найдены</div>';
+            } else {
+                const groupedResults = groupProductsByKey(results);
+                resultCount.textContent = `Найдено товаров: ${results.length} (${groupedResults.length} уникальных)`;
+                resultCount.style.color = '#4CAF50';
+                
+                resultProducts.innerHTML = '';
+                
+                groupedResults.forEach(product => {
+                    const card = document.createElement('div');
+                    card.className = 'scan-result-card';
+                    
+                    const hasImage = product.imageCode && product.imageCode.trim() !== '';
+                    let printBtnHTML;
+                    
+                    if (isIOS()) {
+                        printBtnHTML = `<button class="print-button" onclick="openPrintModalIOS(${JSON.stringify(product).replace(/"/g, '&quot;')})" title="Печать ценника (iOS)">🖨️</button>`;
+                    } else {
+                        printBtnHTML = `<button class="print-button" onclick="openPrintModal(${JSON.stringify(product).replace(/"/g, '&quot;')})" title="Печать ценника">🖨️</button>`;
+                    }
+
+                    card.innerHTML = `
+                        <div style="font-size: 12px; color: #666; margin-bottom: 5px;">
+                            <strong>Штрихкод:</strong> ${product.count > 1 ? `Несколько (${product.count})` : product.barcode}
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+                            <div>
+                                <strong>Артикул:</strong> ${product.article}
+                                ${hasImage ? '<button class="image-button" style="margin-left: 10px;" onclick="showProductImage(' + JSON.stringify(product).replace(/"/g, '&quot;') + ')">🖼️</button>' : ''}
+                            </div>
+                            ${printBtnHTML}
+                        </div>
+                        <div style="font-size: 16px; margin-bottom: 8px;">${product.name}</div>
+                        ${formatPriceWithDiscountModal(product)}
+                        ${formatStockInfoModal(product)}
+                    `;
+                    
+                    resultProducts.appendChild(card);
+                });
+            }
+            
+            document.getElementById('cameraModal').style.display = 'none';
+            document.getElementById('iosScannerModal').style.display = 'none';
+            document.getElementById('resultModal').style.display = 'flex';
         }
 
         function displayResults(results, query, searchMode) {
-            const resultsContainer = document.getElementById('resultsContainer');
-            resultsContainer.innerHTML = '';
+            const container = document.getElementById('resultsContainer');
+            container.innerHTML = '';
 
             if (results.length === 0) {
-                resultsContainer.innerHTML = '<div class="no-results">Товары не найдены</div>';
-                resultsContainer.style.display = 'block';
-                scrollToResults();
+                container.innerHTML = '<div class="no-results">Товары не найдены</div>';
+                container.style.display = 'block';
                 return;
             }
 
             const groupedResults = groupProductsByKey(results);
-            const totalCount = results.length;
-            const uniqueCount = groupedResults.length;
+            
+            const countEl = document.createElement('div');
+            countEl.className = 'results-count';
+            countEl.textContent = `Найдено товаров: ${results.length} (${groupedResults.length} уникальных)`;
+            container.appendChild(countEl);
 
-            const countElement = document.createElement('div');
-            countElement.className = 'results-count';
-            countElement.textContent = `Найдено товаров: ${totalCount} (${uniqueCount} уникальных)`;
-            resultsContainer.appendChild(countElement);
-
-            const modeElement = document.createElement('div');
-            modeElement.className = 'search-mode';
-            modeElement.textContent = `Режим поиска: ${searchMode}`;
-            resultsContainer.appendChild(modeElement);
+            const modeEl = document.createElement('div');
+            modeEl.className = 'search-mode';
+            modeEl.textContent = `Режим поиска: ${searchMode}`;
+            container.appendChild(modeEl);
 
             groupedResults.forEach(product => {
-                const productCard = createProductCard(product, query, searchMode);
-                resultsContainer.appendChild(productCard);
+                container.appendChild(createProductCard(product, query, searchMode));
             });
 
-            resultsContainer.style.display = 'block';
-            scrollToResults();
+            container.style.display = 'block';
         }
 
         function searchProducts() {
-            const searchMode = getCurrentSearchMode();
+            const mode = getCurrentSearchMode();
             
-            let results = [];
-            let query = '';
-            let displaySearchMode = getSearchModeDisplayName(searchMode);
-
-            if (searchMode === 'combined') {
-                const articlePart = articleInput.value.trim();
-                const namePart = nameInput.value.trim();
-                const barcodePart = barcodeInput.value.trim();
+            if (mode === 'combined') {
+                const articlePart = document.getElementById('articleInput').value.trim();
+                const namePart = document.getElementById('nameInput').value.trim();
+                const barcodePart = document.getElementById('barcodeInput').value.trim();
                 
-                query = {
-                    article: articlePart,
-                    name: namePart,
-                    barcode: barcodePart
-                };
-                
-                results = performCombinedSearch(articlePart, namePart, barcodePart);
-            } else {
-                query = searchInput.value.trim();
-                
-                if (!query) {
-                    resultsContainer.style.display = 'none';
+                if (!articlePart && !namePart && !barcodePart) {
+                    document.getElementById('resultsContainer').style.display = 'none';
                     return;
                 }
                 
-                results = performSimpleSearch(query, searchMode);
+                const results = performCombinedSearch(articlePart, namePart, barcodePart);
+                displayResults(results, { article: articlePart, name: namePart, barcode: barcodePart }, 'комбинированный');
+            } else {
+                const query = document.getElementById('searchInput').value.trim();
+                if (!query) {
+                    document.getElementById('resultsContainer').style.display = 'none';
+                    return;
+                }
+                
+                const results = performSimpleSearch(query, mode);
+                displayResults(results, query, getSearchModeDisplayName(mode));
             }
-
-            displayResults(results, query, displaySearchMode);
         }
 
         function updateClearButton() {
@@ -3556,394 +3002,305 @@ function initIOSBarcodeScanner() {
             let hasText = false;
             
             if (mode === 'combined') {
-                hasText = articleInput.value.trim() !== '' || 
-                          nameInput.value.trim() !== '' || 
-                          barcodeInput.value.trim() !== '';
+                hasText = document.getElementById('articleInput').value.trim() !== '' || 
+                          document.getElementById('nameInput').value.trim() !== '' || 
+                          document.getElementById('barcodeInput').value.trim() !== '';
             } else {
-                hasText = searchInput.value.trim() !== '';
+                hasText = document.getElementById('searchInput').value.trim() !== '';
             }
             
-            if (hasText) {
-                clearSearchBtn.style.display = 'block';
-            } else {
-                clearSearchBtn.style.display = 'none';
-            }
+            document.getElementById('clearSearchBtn').style.display = hasText ? 'block' : 'none';
         }
 
         function clearSearchFields() {
             const mode = getCurrentSearchMode();
             
             if (mode === 'combined') {
-                articleInput.value = '';
-                nameInput.value = '';
-                barcodeInput.value = '';
+                document.getElementById('articleInput').value = '';
+                document.getElementById('nameInput').value = '';
+                document.getElementById('barcodeInput').value = '';
             } else {
-                searchInput.value = '';
-                searchInput.focus();
+                document.getElementById('searchInput').value = '';
+                document.getElementById('searchInput').focus();
             }
             
             updateClearButton();
-            resultsContainer.style.display = 'none';
+            document.getElementById('resultsContainer').style.display = 'none';
         }
 
         function showProductImage(product) {
             const modal = document.createElement('div');
             modal.className = 'modal-overlay';
-            modal.id = 'imageModal';
             modal.style.display = 'flex';
             
-            let imageCode = product.imageCode || '';
-            let alternativeImageCode = product.alternativeImageCode || '';
-            
             let imageUrl = '';
-            
-            if (imageCode) {
-                const cleanCode = imageCode.trim();
-                let fileName = cleanCode;
-                if (!fileName.includes('.jpg') && !fileName.includes('.jpeg') && 
-                    !fileName.includes('.png') && !fileName.includes('.gif')) {
-                    fileName += '.jpg';
-                }
+            if (product.imageCode) {
+                let fileName = product.imageCode.trim();
+                if (!fileName.includes('.')) fileName += '.jpg';
                 imageUrl = `https://pk.kubanstar.ru/images/virtuemart/product/${fileName}`;
             }
             
             modal.innerHTML = `
                 <div class="modal-frame" style="max-width: 90%; max-height: 90%;">
-                    <div style="text-align: center; padding: 20px;">
+                    <div style="text-align: center;">
                         <h3 style="margin-bottom: 20px;">${product.article} - ${product.name}</h3>
-                        <div style="max-height: 70vh; overflow: auto; margin: 20px 0;" id="imageContainer">
-                            <img id="productImage" 
-                                 src="${imageUrl || 'data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text x=%2250%25%22 y=%2250%25%22 font-size=%2250%22 text-anchor=%22middle%22 dy=%22.3em%22>&#128247;</text></svg>'}" 
-                                 style="max-width: 100%; max-height: 60vh; border-radius: 8px; display: block; margin: 0 auto;"
-                                 onerror="handleImageError(this, '${alternativeImageCode.replace(/'/g, "\\'")}')"
-                                 alt="Изображение товара">
-                            <div id="imageError" style="display: none; padding: 40px; color: #999;">
-                                <div style="font-size: 48px; margin-bottom: 20px;">&#128247;</div>
-                                <div style="font-size: 18px; font-weight: bold; color: #666;">Изображение не найдено</div>
-                                <div style="font-size: 12px; margin-top: 10px; color: #999;">Пробуем альтернативный код...</div>
-                            </div>
+                        <div style="max-height: 70vh; overflow: auto;">
+                            <img src="${imageUrl || 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg"><text x="50%" y="50%" font-size="50">🖼️</text></svg>'}" 
+                                 style="max-width: 100%; max-height: 60vh; border-radius: 8px;"
+                                 onerror="this.src='data:image/svg+xml,<svg xmlns=\'http://www.w3.org/2000/svg\'><text x=\'50%\' y=\'50%\' font-size=\'50\'>❌</text></svg>'">
                         </div>
-                        <div style="margin-top: 15px; text-align: center;">
-                            <button onclick="this.closest('.modal-overlay').style.display='none'" 
-                                    class="camera-btn" 
-                                    style="background-color: #f44336; min-width: 200px;">
-                                Закрыть
-                            </button>
-                        </div>
+                        <button onclick="this.closest('.modal-overlay').remove()" 
+                                class="camera-btn" 
+                                style="background-color: #f44336; margin-top: 20px;">
+                            Закрыть
+                        </button>
                     </div>
                 </div>
             `;
             
-            const oldModal = document.getElementById('imageModal');
-            if (oldModal) {
-                oldModal.remove();
+            document.body.appendChild(modal);
+        }
+
+        function getFileDatesData() {
+            let displayDate = "Дата не указана";
+            if (DATA_UPDATE_DATE) {
+                displayDate = DATA_UPDATE_DATE.split(" ")[0] || DATA_UPDATE_DATE;
             }
             
-            document.body.appendChild(modal);
-            
-            modal.onclick = function(e) {
-                if (e.target === modal) {
-                    modal.style.display = 'none';
-                }
+            return {
+                currentDate: displayDate,
+                files: [{
+                    location: "Обмен",
+                    items: [
+                        { label: "СКЛАД", lastModified: URAL_OFFICE_DATE || "Дата не указана" },
+                        { label: "Торговый зал", lastModified: URAL_DATE || "Дата не указана" }
+                    ]
+                }]
             };
         }
 
-        function handleImageError(imgElement, alternativeImageCode) {
-            const errorDiv = document.getElementById('imageError');
+        function openDatesModal() {
+            const data = getFileDatesData();
+            const modal = document.getElementById('datesModal');
+            const content = document.getElementById('datesContent');
             
-            if (alternativeImageCode && alternativeImageCode.trim() !== '') {
-                const cleanCode = alternativeImageCode.trim();
-                let fileName = cleanCode;
-                if (!fileName.includes('.jpg') && !fileName.includes('.jpeg') && 
-                    !fileName.includes('.png') && !fileName.includes('.gif')) {
-                    fileName += '.jpg';
-                }
-                const alternativeUrl = `https://pk.kubanstar.ru/images/virtuemart/product/${fileName}`;
-                
-                if (errorDiv) {
-                    errorDiv.style.display = 'block';
-                    errorDiv.innerHTML = `
-                        <div style="font-size: 48px; margin-bottom: 20px;">&#128260;</div>
-                        <div style="font-size: 18px; font-weight: bold; color: #666;">Загружаем альтернативное изображение...</div>
-                        <div style="font-size: 12px; margin-top: 10px; color: #999;">Код: ${alternativeImageCode}</div>
-                    `;
-                }
-                
-                const newImg = new Image();
-                newImg.onload = function() {
-                    imgElement.src = alternativeUrl;
-                    imgElement.style.display = 'block';
-                    if (errorDiv) errorDiv.style.display = 'none';
-                };
-                newImg.onerror = function() {
-                    if (errorDiv) {
-                        errorDiv.style.display = 'block';
-                        errorDiv.innerHTML = `
-                            <div style="font-size: 48px; margin-bottom: 20px;">&#10060;</div>
-                            <div style="font-size: 18px; font-weight: bold; color: #666;">Изображение не найдено</div>
-                            <div style="font-size: 12px; margin-top: 10px; color: #999;">
-                                Основной код: ${imgElement.src.includes('pk.kubanstar.ru') ? imgElement.src.split('/').pop() : 'не указан'}<br>
-                                Альтернативный код: ${alternativeImageCode || 'не указан'}
-                            </div>
-                        `;
-                    }
-                    imgElement.style.display = 'none';
-                };
-                newImg.src = alternativeUrl;
-            } else {
-                if (errorDiv) {
-                    errorDiv.style.display = 'block';
-                    errorDiv.innerHTML = `
-                        <div style="font-size: 48px; margin-bottom: 20px;">&#10060;</div>
-                        <div style="font-size: 18px; font-weight: bold; color: #666;">Изображение не найдено</div>
-                        <div style="font-size: 12px; margin-top: 10px; color: #999;">
-                            Код изображения: ${imgElement.src.includes('pk.kubanstar.ru') ? imgElement.src.split('/').pop() : 'не указан'}
-                        </div>
-                    `;
-                }
-                imgElement.style.display = 'none';
+            document.getElementById('modalCurrentDate').textContent = `Дата обновления: ${data.currentDate}`;
+            
+            let updateTime = "00:00";
+            if (DATA_UPDATE_DATE && DATA_UPDATE_DATE.includes(" ")) {
+                const timeMatch = DATA_UPDATE_DATE.match(/\s(\d{2}:\d{2})$/);
+                if (timeMatch) updateTime = timeMatch[1];
             }
-        }
-
-     
-        function initScrollToTopButton() {
-            const scrollToTopBtn = document.getElementById('scrollToTopBtn');
+            document.getElementById('dataUpdateContainer').textContent = `Данные на : ${updateTime}`;
             
-            window.addEventListener('scroll', function() {
-                if (window.pageYOffset > 300) {
-                    scrollToTopBtn.classList.add('show');
-                } else {
-                    scrollToTopBtn.classList.remove('show');
-                }
-            });
-            
-            scrollToTopBtn.addEventListener('click', function() {
-                window.scrollTo({
-                    top: 0,
-                    behavior: 'smooth'
+            let html = '';
+            data.files.forEach(section => {
+                html += `<div class="date-section"><div class="date-section-title">${section.location}:</div>`;
+                section.items.forEach(item => {
+                    html += `<div class="date-item">
+                        <div class="date-item-row">
+                            <div class="date-item-label">${item.label}:</div>
+                            <div class="date-item-time">${item.lastModified}</div>
+                        </div>
+                    </div>`;
                 });
+                html += '</div>';
             });
+            
+            content.innerHTML = html;
+            modal.style.display = 'flex';
         }
 
-        // ===== ИНИЦИАЛИЗАЦИЯ =====
-        
-        const searchInput = document.getElementById('searchInput');
-        const clearSearchBtn = document.getElementById('clearSearchBtn');
-        const searchButton = document.getElementById('searchButton');
-        const scanButtonAndroid = document.getElementById('scanButtonAndroid');
-        const scanButtonIOS = document.getElementById('scanButtonIOS');
-        const resultsContainer = document.getElementById('resultsContainer');
-        const searchModeRadios = document.querySelectorAll('input[name="searchMode"]');
-        const combinedSearchFields = document.getElementById('combinedSearchFields');
-        const articleInput = document.getElementById('articleInput');
-        const nameInput = document.getElementById('nameInput');
-        const barcodeInput = document.getElementById('barcodeInput');
-        
-        const cameraModal = document.getElementById('cameraModal');
-        const resultModal = document.getElementById('resultModal');
-        const printModal = document.getElementById('printModal');
-        const printModalIOS = document.getElementById('printModalIOS');
-        const datesModal = document.getElementById('datesModal');		
-        const closeCameraModal = document.getElementById('closeCameraModal');
-        const closePrintModalBtn = document.getElementById('closePrintModal');
-        const closePrintModalIOSBtn = document.getElementById('closePrintModalIOS');
-        const closeDatesModalBtn = document.getElementById('closeDatesModal');
-        
-        const cameraVideo = document.getElementById('cameraVideo');
-        const stopCameraBtn = document.getElementById('stopCamera');
-        
-        const resultCount = document.getElementById('resultCount');
-        const resultProducts = document.getElementById('resultProducts');
-        const continueScanBtn = document.getElementById('continueScanBtn');
-        const closeResultBtn = document.getElementById('closeResultBtn');
-
-        const printActionBtn = document.getElementById('printActionBtn');
-        const printActionBtnIOS = document.getElementById('printActionBtnIOS');
-        const scanPrintersBtnIOS = document.getElementById('scanPrintersBtnIOS');
-
-        // Элементы iOS сканера
-        const closeIOSScannerBtn = document.getElementById('closeIOSScanner');
-        const switchIOSCameraBtn = document.getElementById('switchIOSCamera');
+        function closeDatesModal() {
+            document.getElementById('datesModal').style.display = 'none';
+        }
 
         function updateSearchUI() {
             const mode = getCurrentSearchMode();
+            const combinedFields = document.getElementById('combinedSearchFields');
+            const searchInput = document.getElementById('searchInput');
             
             if (mode === 'combined') {
-                combinedSearchFields.style.display = 'flex';
+                combinedFields.style.display = 'flex';
                 searchInput.style.display = 'none';
             } else {
-                combinedSearchFields.style.display = 'none';
+                combinedFields.style.display = 'none';
                 searchInput.style.display = 'block';
             }
             
             updateClearButton();
         }
 
-        // ===== ОБРАБОТЧИКИ СОБЫТИЙ =====
-
-        searchButton.addEventListener('click', searchProducts);
-
-        clearSearchBtn.addEventListener('click', clearSearchFields);
-
-        searchInput.addEventListener('input', updateClearButton);
-        articleInput.addEventListener('input', updateClearButton);
-        nameInput.addEventListener('input', updateClearButton);
-        barcodeInput.addEventListener('input', updateClearButton);
-
-        searchInput.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter') searchProducts();
-        });
-
-        articleInput.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter') searchProducts();
-        });
-
-        nameInput.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter') searchProducts();
-        });
-
-        barcodeInput.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter') searchProducts();
-        });
-
-        scanButtonAndroid.addEventListener('click', openCamera);
-        scanButtonIOS.addEventListener('click', openIOSScanner);
-
-        closeCameraModal.addEventListener('click', function() {
-            stopCameraStream();
-            cameraModal.style.display = 'none';
-        });
-
-        cameraModal.addEventListener('click', function(e) {
-            if (e.target === cameraModal) {
-                stopCameraStream();
-                cameraModal.style.display = 'none';
-            }
-        });
-
-        stopCameraBtn.addEventListener('click', function() {
-            stopCameraStream();
-            cameraModal.style.display = 'none';
-        });
-
-        continueScanBtn.addEventListener('click', function() {
-            resultModal.style.display = 'none';
-            setTimeout(() => {
-                if (isIOS()) {
-                    openIOSScanner();
-                } else {
-                    openCamera();
-                }
-            }, 300);
-        });
-
-        closeResultBtn.addEventListener('click', function() {
-            resultModal.style.display = 'none';
-        });
-
-        resultModal.addEventListener('click', function(e) {
-            if (e.target === resultModal) resultModal.style.display = 'none';
-        });
-
-        closePrintModalBtn.addEventListener('click', closePrintModal);
-        closePrintModalIOSBtn.addEventListener('click', closePrintModalIOS);
-
-        printModal.addEventListener('click', function(e) {
-            if (e.target === printModal) closePrintModal();
-        });
-
-        printModalIOS.addEventListener('click', function(e) {
-            if (e.target === printModalIOS) closePrintModalIOS();
-        });
-
-        closeDatesModalBtn.addEventListener('click', closeDatesModal);
-
-        datesModal.addEventListener('click', function(e) {
-            if (e.target === datesModal) closeDatesModal();
-        });
-
-        printActionBtn.addEventListener('click', handlePrint);
-        printActionBtnIOS.addEventListener('click', handlePrintIOS);
-        scanPrintersBtnIOS.addEventListener('click', scanForPrintersIOS);
-
-        document.getElementById('current-date').addEventListener('click', openDatesModal);
-
-        // Обработчики iOS сканера
-        closeIOSScannerBtn.addEventListener('click', closeIOSScanner);
-        
-        switchIOSCameraBtn.addEventListener('click', switchIOSCamera);
-
-        iosScannerModal.addEventListener('click', function(e) {
-            if (e.target === iosScannerModal) closeIOSScanner();
-        });
-
-        searchModeRadios.forEach(radio => {
-            radio.addEventListener('change', function() {
-                updateSearchUI();
-                if (searchInput.value.trim() || 
-                    (getCurrentSearchMode() === 'combined' && 
-                     (articleInput.value.trim() || nameInput.value.trim() || barcodeInput.value.trim()))) {
-                    searchProducts();
-                }
+        function initScrollToTopButton() {
+            const btn = document.getElementById('scrollToTopBtn');
+            
+            window.addEventListener('scroll', () => {
+                btn.classList.toggle('show', window.pageYOffset > 300);
             });
-        });
+            
+            btn.addEventListener('click', () => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        }
 
-        window.addEventListener('load', function() {
-            document.getElementById('modeArticle').checked = true;
+        // ===== ИНИЦИАЛИЗАЦИЯ =====
+        document.addEventListener('DOMContentLoaded', function() {
+            // Инициализация UI
             updateSearchUI();
-            searchInput.focus();
             setupPlatformUI();
             initScrollToTopButton();
-
-			if (DATA_UPDATE_DATE && DATA_UPDATE_DATE.trim() !== "") {
-                let displayDate = DATA_UPDATE_DATE;
-                if (DATA_UPDATE_DATE.includes(" ")) {
-                    displayDate = DATA_UPDATE_DATE.split(" ")[0];
-                }
-                document.getElementById('current-date').textContent = displayDate;
+            
+            // Установка даты
+            if (DATA_UPDATE_DATE) {
+                document.getElementById('current-date').textContent = DATA_UPDATE_DATE.split(" ")[0] || DATA_UPDATE_DATE;
             }
-        });
-
-        searchInput.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') clearSearchFields();
-        });
-
-        document.addEventListener('keydown', function(e) {
-            if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
-                e.preventDefault();
-                const mode = getCurrentSearchMode();
-                if (mode === 'combined') {
-                    articleInput.focus();
-                } else {
-                    searchInput.focus();
-                    searchInput.select();
-                }
-            }
-        });
-
-        // Обработчик видимости страницы для iOS
-        document.addEventListener('visibilitychange', function() {
-            if (document.hidden && iosIsScanning) {
-                closeIOSScanner();
-            }
-        });
-
-        // Обработчик ориентации для iOS
-        window.addEventListener('orientationchange', function() {
-            if (iosIsScanning) {
+            
+            // Обработчики поиска
+            document.getElementById('searchButton').addEventListener('click', searchProducts);
+            document.getElementById('clearSearchBtn').addEventListener('click', clearSearchFields);
+            
+            // Обработчики ввода
+            document.getElementById('searchInput').addEventListener('input', updateClearButton);
+            document.getElementById('articleInput').addEventListener('input', updateClearButton);
+            document.getElementById('nameInput').addEventListener('input', updateClearButton);
+            document.getElementById('barcodeInput').addEventListener('input', updateClearButton);
+            
+            // Enter для поиска
+            ['searchInput', 'articleInput', 'nameInput', 'barcodeInput'].forEach(id => {
+                document.getElementById(id).addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') searchProducts();
+                });
+            });
+            
+            // Обработчики сканирования
+            document.getElementById('scanButtonAndroid').addEventListener('click', openCamera);
+            document.getElementById('scanButtonIOS').addEventListener('click', openIOSScanner);
+            
+            // Обработчики камеры
+            document.getElementById('closeCameraModal').addEventListener('click', () => {
+                stopCameraStream();
+                document.getElementById('cameraModal').style.display = 'none';
+            });
+            
+            document.getElementById('stopCamera').addEventListener('click', () => {
+                stopCameraStream();
+                document.getElementById('cameraModal').style.display = 'none';
+            });
+            
+            // Обработчики результатов
+            document.getElementById('continueScanBtn').addEventListener('click', () => {
+                document.getElementById('resultModal').style.display = 'none';
                 setTimeout(() => {
+                    if (isIOS()) openIOSScanner();
+                    else openCamera();
+                }, 300);
+            });
+            
+            document.getElementById('closeResultBtn').addEventListener('click', () => {
+                document.getElementById('resultModal').style.display = 'none';
+            });
+            
+            // Обработчики печати Android
+            document.getElementById('closePrintModal').addEventListener('click', closePrintModal);
+            document.getElementById('printActionBtn').addEventListener('click', handlePrint);
+            
+            // Обработчики печати iOS
+            if (isIOS()) {
+                document.getElementById('scanPrintersBtnIOS').addEventListener('click', scanForBLEPrinters);
+                document.getElementById('printActionBtnIOS').addEventListener('click', handlePrintIOS);
+                document.getElementById('closePrintModalIOS').addEventListener('click', closePrintModalIOS);
+                
+                // Восстановление сохраненного принтера
+                try {
+                    savedBluetoothDeviceId = localStorage.getItem('savedPrinterId');
+                    if (savedBluetoothDeviceId) {
+                        console.log('Найден сохраненный принтер');
+                    }
+                } catch (e) {
+                    console.warn('Не удалось прочитать localStorage');
+                }
+            }
+            
+            // Обработчики iOS сканера
+            document.getElementById('closeIOSScanner').addEventListener('click', closeIOSScanner);
+            document.getElementById('iosScannerModal').addEventListener('click', (e) => {
+                if (e.target === e.currentTarget) closeIOSScanner();
+            });
+            
+            // Обработчики дат
+            document.getElementById('current-date').addEventListener('click', openDatesModal);
+            document.getElementById('closeDatesModal').addEventListener('click', closeDatesModal);
+            
+            // Обработчик переключения режимов поиска
+            document.querySelectorAll('input[name="searchMode"]').forEach(radio => {
+                radio.addEventListener('change', function() {
+                    updateSearchUI();
+                    if (document.getElementById('searchInput').value.trim() || 
+                        (getCurrentSearchMode() === 'combined' && 
+                         (document.getElementById('articleInput').value.trim() || 
+                          document.getElementById('nameInput').value.trim() || 
+                          document.getElementById('barcodeInput').value.trim()))) {
+                        searchProducts();
+                    }
+                });
+            });
+            
+            // Обработчик Escape
+            document.getElementById('searchInput').addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') clearSearchFields();
+            });
+            
+            // Обработчик Ctrl+F
+            document.addEventListener('keydown', (e) => {
+                if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
+                    e.preventDefault();
+                    if (getCurrentSearchMode() === 'combined') {
+                        document.getElementById('articleInput').focus();
+                    } else {
+                        document.getElementById('searchInput').focus();
+                        document.getElementById('searchInput').select();
+                    }
+                }
+            });
+            
+            // Обработчики видимости для iOS
+            if (isIOS()) {
+                document.addEventListener('visibilitychange', () => {
+                    if (document.hidden && iosIsScanning) closeIOSScanner();
+                });
+                
+                window.addEventListener('orientationchange', () => {
                     if (iosIsScanning) {
                         closeIOSScanner();
                         setTimeout(openIOSScanner, 500);
                     }
-                }, 300);
+                });
             }
+            
+            // Обработчики модальных окон
+            document.getElementById('cameraModal').addEventListener('click', (e) => {
+                if (e.target === e.currentTarget) {
+                    stopCameraStream();
+                    e.currentTarget.style.display = 'none';
+                }
+            });
+            
+            document.getElementById('resultModal').addEventListener('click', (e) => {
+                if (e.target === e.currentTarget) e.currentTarget.style.display = 'none';
+            });
+            
+            document.getElementById('printModal').addEventListener('click', (e) => {
+                if (e.target === e.currentTarget) closePrintModal();
+            });
+            
+            document.getElementById('printModalIOS').addEventListener('click', (e) => {
+                if (e.target === e.currentTarget) closePrintModalIOS();
+            });
+            
+            document.getElementById('datesModal').addEventListener('click', (e) => {
+                if (e.target === e.currentTarget) closeDatesModal();
+            });
         });
-
-        // Инициализация сохраненного принтера для iOS
-        if (isIOS()) {
-            savedBluetoothDeviceId = localStorage.getItem('savedPrinterId');
-        }
     </script>
 </body>
 </html>
