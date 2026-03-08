@@ -38,6 +38,43 @@
             color: #aaa;
         }
         
+        .device-info {
+            background: #1e3a5f;
+            padding: 15px;
+            margin: 15px;
+            border-radius: 10px;
+            border-left: 4px solid #2196F3;
+        }
+        
+        .device-info h3 {
+            color: #2196F3;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        
+        .device-info .info-row {
+            display: flex;
+            margin-bottom: 8px;
+            font-size: 14px;
+            word-break: break-word;
+        }
+        
+        .device-info .info-label {
+            min-width: 100px;
+            color: #aaa;
+        }
+        
+        .device-info .info-value {
+            color: #fff;
+            font-weight: bold;
+        }
+        
+        .device-info .is-oneplus {
+            color: #4CAF50;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        
         .current-camera {
             background: #333;
             padding: 15px;
@@ -298,12 +335,75 @@
             word-break: break-all;
             margin: 10px 0;
         }
+
+        .test-buttons {
+            display: flex;
+            gap: 10px;
+            margin: 15px;
+            flex-wrap: wrap;
+        }
+
+        .test-btn {
+            flex: 1;
+            min-width: 150px;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: #7b1fa2;
+            color: white;
+        }
+
+        .test-btn:hover {
+            background: #9c27b0;
+        }
     </style>
 </head>
 <body>
     <div class="header">
         <h1>📷 Отладка камер OnePlus 15</h1>
         <p>Нажмите на камеру для теста, найдите широкоугольную</p>
+    </div>
+
+    <!-- Блок с информацией об устройстве -->
+    <div class="device-info" id="deviceInfo">
+        <h3>📱 Информация об устройстве:</h3>
+        <div class="info-row">
+            <span class="info-label">User Agent:</span>
+            <span class="info-value" id="userAgent"></span>
+        </div>
+        <div class="info-row">
+            <span class="info-label">Платформа:</span>
+            <span class="info-value" id="platform"></span>
+        </div>
+        <div class="info-row">
+            <span class="info-label">Вендор:</span>
+            <span class="info-value" id="vendor"></span>
+        </div>
+        <div class="info-row">
+            <span class="info-label">Язык:</span>
+            <span class="info-value" id="language"></span>
+        </div>
+        <div class="info-row">
+            <span class="info-label">OnePlus 15:</span>
+            <span class="info-value is-oneplus" id="isOnePlus">Проверка...</span>
+        </div>
+        <div class="info-row">
+            <span class="info-label">Android:</span>
+            <span class="info-value" id="isAndroid"></span>
+        </div>
+        <div class="info-row">
+            <span class="info-label">iOS:</span>
+            <span class="info-value" id="isIOS"></span>
+        </div>
+    </div>
+
+    <div class="test-buttons">
+        <button class="test-btn" id="testUserAgentBtn">🔍 Тест User Agent</button>
+        <button class="test-btn" id="testOnePlusBtn">📱 Тест OnePlus определения</button>
     </div>
 
     <div class="current-camera" id="currentCamera">
@@ -358,6 +458,90 @@
         let testBarcodeDetector = null;
         let currentDeviceId = null;
         let cameras = [];
+
+        // Функции определения устройства
+        function getIsIOS() {
+            return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+        }
+
+        function getIsAndroid() {
+            return /Android/.test(navigator.userAgent);
+        }
+
+        function getIsOnePlus15() {
+            const ua = navigator.userAgent;
+            const uaLower = ua.toLowerCase();
+            
+            // Проверяем различные варианты
+            const checks = [
+                uaLower.includes('oneplus 15'),
+                uaLower.includes('oneplus15'),
+                uaLower.includes('op15'),
+                uaLower.includes('one plus 15'),
+                /oneplus.*15/.test(uaLower),
+                (uaLower.includes('oneplus') && uaLower.includes('15'))
+            ];
+            
+            return checks.some(check => check === true);
+        }
+
+        function getPlatform() {
+            return navigator.platform || 'не определено';
+        }
+
+        function getVendor() {
+            return navigator.vendor || 'не определено';
+        }
+
+        function getLanguage() {
+            return navigator.language || 'не определено';
+        }
+
+        // Обновление информации об устройстве
+        function updateDeviceInfo() {
+            document.getElementById('userAgent').textContent = navigator.userAgent;
+            document.getElementById('platform').textContent = getPlatform();
+            document.getElementById('vendor').textContent = getVendor();
+            document.getElementById('language').textContent = getLanguage();
+            document.getElementById('isAndroid').textContent = getIsAndroid() ? '✅ Да' : '❌ Нет';
+            document.getElementById('isIOS').textContent = getIsIOS() ? '✅ Да' : '❌ Нет';
+            
+            const isOnePlus = getIsOnePlus15();
+            const onePlusElement = document.getElementById('isOnePlus');
+            onePlusElement.textContent = isOnePlus ? '✅ ДА (OnePlus 15)' : '❌ НЕТ';
+            
+            if (isOnePlus) {
+                onePlusElement.style.color = '#4CAF50';
+                addLog('📱 ОБНАРУЖЕН ONEPLUS 15!', 'warning');
+            }
+        }
+
+        // Тест определения OnePlus
+        function testOnePlusDetection() {
+            addLog('=== ТЕСТ ОПРЕДЕЛЕНИЯ ONEPLUS ===', 'warning');
+            
+            const ua = navigator.userAgent;
+            const uaLower = ua.toLowerCase();
+            
+            addLog(`User Agent: ${ua}`);
+            addLog(`User Agent (lower): ${uaLower}`);
+            
+            const checks = [
+                { name: 'oneplus 15', result: uaLower.includes('oneplus 15') },
+                { name: 'oneplus15', result: uaLower.includes('oneplus15') },
+                { name: 'op15', result: uaLower.includes('op15') },
+                { name: 'one plus 15', result: uaLower.includes('one plus 15') },
+                { name: 'regex oneplus.*15', result: /oneplus.*15/.test(uaLower) },
+                { name: 'oneplus + 15', result: (uaLower.includes('oneplus') && uaLower.includes('15')) }
+            ];
+            
+            checks.forEach(check => {
+                addLog(`Проверка "${check.name}": ${check.result ? '✅' : '❌'}`);
+            });
+            
+            const isOnePlus = getIsOnePlus15();
+            addLog(`ИТОГО: OnePlus 15 ${isOnePlus ? 'ОБНАРУЖЕН' : 'НЕ ОБНАРУЖЕН'}`, 'warning');
+        }
 
         // Функция для добавления лога
         function addLog(message, type = 'info') {
@@ -685,6 +869,9 @@
         async function init() {
             addLog('🚀 Отладчик камер запущен');
             
+            // Обновляем информацию об устройстве
+            updateDeviceInfo();
+            
             // Загружаем камеры
             await loadCameras();
             
@@ -722,6 +909,14 @@
                 alert('Не удалось скопировать');
             });
         });
+
+        document.getElementById('testUserAgentBtn').addEventListener('click', () => {
+            addLog('=== ТЕКУЩИЙ USER AGENT ===', 'warning');
+            addLog(navigator.userAgent);
+            updateDeviceInfo();
+        });
+
+        document.getElementById('testOnePlusBtn').addEventListener('click', testOnePlusDetection);
 
         // Запуск
         init();
