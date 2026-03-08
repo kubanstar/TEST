@@ -1,886 +1,730 @@
-﻿<html lang="ru">
+<!DOCTYPE html>
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Xprinter iOS - Печать ценников</title>
-    
-    <!-- PWA Manifest -->
-    <link rel="manifest" href="manifest.json">
-    
-    <!-- iOS specific meta tags -->
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Xprinter">
-    <meta name="format-detection" content="telephone=no">
-    
-    <!-- iOS Icons -->
-    <link rel="apple-touch-icon" href="icon-192.png">
-    <link rel="apple-touch-startup-image" href="icon-512.png">
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Отладка камер OnePlus 15</title>
     <style>
         * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
         }
         
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background: #f5f5f5;
-            padding: 20px;
-            padding-bottom: 40px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: #1a1a1a;
+            color: #fff;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            align-items: center;
         }
         
-        .container {
-            max-width: 600px;
-            width: 100%;
-            background: white;
-            border-radius: 20px;
-            padding: 25px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-        }
-        
-        h1 {
-            font-size: 24px;
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .install-prompt {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
+        .header {
+            background: #2d2d2d;
             padding: 20px;
-            border-radius: 16px;
-            margin-bottom: 25px;
             text-align: center;
-            box-shadow: 0 10px 30px rgba(102,126,234,0.3);
-            display: none;
+            border-bottom: 2px solid #4CAF50;
         }
         
-        .install-prompt.show {
-            display: block;
-            animation: slideIn 0.5s ease-out;
-        }
-        
-        .install-prompt h3 {
-            font-size: 20px;
+        .header h1 {
+            font-size: 24px;
             margin-bottom: 10px;
-        }
-        
-        .install-prompt p {
-            font-size: 16px;
-            margin-bottom: 20px;
-            opacity: 0.95;
-        }
-        
-        .install-btn {
-            background: white;
-            color: #667eea;
-            border: none;
-            padding: 12px 30px;
-            border-radius: 30px;
-            font-size: 18px;
-            font-weight: 600;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            transition: transform 0.2s;
-        }
-        
-        .install-btn:active {
-            transform: scale(0.95);
-        }
-        
-        .bluetooth-status {
-            background: #f8f9fa;
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 20px;
-            border-left: 4px solid #4CAF50;
-        }
-        
-        .status-title {
-            font-size: 14px;
-            color: #666;
-            margin-bottom: 8px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        
-        .status-value {
-            font-size: 18px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .printer-card {
-            background: #fff;
-            border: 2px solid #e0e0e0;
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 20px;
-            transition: all 0.3s;
-        }
-        
-        .printer-card.connected {
-            border-color: #4CAF50;
-            background: #f1f8e9;
-        }
-        
-        .printer-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-        
-        .printer-name {
-            font-size: 18px;
-            font-weight: 600;
-            color: #333;
-        }
-        
-        .printer-status-badge {
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-        
-        .badge-disconnected {
-            background: #ffebee;
-            color: #f44336;
-        }
-        
-        .badge-connected {
-            background: #e8f5e9;
             color: #4CAF50;
         }
         
-        .printer-details {
+        .header p {
             font-size: 14px;
-            color: #666;
-            margin-top: 10px;
-            padding-top: 10px;
-            border-top: 1px solid #eee;
+            color: #aaa;
+        }
+        
+        .current-camera {
+            background: #333;
+            padding: 15px;
+            margin: 15px;
+            border-radius: 10px;
+            border-left: 4px solid #2196F3;
+        }
+        
+        .current-camera h3 {
+            color: #2196F3;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        
+        .current-camera .info {
+            font-size: 18px;
+            font-weight: bold;
+            word-break: break-word;
+            color: #fff;
+        }
+        
+        .current-camera .details {
+            font-size: 14px;
+            color: #aaa;
+            margin-top: 5px;
+        }
+        
+        .camera-list {
+            background: #333;
+            padding: 15px;
+            margin: 15px;
+            border-radius: 10px;
+        }
+        
+        .camera-list h3 {
+            color: #4CAF50;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+        
+        .camera-item {
+            background: #3d3d3d;
+            margin-bottom: 10px;
+            padding: 15px;
+            border-radius: 8px;
+            border: 2px solid transparent;
+            transition: all 0.3s;
+        }
+        
+        .camera-item.selected {
+            border-color: #4CAF50;
+            background: #2d4a2d;
+        }
+        
+        .camera-item button {
+            width: 100%;
+            background: none;
+            border: none;
+            color: inherit;
+            text-align: left;
+            cursor: pointer;
+        }
+        
+        .camera-index {
+            font-size: 12px;
+            color: #888;
+            margin-bottom: 5px;
+        }
+        
+        .camera-label {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #4CAF50;
+            word-break: break-word;
+        }
+        
+        .camera-id {
+            font-size: 12px;
+            color: #888;
+            word-break: break-word;
+            margin-bottom: 8px;
+            font-family: monospace;
+        }
+        
+        .camera-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+        
+        .badge-wide {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .badge-ultrawide {
+            background: #2196F3;
+            color: white;
+        }
+        
+        .badge-macro {
+            background: #f44336;
+            color: white;
+        }
+        
+        .badge-tele {
+            background: #FF9800;
+            color: white;
+        }
+        
+        .badge-main {
+            background: #9C27B0;
+            color: white;
+        }
+        
+        .badge-back {
+            background: #00BCD4;
+            color: white;
+        }
+        
+        .preview-section {
+            background: #333;
+            padding: 15px;
+            margin: 15px;
+            border-radius: 10px;
+        }
+        
+        .preview-section h3 {
+            color: #FF9800;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+        
+        .video-container {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
+            background: #000;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        #previewVideo {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        .scan-frame {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            height: 150px;
+            border: 3px solid #4CAF50;
+            border-radius: 10px;
+            pointer-events: none;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin: 15px;
+            flex-wrap: wrap;
         }
         
         .btn {
-            width: 100%;
-            padding: 16px;
+            flex: 1;
+            min-width: 120px;
+            padding: 15px;
             border: none;
-            border-radius: 12px;
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 12px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
             cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-        
-        .btn:active {
-            transform: scale(0.98);
+            transition: all 0.3s;
         }
         
         .btn-primary {
             background: #4CAF50;
             color: white;
-            box-shadow: 0 4px 15px rgba(76,175,80,0.3);
         }
         
         .btn-secondary {
             background: #2196F3;
             color: white;
-            box-shadow: 0 4px 15px rgba(33,150,243,0.3);
         }
         
-        .btn-warning {
-            background: #FF9800;
-            color: white;
-            box-shadow: 0 4px 15px rgba(255,152,0,0.3);
-        }
-        
-        .btn:disabled {
-            opacity: 0.5;
-            transform: none;
-            box-shadow: none;
-            cursor: not-allowed;
-        }
-        
-        .product-card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 20px;
-            padding: 25px;
-            margin-bottom: 20px;
+        .btn-danger {
+            background: #f44336;
             color: white;
         }
         
-        .product-article {
-            font-size: 14px;
-            opacity: 0.9;
-            margin-bottom: 8px;
+        .btn:active {
+            transform: scale(0.95);
         }
         
-        .product-name {
-            font-size: 20px;
-            font-weight: 600;
-            margin-bottom: 20px;
-            line-height: 1.4;
-        }
-        
-        .product-price-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 0;
-            border-bottom: 1px solid rgba(255,255,255,0.2);
-        }
-        
-        .product-price-row:last-child {
-            border-bottom: none;
-        }
-        
-        .price-label {
-            font-size: 16px;
-            opacity: 0.95;
-        }
-        
-        .price-value {
-            font-size: 24px;
-            font-weight: 700;
-        }
-        
-        .debug-panel {
-            margin-top: 20px;
+        .log-panel {
+            background: #222;
             padding: 15px;
-            background: #1e1e1e;
-            border-radius: 12px;
-            display: none;
-        }
-        
-        .debug-panel.show {
-            display: block;
-        }
-        
-        .debug-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-            color: #00ff00;
-            font-family: monospace;
-        }
-        
-        .debug-content {
-            background: #2d2d2d;
-            padding: 15px;
-            border-radius: 8px;
-            max-height: 300px;
+            margin: 15px;
+            border-radius: 10px;
+            max-height: 200px;
             overflow-y: auto;
             font-family: monospace;
             font-size: 12px;
-            color: #00ff00;
         }
         
-        .debug-line {
-            margin: 4px 0;
+        .log-entry {
+            padding: 3px 0;
+            border-bottom: 1px solid #333;
+            color: #0f0;
+        }
+        
+        .log-error {
+            color: #f44336;
+        }
+        
+        .log-warning {
+            color: #FF9800;
+        }
+        
+        .status-bar {
+            background: #2d2d2d;
+            padding: 10px 15px;
+            margin: 0 15px 15px;
+            border-radius: 5px;
+            font-size: 14px;
+            border-left: 4px solid #4CAF50;
+        }
+        
+        .recommendation {
+            background: #1e3a1e;
+            padding: 15px;
+            margin: 15px;
+            border-radius: 10px;
+            border: 2px solid #4CAF50;
+        }
+        
+        .recommendation h4 {
+            color: #4CAF50;
+            margin-bottom: 10px;
+        }
+        
+        .recommendation .camera-id {
+            color: #fff;
+            background: #2d2d2d;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: monospace;
             word-break: break-all;
-        }
-        
-        .toast {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%) translateY(-100%);
-            background: #333;
-            color: white;
-            padding: 12px 24px;
-            border-radius: 30px;
-            font-weight: 500;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            z-index: 1000;
-            transition: transform 0.3s;
-            max-width: 90%;
-            text-align: center;
-        }
-        
-        .toast.show {
-            transform: translateX(-50%) translateY(0);
-        }
-        
-        .toast.success {
-            background: #4CAF50;
-        }
-        
-        .toast.error {
-            background: #f44336;
-        }
-        
-        @keyframes slideIn {
-            from {
-                transform: translateY(-20px);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-        
-        @media (prefers-color-scheme: dark) {
-            body { background: #1a1a1a; }
-            .container { background: #2d2d2d; }
-            h1 { color: #fff; }
-            .bluetooth-status { background: #333; }
-            .status-title { color: #aaa; }
-            .printer-card { background: #333; border-color: #444; }
-            .printer-name { color: #fff; }
-            .printer-details { color: #aaa; border-top-color: #444; }
+            margin: 10px 0;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>
-            <span>🖨️ Xprinter XP-P323B</span>
-        </h1>
-        
-        <!-- PWA Install Prompt -->
-        <div class="install-prompt" id="installPrompt">
-            <h3>📱 Добавьте на главный экран</h3>
-            <p>Для работы Bluetooth на iOS необходимо добавить сайт на главный экран</p>
-            <button class="install-btn" id="installPwaBtn">
-                Нажмите: Поделиться → На экран «Домой»
-            </button>
-        </div>
-        
-        <!-- Bluetooth Status -->
-        <div class="bluetooth-status">
-            <div class="status-title">Состояние Bluetooth</div>
-            <div class="status-value" id="btStatus">
-                ⚡ Проверка...
-            </div>
-        </div>
-        
-        <!-- PWA Status -->
-        <div class="bluetooth-status" style="border-left-color: #FF9800;" id="pwaStatus">
-            <div class="status-title">Режим работы</div>
-            <div class="status-value" id="pwaMode">
-                🌐 Обычный режим
-            </div>
-        </div>
-        
-        <!-- Printer Card -->
-        <div class="printer-card" id="printerCard">
-            <div class="printer-header">
-                <span class="printer-name">Xprinter XP-P323B</span>
-                <span class="printer-status-badge badge-disconnected" id="printerBadge">
-                    ❌ Не подключен
-                </span>
-            </div>
-            <div class="printer-details" id="printerDetails">
-                Статус: ожидание подключения
-            </div>
-        </div>
-        
-        <!-- Actions -->
-        <button class="btn btn-primary" id="connectBtn">
-            🔍 Найти и подключить принтер
-        </button>
-        
-        <!-- Product Card -->
-        <div class="product-card">
-            <div class="product-article" id="productArticle">Артикул: 620-107K</div>
-            <div class="product-name" id="productName">
-                Портмоне + зажим "SOMUCH" мат, цв: черный
-            </div>
-            <div class="product-price-row">
-                <span class="price-label">Розничная цена</span>
-                <span class="price-value" id="retailPrice">750 ₽</span>
-            </div>
-            <div class="product-price-row">
-                <span class="price-label">Оптовая цена</span>
-                <span class="price-value" id="wholesalePrice">570 ₽</span>
-            </div>
-        </div>
-        
-        <!-- Print Button -->
-        <button class="btn btn-secondary" id="printBtn" disabled>
-            🖨️ Напечатать ценник
-        </button>
-        
-        <!-- Test Button -->
-        <button class="btn btn-warning" id="testBtn">
-            🧪 Проверить Bluetooth
-        </button>
-        
-        <!-- Debug Toggle -->
-        <button class="btn" id="debugBtn" style="background: #607D8B; color: white;">
-            📋 Показать отладку
-        </button>
-        
-        <!-- Debug Panel -->
-        <div class="debug-panel" id="debugPanel">
-            <div class="debug-header">
-                <span>📋 Отладочная информация</span>
-                <span style="cursor: pointer;" onclick="clearDebug()">🗑️</span>
-            </div>
-            <div class="debug-content" id="debugContent"></div>
+    <div class="header">
+        <h1>📷 Отладка камер OnePlus 15</h1>
+        <p>Нажмите на камеру для теста, найдите широкоугольную</p>
+    </div>
+
+    <div class="current-camera" id="currentCamera">
+        <h3>Текущая камера:</h3>
+        <div class="info" id="currentCameraLabel">Не выбрана</div>
+        <div class="details" id="currentCameraId"></div>
+        <div class="details" id="currentCameraSettings"></div>
+    </div>
+
+    <div class="status-bar" id="statusBar">
+        ⏳ Загрузка списка камер...
+    </div>
+
+    <div class="camera-list" id="cameraList">
+        <h3>Доступные камеры:</h3>
+        <div id="camerasContainer">
+            <p style="color: #666; text-align: center;">Загрузка...</p>
         </div>
     </div>
-    
+
+    <div class="preview-section" id="previewSection" style="display: none;">
+        <h3>Предпросмотр:</h3>
+        <div class="video-container">
+            <video id="previewVideo" playsinline autoplay></video>
+            <div class="scan-frame"></div>
+        </div>
+        <div style="display: flex; gap: 10px; margin-top: 15px;">
+            <button class="btn btn-secondary" id="testBarcodeBtn">🧪 Тест штрихкода</button>
+            <button class="btn btn-danger" id="stopPreviewBtn">⏹️ Остановить</button>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button class="btn btn-primary" id="refreshCamerasBtn">🔄 Обновить список</button>
+        <button class="btn btn-secondary" id="recommendBtn">🔍 Найти лучшую камеру</button>
+        <button class="btn btn-danger" id="clearLogBtn">🗑️ Очистить лог</button>
+    </div>
+
+    <div class="log-panel" id="logPanel">
+        <div class="log-entry">=== Отладчик камер запущен ===</div>
+    </div>
+
+    <div class="recommendation" id="recommendation" style="display: none;">
+        <h4>✅ Рекомендуемая камера для OnePlus 15:</h4>
+        <p id="recommendText"></p>
+        <div class="camera-id" id="recommendDeviceId"></div>
+        <button class="btn btn-primary" id="copyDeviceIdBtn" style="width: 100%; margin-top: 10px;">📋 Скопировать ID камеры</button>
+    </div>
+
     <script>
-        // ========== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ==========
-        let bluetoothDevice = null;
-        let bluetoothCharacteristic = null;
-        let isConnected = false;
-        let debugEnabled = false;
-        let isStandalone = false;
-        
-        // UUID для Xprinter (точные как в нативном приложении)
-        const PRINTER_SERVICE_UUID = '0000ff00-0000-1000-8000-00805f9b34fb';
-        const PRINTER_CHAR_UUID = '0000ff01-0000-1000-8000-00805f9b34fb';
-        
-        // Альтернативные UUID
-        const ALTERNATIVE_UUIDS = {
-            services: [
-                '0000ff00-0000-1000-8000-00805f9b34fb',
-                '000018f0-0000-1000-8000-00805f9b34fb',
-                '6e400001-b5a3-f393-e0a9-e50e24dcca9e',
-                '0000ae30-0000-1000-8000-00805f9b34fb'
-            ],
-            characteristics: [
-                '0000ff01-0000-1000-8000-00805f9b34fb',
-                '6e400002-b5a3-f393-e0a9-e50e24dcca9e',
-                '0000ae01-0000-1000-8000-00805f9b34fb'
-            ]
-        };
-        
-        // Тестовый товар
-        const currentProduct = {
-            article: '620-107K',
-            name: 'Портмоне + зажим "SOMUCH" мат, цв: черный',
-            wholesale: '570',
-            retail: '750'
-        };
-        
-        // ========== PWA / STANDALONE DETECTION ==========
-        function checkIfStandalone() {
-            isStandalone = window.navigator.standalone === true || 
-                          window.matchMedia('(display-mode: standalone)').matches;
+        let currentStream = null;
+        let testBarcodeDetector = null;
+        let currentDeviceId = null;
+        let cameras = [];
+
+        // Функция для добавления лога
+        function addLog(message, type = 'info') {
+            const logPanel = document.getElementById('logPanel');
+            const logEntry = document.createElement('div');
+            logEntry.className = 'log-entry';
+            if (type === 'error') logEntry.classList.add('log-error');
+            if (type === 'warning') logEntry.classList.add('log-warning');
             
-            const pwaModeEl = document.getElementById('pwaMode');
-            const installPrompt = document.getElementById('installPrompt');
+            const time = new Date().toLocaleTimeString('ru-RU', { hour12: false });
+            logEntry.textContent = `[${time}] ${message}`;
             
-            if (isStandalone) {
-                pwaModeEl.innerHTML = '📱 PWA режим (с главного экрана) ✅';
-                pwaModeEl.style.color = '#4CAF50';
-                installPrompt.classList.remove('show');
-                debug('✅ PWA режим активирован - Bluetooth должен работать');
-            } else {
-                pwaModeEl.innerHTML = '🌐 Обычный браузер - ❗ НУЖНО ДОБАВИТЬ НА ГЛАВНЫЙ ЭКРАН';
-                pwaModeEl.style.color = '#FF9800';
-                installPrompt.classList.add('show');
-                debug('⚠️ Не PWA режим - Bluetooth может не работать');
+            logPanel.appendChild(logEntry);
+            logPanel.scrollTop = logPanel.scrollHeight;
+        }
+
+        // Обновление статуса
+        function setStatus(message, type = 'info') {
+            const statusBar = document.getElementById('statusBar');
+            statusBar.textContent = message;
+            statusBar.style.borderLeftColor = type === 'error' ? '#f44336' : 
+                                            type === 'warning' ? '#FF9800' : '#4CAF50';
+            addLog(message, type);
+        }
+
+        // Остановка текущего стрима
+        function stopCurrentStream() {
+            if (currentStream) {
+                currentStream.getTracks().forEach(track => track.stop());
+                currentStream = null;
             }
+            document.getElementById('previewSection').style.display = 'none';
+            document.getElementById('previewVideo').srcObject = null;
         }
-        
-        // ========== ФУНКЦИИ ОТЛАДКИ ==========
-        function debug(message) {
-            console.log(message);
-            if (!debugEnabled) return;
+
+        // Определение типа камеры по названию
+        function getCameraType(label) {
+            const types = [];
+            const l = label.toLowerCase();
             
-            const content = document.getElementById('debugContent');
-            const line = document.createElement('div');
-            line.className = 'debug-line';
-            line.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
-            content.appendChild(line);
-            content.scrollTop = content.scrollHeight;
-        }
-        
-        function clearDebug() {
-            document.getElementById('debugContent').innerHTML = '';
-        }
-        
-        // ========== УВЕДОМЛЕНИЯ ==========
-        function showToast(message, type = 'info') {
-            const toast = document.createElement('div');
-            toast.className = `toast ${type}`;
-            toast.textContent = message;
-            document.body.appendChild(toast);
-            
-            setTimeout(() => toast.classList.add('show'), 10);
-            setTimeout(() => {
-                toast.classList.remove('show');
-                setTimeout(() => toast.remove(), 300);
-            }, 3000);
-        }
-        
-        // ========== ПРОВЕРКА BLUETOOTH ==========
-        async function checkBluetooth() {
-            const btStatus = document.getElementById('btStatus');
-            
-            if (!navigator.bluetooth) {
-                btStatus.innerHTML = '❌ Web Bluetooth НЕ ПОДДЕРЖИВАЕТСЯ';
-                btStatus.style.color = '#f44336';
-                debug('❌ Web Bluetooth не поддерживается');
-                return false;
+            if (l.includes('ultrawide') || l.includes('ultra wide') || l.includes('сверхширок') || l.includes('0.6')) {
+                types.push({ type: 'ultrawide', text: 'СВЕРХШИРОКАЯ' });
+            }
+            if (l.includes('wide') || l.includes('широко')) {
+                types.push({ type: 'wide', text: 'ШИРОКАЯ' });
+            }
+            if (l.includes('macro') || l.includes('макро')) {
+                types.push({ type: 'macro', text: 'МАКРО' });
+            }
+            if (l.includes('tele') || l.includes('теле')) {
+                types.push({ type: 'tele', text: 'ТЕЛЕФОТО' });
+            }
+            if (l.includes('back') || l.includes('задняя')) {
+                types.push({ type: 'back', text: 'ЗАДНЯЯ' });
+            }
+            if (l.includes('front') || l.includes('фронт') || l.includes('передняя')) {
+                types.push({ type: 'front', text: 'ФРОНТАЛЬНАЯ' });
+            }
+            if (l.includes('main') || l.includes('основная')) {
+                types.push({ type: 'main', text: 'ОСНОВНАЯ' });
             }
             
-            btStatus.innerHTML = '✅ Web Bluetooth поддерживается';
-            btStatus.style.color = '#4CAF50';
-            debug('✅ Web Bluetooth поддерживается');
-            
-            // Проверяем сохраненные устройства
+            return types;
+        }
+
+        // Получение бейджей для камеры
+        function getCameraBadges(label) {
+            const types = getCameraType(label);
+            return types.map(t => 
+                `<span class="camera-badge badge-${t.type}">${t.text}</span>`
+            ).join('');
+        }
+
+        // Загрузка списка камер
+        async function loadCameras() {
             try {
-                const devices = await navigator.bluetooth.getDevices();
-                debug(`📱 Сохраненных устройств: ${devices.length}`);
+                setStatus('🔄 Запрашиваю разрешение на камеру...');
                 
-                if (devices.length > 0) {
-                    devices.forEach((d, i) => {
-                        debug(`   ${i+1}. ${d.name || 'Без имени'} (${d.id})`);
-                    });
+                // Сначала запрашиваем разрешение
+                const tempStream = await navigator.mediaDevices.getUserMedia({ video: true });
+                tempStream.getTracks().forEach(track => track.stop());
+                
+                setStatus('✅ Разрешение получено, загружаю список камер...');
+                
+                const devices = await navigator.mediaDevices.enumerateDevices();
+                cameras = devices.filter(device => device.kind === 'videoinput');
+                
+                const container = document.getElementById('camerasContainer');
+                container.innerHTML = '';
+                
+                if (cameras.length === 0) {
+                    container.innerHTML = '<p style="color: #f44336;">❌ Камеры не найдены</p>';
+                    setStatus('❌ Камеры не найдены', 'error');
+                    return;
+                }
+                
+                setStatus(`✅ Найдено камер: ${cameras.length}`);
+                
+                cameras.forEach((camera, index) => {
+                    const div = document.createElement('div');
+                    div.className = 'camera-item';
+                    div.id = `camera-${index}`;
                     
-                    // Ищем сохраненный принтер
-                    const savedId = localStorage.getItem('xprinter_device_id');
-                    if (savedId) {
-                        const savedDevice = devices.find(d => d.id === savedId);
-                        if (savedDevice) {
-                            debug(`✅ Найден сохраненный принтер: ${savedDevice.name}`);
-                            bluetoothDevice = savedDevice;
-                        }
-                    }
-                }
-            } catch (e) {
-                debug(`⚠️ Ошибка получения устройств: ${e.message}`);
-            }
-            
-            return true;
-        }
-        
-        // ========== ПОДКЛЮЧЕНИЕ К ПРИНТЕРУ ==========
-        async function connectPrinter() {
-            debug('🚀 Начинаем поиск принтера...');
-            
-            try {
-                if (!navigator.bluetooth) {
-                    throw new Error('Web Bluetooth не поддерживается');
-                }
-                
-                if (!isStandalone) {
-                    const confirm = window.confirm(
-                        'Для работы Bluetooth необходимо добавить сайт на главный экран.\n\n' +
-                        '1. Нажмите кнопку "Поделиться" (⎙)\n' +
-                        '2. Выберите "На экран «Домой»"\n' +
-                        '3. Запустите приложение с главного экрана\n\n' +
-                        'Продолжить поиск в браузере?'
-                    );
-                    if (!confirm) return;
-                }
-                
-                showToast('🔍 Ищем принтеры...', 'info');
-                
-                const device = await navigator.bluetooth.requestDevice({
-                    acceptAllDevices: true,
-                    optionalServices: ALTERNATIVE_UUIDS.services
+                    const badges = getCameraBadges(camera.label);
+                    
+                    div.innerHTML = `
+                        <button onclick="selectCamera('${camera.deviceId}', ${index})">
+                            <div class="camera-index">Камера ${index}</div>
+                            <div class="camera-label">${camera.label || 'Без названия'}</div>
+                            <div class="camera-id">ID: ${camera.deviceId.substring(0, 50)}...</div>
+                            <div>${badges || '<span style="color: #888;">Тип не определен</span>'}</div>
+                        </button>
+                    `;
+                    
+                    container.appendChild(div);
                 });
                 
-                debug(`✅ Выбрано устройство: ${device.name || 'Без имени'}`);
-                debug(`   ID: ${device.id}`);
-                
-                bluetoothDevice = device;
-                
-                // Сохраняем устройство
-                try {
-                    localStorage.setItem('xprinter_device_id', device.id);
-                    localStorage.setItem('xprinter_device_name', device.name || 'Xprinter');
-                    debug('💾 Устройство сохранено');
-                } catch (e) {
-                    debug(`⚠️ Ошибка сохранения: ${e.message}`);
-                }
-                
-                await connectToDevice(device);
+                addLog('📸 Список камер загружен');
                 
             } catch (error) {
-                debug(`❌ Ошибка: ${error.message}`);
-                
-                if (error.message.includes('User cancelled')) {
-                    showToast('❌ Поиск отменен', 'error');
-                } else {
-                    showToast(`❌ ${error.message}`, 'error');
-                }
+                setStatus(`❌ Ошибка: ${error.message}`, 'error');
+                addLog(`Ошибка загрузки камер: ${error.message}`, 'error');
             }
         }
-        
-        async function connectToDevice(device) {
+
+        // Выбор камеры для теста
+        async function selectCamera(deviceId, index) {
             try {
-                debug('🔄 Подключение к GATT серверу...');
-                showToast('🔄 Подключение к принтеру...', 'info');
+                stopCurrentStream();
                 
-                device.addEventListener('gattserverdisconnected', onDisconnected);
+                // Подсветка выбранной камеры
+                document.querySelectorAll('.camera-item').forEach(item => {
+                    item.classList.remove('selected');
+                });
+                document.getElementById(`camera-${index}`).classList.add('selected');
                 
-                const server = await device.gatt.connect();
-                debug('✅ GATT сервер подключен');
+                currentDeviceId = deviceId;
                 
-                // Ищем сервис
-                let service = null;
-                for (const uuid of ALTERNATIVE_UUIDS.services) {
-                    try {
-                        debug(`   Пробуем сервис: ${uuid}`);
-                        service = await server.getPrimaryService(uuid);
-                        debug(`   ✅ Найден сервис: ${uuid}`);
-                        break;
-                    } catch (e) {
-                        debug(`   ❌ Сервис не найден: ${uuid}`);
+                const camera = cameras.find(c => c.deviceId === deviceId);
+                
+                document.getElementById('currentCameraLabel').textContent = camera.label || 'Без названия';
+                document.getElementById('currentCameraId').textContent = `ID: ${deviceId}`;
+                
+                setStatus(`🎥 Тестирую камеру ${index}: ${camera.label || 'без названия'}`);
+                
+                // Запускаем предпросмотр
+                const stream = await navigator.mediaDevices.getUserMedia({
+                    video: {
+                        deviceId: { exact: deviceId },
+                        width: { ideal: 1280 },
+                        height: { ideal: 720 }
+                    }
+                });
+                
+                currentStream = stream;
+                
+                const video = document.getElementById('previewVideo');
+                video.srcObject = stream;
+                
+                document.getElementById('previewSection').style.display = 'block';
+                
+                // Получаем информацию о треке
+                const track = stream.getVideoTracks()[0];
+                const settings = track.getSettings();
+                const capabilities = track.getCapabilities ? track.getCapabilities() : {};
+                
+                let settingsText = '';
+                settingsText += `📏 Разрешение: ${settings.width}x${settings.height}`;
+                if (settings.focalLength) {
+                    settingsText += ` | 📐 Фокусное: ${settings.focalLength}mm`;
+                    if (settings.focalLength < 5) {
+                        settingsText += ' ✅ ШИРОКИЙ УГОЛ';
                     }
                 }
-                
-                if (!service) {
-                    throw new Error('Не найден сервис принтера');
+                if (capabilities.zoom) {
+                    settingsText += ` | 🔍 Зум: от ${capabilities.zoom.min} до ${capabilities.zoom.max}`;
                 }
                 
-                // Ищем характеристику
-                let characteristic = null;
-                for (const uuid of ALTERNATIVE_UUIDS.characteristics) {
-                    try {
-                        debug(`   Пробуем характеристику: ${uuid}`);
-                        characteristic = await service.getCharacteristic(uuid);
-                        debug(`   ✅ Найдена характеристика: ${uuid}`);
-                        break;
-                    } catch (e) {
-                        debug(`   ❌ Характеристика не найдена: ${uuid}`);
-                    }
+                document.getElementById('currentCameraSettings').textContent = settingsText;
+                
+                addLog(`📷 Тест камеры ${index}: ${settingsText}`);
+                
+                // Проверяем, похожа ли на широкоугольную
+                const label = camera.label.toLowerCase();
+                if (label.includes('ultrawide') || label.includes('сверхширок') || 
+                    label.includes('0.6') || (settings.focalLength && settings.focalLength < 5)) {
+                    addLog(`✅ ЭТО ПОХОЖЕ НА ШИРОКОУГОЛЬНУЮ КАМЕРУ!`, 'warning');
                 }
-                
-                if (!characteristic) {
-                    throw new Error('Не найдена характеристика для печати');
-                }
-                
-                bluetoothCharacteristic = characteristic;
-                isConnected = true;
-                
-                // Обновляем UI
-                document.getElementById('printerCard').classList.add('connected');
-                document.getElementById('printerBadge').innerHTML = '✅ Подключен';
-                document.getElementById('printerBadge').className = 'printer-status-badge badge-connected';
-                document.getElementById('printerDetails').innerHTML = 
-                    `Подключено: ${device.name || 'Xprinter XP-P323B'}<br>ID: ${device.id.substr(0, 8)}...`;
-                document.getElementById('printBtn').disabled = false;
-                
-                showToast('✅ Принтер подключен!', 'success');
-                debug('🎉 Принтер готов к работе!');
                 
             } catch (error) {
-                debug(`❌ Ошибка подключения: ${error.message}`);
-                showToast(`❌ ${error.message}`, 'error');
-                throw error;
+                setStatus(`❌ Ошибка при тесте камеры: ${error.message}`, 'error');
+                addLog(`Ошибка: ${error.message}`, 'error');
             }
         }
-        
-        function onDisconnected(event) {
-            debug('🔌 Принтер отключен');
-            isConnected = false;
-            bluetoothCharacteristic = null;
-            
-            document.getElementById('printerCard').classList.remove('connected');
-            document.getElementById('printerBadge').innerHTML = '❌ Не подключен';
-            document.getElementById('printerBadge').className = 'printer-status-badge badge-disconnected';
-            document.getElementById('printerDetails').innerHTML = 'Статус: ожидание подключения';
-            document.getElementById('printBtn').disabled = true;
-            
-            showToast('🔌 Принтер отключен', 'error');
-        }
-        
-        // ========== ФОРМИРОВАНИЕ КОМАНДЫ ПЕЧАТИ ==========
-        function createPrintCommand() {
-            debug('📄 Формирование команды печати...');
-            
-            const ESC = 0x1B;
-            const GS = 0x1D;
-            
-            const textEncoder = new TextEncoder();
-            let command = new Uint8Array(0);
-            
-            function append(bytes) {
-                const newArray = new Uint8Array(command.length + bytes.length);
-                newArray.set(command, 0);
-                newArray.set(bytes, command.length);
-                command = newArray;
-            }
-            
-            // Инициализация
-            append(new Uint8Array([ESC, 0x40]));
-            
-            // Центрирование
-            append(new Uint8Array([ESC, 0x61, 0x01]));
-            
-            // Жирный текст для артикула
-            append(new Uint8Array([ESC, 0x45, 0x01]));
-            append(textEncoder.encode(currentProduct.article + '\n'));
-            append(new Uint8Array([ESC, 0x45, 0x00]));
-            
-            // Линия
-            append(textEncoder.encode('='.repeat(32) + '\n'));
-            
-            // Название товара
-            append(textEncoder.encode(currentProduct.name + '\n'));
-            
-            // Линия
-            append(textEncoder.encode('='.repeat(32) + '\n'));
-            
-            // Цены
-            append(textEncoder.encode('\n'));
-            append(textEncoder.encode(`РОЗНИЦА: ${currentProduct.retail} руб.\n`));
-            append(textEncoder.encode(`ОПТОВАЯ: ${currentProduct.wholesale} руб.\n`));
-            append(textEncoder.encode('\n'));
-            
-            // Линия
-            append(textEncoder.encode('='.repeat(32) + '\n'));
-            
-            // Дата
-            const date = new Date();
-            append(textEncoder.encode(date.toLocaleDateString('ru-RU') + '\n'));
-            
-            // Линия
-            append(textEncoder.encode('='.repeat(32) + '\n'));
-            
-            // Магазин
-            append(textEncoder.encode('ИП Мааруф Р.\n'));
-            append(textEncoder.encode('\n\n'));
-            
-            // Отрезка
-            append(new Uint8Array([GS, 0x56, 0x00]));
-            
-            debug(`📊 Размер команды: ${command.length} байт`);
-            return command;
-        }
-        
-        // ========== ПЕЧАТЬ ==========
-        async function printLabel() {
-            if (!isConnected || !bluetoothCharacteristic) {
-                showToast('❌ Принтер не подключен', 'error');
+
+        // Тест штрихкода
+        async function testBarcode() {
+            if (!currentStream) {
+                alert('Сначала выберите камеру');
                 return;
             }
             
             try {
-                debug('🖨️ Отправка команды печати...');
-                showToast('🖨️ Печать...', 'info');
+                addLog('🔍 Инициализация детектора штрихкодов...');
                 
-                const command = createPrintCommand();
-                await bluetoothCharacteristic.writeValue(command);
-                
-                debug('✅ Команда отправлена');
-                showToast('✅ Ценник отправлен на печать!', 'success');
-                
-            } catch (error) {
-                debug(`❌ Ошибка печати: ${error.message}`);
-                showToast(`❌ ${error.message}`, 'error');
-            }
-        }
-        
-        // ========== ТЕСТ BLUETOOTH ==========
-        async function testBluetooth() {
-            debug('🧪 ЗАПУСК ТЕСТА BLUETOOTH');
-            
-            // 1. Проверка поддержки
-            debug(`1. Web Bluetooth: ${navigator.bluetooth ? '✅' : '❌'}`);
-            
-            // 2. Проверка PWA режима
-            debug(`2. PWA режим: ${isStandalone ? '✅' : '❌'}`);
-            
-            // 3. Проверка сохраненных устройств
-            try {
-                const devices = await navigator.bluetooth.getDevices();
-                debug(`3. Сохраненных устройств: ${devices.length}`);
-                
-                devices.forEach((d, i) => {
-                    debug(`   ${i+1}. ${d.name || 'Без имени'} (${d.id})`);
-                });
-                
-                if (devices.length === 0) {
-                    debug('   ➡️ Нет сохраненных устройств. Нажмите "Найти принтер"');
+                if (!('BarcodeDetector' in window)) {
+                    addLog('❌ BarcodeDetector не поддерживается', 'error');
+                    alert('BarcodeDetector не поддерживается в этом браузере');
+                    return;
                 }
                 
-            } catch (e) {
-                debug(`3. Ошибка: ${e.message}`);
+                const formats = await BarcodeDetector.getSupportedFormats();
+                testBarcodeDetector = new BarcodeDetector({ 
+                    formats: formats.filter(f => 
+                        ['ean_13', 'ean_8', 'code_128', 'code_39'].includes(f)
+                    )
+                });
+                
+                addLog(`✅ Детектор создан, форматы: ${formats.join(', ')}`);
+                
+                const video = document.getElementById('previewVideo');
+                const canvas = document.createElement('canvas');
+                const context = canvas.getContext('2d');
+                
+                let detected = false;
+                
+                const checkBarcode = setInterval(async () => {
+                    if (video.readyState === video.HAVE_ENOUGH_DATA && !detected) {
+                        canvas.width = video.videoWidth;
+                        canvas.height = video.videoHeight;
+                        
+                        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                        
+                        try {
+                            const barcodes = await testBarcodeDetector.detect(canvas);
+                            
+                            if (barcodes.length > 0) {
+                                detected = true;
+                                clearInterval(checkBarcode);
+                                addLog(`✅ ШТРИХКОД НАЙДЕН: ${barcodes[0].rawValue}`, 'warning');
+                            }
+                        } catch (e) {
+                            console.log('Ошибка детекции:', e);
+                        }
+                    }
+                }, 500);
+                
+                setTimeout(() => {
+                    if (!detected) {
+                        clearInterval(checkBarcode);
+                        addLog('⏰ Штрихкод не найден за 10 секунд', 'warning');
+                    }
+                }, 10000);
+                
+            } catch (error) {
+                addLog(`❌ Ошибка теста штрихкода: ${error.message}`, 'error');
             }
-            
-            // 4. Проверка текущего подключения
-            debug(`4. Текущее подключение: ${isConnected ? '✅' : '❌'}`);
-            
-            // 5. Инструкция
-            debug('\n📋 ИНСТРУКЦИЯ:');
-            debug('   1. Убедитесь, что сайт добавлен на главный экран');
-            debug('   2. Запустите с главного экрана');
-            debug('   3. Включите Bluetooth на iPhone');
-            debug('   4. Включите принтер');
-            debug('   5. Нажмите "Найти принтер"');
-            debug('   6. Выберите Xprinter из списка');
-            
-            showToast('🧪 Тест завершен, смотрите отладку', 'info');
         }
-        
-        // ========== ИНИЦИАЛИЗАЦИЯ ==========
-        window.onload = async function() {
-            // Включаем отладку
-            debugEnabled = true;
+
+        // Поиск лучшей камеры
+        function recommendCamera() {
+            addLog('🔍 Поиск лучшей камеры для OnePlus 15...');
             
-            // Проверяем PWA режим
-            checkIfStandalone();
+            let bestCamera = null;
+            let bestScore = -1;
             
-            // Проверяем Bluetooth
-            await checkBluetooth();
+            cameras.forEach(camera => {
+                const label = camera.label.toLowerCase();
+                let score = 0;
+                
+                // Широкоугольная - наилучший выбор
+                if (label.includes('ultrawide') || label.includes('сверхширок') || label.includes('0.6')) {
+                    score += 100;
+                }
+                if (label.includes('wide') || label.includes('широко')) {
+                    score += 80;
+                }
+                // Основная задняя
+                if (label.includes('back') || label.includes('задняя')) {
+                    score += 50;
+                }
+                if (label.includes('main') || label.includes('основная')) {
+                    score += 40;
+                }
+                
+                // Штрафы
+                if (label.includes('macro') || label.includes('макро')) {
+                    score -= 100;
+                }
+                if (label.includes('tele') || label.includes('теле')) {
+                    score -= 50;
+                }
+                if (label.includes('front') || label.includes('фронт')) {
+                    score -= 200;
+                }
+                
+                if (score > bestScore) {
+                    bestScore = score;
+                    bestCamera = camera;
+                }
+            });
             
-            // Загружаем данные товара
-            document.getElementById('productArticle').innerHTML = `Артикул: ${currentProduct.article}`;
-            document.getElementById('productName').innerHTML = currentProduct.name;
-            document.getElementById('retailPrice').innerHTML = `${currentProduct.retail} ₽`;
-            document.getElementById('wholesalePrice').innerHTML = `${currentProduct.wholesale} ₽`;
-            
-            debug('✅ Страница загружена');
-            debug(`🌐 URL: ${window.location.href}`);
-            debug(`📱 PWA: ${isStandalone ? 'Да' : 'Нет'}`);
-        };
-        
-        // ========== ОБРАБОТЧИКИ СОБЫТИЙ ==========
-        document.getElementById('connectBtn').addEventListener('click', connectPrinter);
-        document.getElementById('printBtn').addEventListener('click', printLabel);
-        document.getElementById('testBtn').addEventListener('click', testBluetooth);
-        
-        document.getElementById('debugBtn').addEventListener('click', function() {
-            const panel = document.getElementById('debugPanel');
-            const btn = document.getElementById('debugBtn');
-            
-            if (panel.classList.contains('show')) {
-                panel.classList.remove('show');
-                btn.innerHTML = '📋 Показать отладку';
-                debugEnabled = false;
+            if (bestCamera) {
+                const recDiv = document.getElementById('recommendation');
+                const recText = document.getElementById('recommendText');
+                const recId = document.getElementById('recommendDeviceId');
+                
+                const badges = getCameraBadges(bestCamera.label);
+                
+                recText.innerHTML = `
+                    <strong>${bestCamera.label || 'Без названия'}</strong><br>
+                    ${badges}<br>
+                    Оценка: ${bestScore}
+                `;
+                recId.textContent = bestCamera.deviceId;
+                recDiv.style.display = 'block';
+                
+                addLog(`✅ Рекомендуемая камера найдена с оценкой ${bestScore}`, 'warning');
             } else {
-                panel.classList.add('show');
-                btn.innerHTML = '📋 Скрыть отладку';
-                debugEnabled = true;
+                addLog('❌ Не удалось определить лучшую камеру', 'error');
             }
+        }
+
+        // Инициализация
+        async function init() {
+            addLog('🚀 Отладчик камер запущен');
+            
+            // Загружаем камеры
+            await loadCameras();
+            
+            // Проверяем поддержку BarcodeDetector
+            if (!('BarcodeDetector' in window)) {
+                addLog('⚠️ BarcodeDetector не поддерживается, тест штрихкодов недоступен', 'warning');
+            }
+        }
+
+        // Обработчики событий
+        document.getElementById('refreshCamerasBtn').addEventListener('click', () => {
+            stopCurrentStream();
+            loadCameras();
         });
-        
-        document.getElementById('installPwaBtn').addEventListener('click', function() {
-            showToast('1. Нажмите кнопку "Поделиться" (⎙)\n2. Выберите "На экран «Домой»"', 'info');
+
+        document.getElementById('testBarcodeBtn').addEventListener('click', testBarcode);
+
+        document.getElementById('stopPreviewBtn').addEventListener('click', () => {
+            stopCurrentStream();
+            addLog('⏹️ Предпросмотр остановлен');
         });
-        
-        // Слушаем изменение режима отображения
-        window.matchMedia('(display-mode: standalone)').addListener(checkIfStandalone);
+
+        document.getElementById('clearLogBtn').addEventListener('click', () => {
+            document.getElementById('logPanel').innerHTML = '<div class="log-entry">=== Лог очищен ===</div>';
+        });
+
+        document.getElementById('recommendBtn').addEventListener('click', recommendCamera);
+
+        document.getElementById('copyDeviceIdBtn').addEventListener('click', () => {
+            const deviceId = document.getElementById('recommendDeviceId').textContent;
+            navigator.clipboard.writeText(deviceId).then(() => {
+                addLog('📋 ID камеры скопирован');
+                alert('ID камеры скопирован в буфер обмена');
+            }).catch(() => {
+                alert('Не удалось скопировать');
+            });
+        });
+
+        // Запуск
+        init();
     </script>
 </body>
 </html>
