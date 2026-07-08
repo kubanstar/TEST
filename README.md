@@ -1,73 +1,77 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Тест отправки</title>
-    <style>
-        body { font-family: Arial; padding: 20px; }
-        input, button { font-size: 18px; padding: 10px; margin: 5px; width: 90%; }
-        #status { margin-top: 20px; font-weight: bold; }
-        .ok { color: green; }
-        .err { color: red; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Тест API cen.txt</title>
+<style>
+body{font-family:Arial;padding:20px;background:#f0f2f5}
+.card{background:#fff;padding:15px;border-radius:10px;margin-bottom:15px;box-shadow:0 1px 3px rgba(0,0,0,0.1)}
+button{padding:10px 16px;margin:5px;border:none;border-radius:6px;cursor:pointer;font-weight:bold}
+.btn-send{background:#1a73e8;color:#fff}
+.btn-get{background:#34a853;color:#fff}
+.btn-del{background:#ea4335;color:#fff}
+input{padding:10px;width:70%;border:1px solid #ddd;border-radius:6px}
+pre{background:#f5f5f5;padding:10px;border-radius:6px;overflow-x:auto}
+</style>
 </head>
 <body>
-    <h2>📤 Отправка данных на ПК (192.168.1.23:8080)</h2>
-    
-    <label>Данные (JSON или текст):</label>
-    <input type="text" id="data" value='{"action":"test","phone":"79161234567","sum":1500}' placeholder='{"key":"value"}'>
-    
-    <button onclick="send()">🚀 ОТПРАВИТЬ</button>
-    
-    <div id="status"></div>
-    <div id="log"></div>
+<h2>🧪 Тест API (192.168.1.23:8080)</h2>
 
-    <script>
-        async function send() {
-            const status = document.getElementById('status');
-            const log = document.getElementById('log');
-            const data = document.getElementById('data').value;
-            
-            status.textContent = 'Отправка...';
-            status.className = '';
-            
-            // Пробуем два варианта URL (иногда localhost не резолвится с телефона)
-            const urls = [
-                'http://192.168.1.23:8080/',
-                'http://192.168.1.23:8080'
-            ];
-            
-            let success = false;
-            
-            for (const url of urls) {
-                try {
-                    const response = await fetch(url, {
-                        method: 'POST',
-                        mode: 'cors',
-                        headers: { 'Content-Type': 'text/plain' },
-                        body: data
-                    });
-                    
-                    if (response.ok) {
-                        const text = await response.text();
-                        status.textContent = `✅ Успешно! Ответ сервера: ${text}`;
-                        status.className = 'ok';
-                        log.innerHTML += `<br>[${new Date().toLocaleTimeString()}] Отправлено: ${data}`;
-                        success = true;
-                        break;
-                    }
-                } catch (err) {
-                    // Пробуем следующий URL
-                    console.log('Не удалось с ' + url + ': ' + err.message);
-                }
-            }
-            
-            if (!success) {
-                status.textContent = `❌ Не удалось отправить. Открой http://192.168.1.23:8080/ в браузере и убедись, что видишь "OK".`;
-                status.className = 'err';
-            }
-        }
-    </script>
+<div class="card">
+<h3>POST / — добавить строку</h3>
+<input id="data" value='{"action":"test","phone":"79161234567"}'>
+<button class="btn-send" onclick="postData()">Отправить</button>
+</div>
+
+<div class="card">
+<h3>GET /lines — получить строки</h3>
+<button class="btn-get" onclick="getLines()">Загрузить</button>
+<pre id="lines-result">Нажми "Загрузить"</pre>
+</div>
+
+<div class="card">
+<h3>DELETE /line?id=N — удалить строку</h3>
+<input id="lineId" value="0" style="width:60px">
+<button class="btn-del" onclick="deleteLine()">Удалить</button>
+</div>
+
+<div class="card">
+<h3>DELETE /all — очистить всё</h3>
+<button class="btn-del" onclick="deleteAll()">Очистить файл</button>
+</div>
+
+<script>
+const API = 'http://192.168.1.23:8080';
+
+async function postData(){
+const d=document.getElementById('data').value;
+const r=await fetch(API,{method:'POST',headers:{'Content-Type':'text/plain'},body:d});
+const j=await r.json();
+alert(JSON.stringify(j));
+}
+
+async function getLines(){
+const r=await fetch(API+'/lines');
+const j=await r.json();
+document.getElementById('lines-result').textContent=JSON.stringify(j,null,2);
+}
+
+async function deleteLine(){
+const id=document.getElementById('lineId').value;
+const r=await fetch(API+'/line?id='+id,{method:'DELETE'});
+const j=await r.json();
+alert(JSON.stringify(j));
+getLines();
+}
+
+async function deleteAll(){
+if(!confirm('Точно удалить всё?'))return;
+const r=await fetch(API+'/all',{method:'DELETE'});
+const j=await r.json();
+alert(JSON.stringify(j));
+getLines();
+}
+</script>
 </body>
 </html>
