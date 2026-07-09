@@ -1,5 +1,4 @@
-﻿<!DOCTYPE html>
-<html lang="ru">
+﻿<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -541,7 +540,7 @@
             color: #0c5460;
             border: 1px solid #bee5eb;
         }
-		        
+        
         .price-tag-preview {
             margin: 20px 0;
             border: 2px dashed #ddd;
@@ -780,7 +779,7 @@
         }
         
         .scan-result-title {
-            font-size: 20px;
+            font-size: 24px;
             color: #4CAF50;
             margin-bottom: 20px;
             font-weight: bold;
@@ -1004,7 +1003,7 @@
             font-weight: bold;
             margin-bottom: 5px;
         }
-		
+
         /* Стили для iOS сканера */
         .ios-scanner-modal {
             display: none;
@@ -1037,7 +1036,6 @@
             position: relative;
         }
         
-        /* Кастомные стили для Html5-QRCode */
         #ios-html5-qrcode-anchor-scan-type-change,
         #ios-html5qr-code-full-region__scan_region {
             display: none !important;
@@ -1092,10 +1090,7 @@
             left: 0;
             width: 100%;
             height: 4px;
-            background: linear-gradient(90deg, 
-                transparent, 
-                #4CAF50, 
-                transparent);
+            background: linear-gradient(90deg, transparent, #4CAF50, transparent);
             animation: ios-scan 2s ease-in-out infinite;
             box-shadow: 0 0 10px #4CAF50;
         }
@@ -1245,8 +1240,8 @@
             color: white;
             border: none;
             border-radius: 50%;
-            width: 24px;
-            height: 24px;
+            width: 36px;
+            height: 36px;
             font-size: 20px;
             cursor: pointer;
             display: flex;
@@ -1255,191 +1250,43 @@
             transition: all 0.3s;
             flex-shrink: 0;
         }
-        .add-to-list-btn:hover {
-            background: #45a049;
-            transform: scale(1.1);
-        }
-        .add-to-list-btn:active {
-            transform: scale(0.95);
-        }
-        .add-to-list-btn.added {
-            background: #2196F3;
-            animation: pulse 0.5s ease-out;
-        }
+        .add-to-list-btn:hover { background: #45a049; transform: scale(1.1); }
+        .add-to-list-btn:active { transform: scale(0.95); }
+        .add-to-list-btn.added { background: #2196F3; animation: pulse 0.5s ease-out; }
         @keyframes pulse {
             0% { transform: scale(1); }
             50% { transform: scale(1.3); }
             100% { transform: scale(1); }
         }
         
-        /* Модальное окно "Добавлено" */
-        .added-modal {
-            max-width: 600px;
-            animation: successSlide 0.5s ease-out;
-        }
-        .added-modal .scan-result-title {
-            font-size: 20px;
-            color: #4CAF50;
-            margin-bottom: 15px;
-            text-align: center;
-        }
-        .added-modal .line-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 10px 12px;
-            margin: 4px 0;
-            background: #f8f9fa;
-            border-radius: 8px;
-            gap: 10px;
-            transition: background 0.2s;
-        }
-        .added-modal .line-item:hover {
-            background: #e8f5e9;
-        }
-        .added-modal .line-num {
-            font-weight: bold;
-            color: #1a73e8;
-            min-width: 32px;
-            font-size: 13px;
-            cursor: pointer;
-            text-decoration: underline;
-            transition: color 0.2s;
-        }
-        .added-modal .line-num:hover {
-            color: #0d47a1;
-        }
-        .added-modal .line-text {
-            flex: 1;
-            font-size: 13px;
-            word-break: break-all;
-        }
-        .added-modal .btn-del {
-            background: #ff4444;
-            color: #fff;
-            border: none;
-            border-radius: 6px;
-            padding: 6px 12px;
-            font-size: 13px;
-            cursor: pointer;
-            min-width: 32px;
-        }
-        .added-modal .btn-clear {
-            background: #ea4335;
-            color: #fff;
-            border: none;
-            border-radius: 8px;
-            padding: 12px 20px;
-            font-size: 14px;
-            font-weight: bold;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 10px;
-        }
-        .added-modal .btn-scan-more {
-            background: #2196F3;
-            color: #fff;
-            border: none;
-            border-radius: 8px;
-            padding: 12px 20px;
-            font-size: 14px;
-            font-weight: bold;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-        .added-modal .counter {
-            text-align: center;
-            font-size: 13px;
-            color: #666;
-            margin-bottom: 8px;
-        }
-        .added-modal .empty {
-            text-align: center;
-            color: #999;
-            padding: 20px;
-            font-size: 14px;
-        }
+        .added-modal { max-width: 600px; animation: successSlide 0.5s ease-out; }
+        .added-modal .scan-result-title { font-size: 28px; color: #4CAF50; margin-bottom: 15px; text-align: center; }
+        .added-modal .line-item { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; margin: 4px 0; background: #f8f9fa; border-radius: 8px; gap: 10px; transition: background 0.2s; }
+        .added-modal .line-item:hover { background: #e8f5e9; }
+        .added-modal .line-num { font-weight: bold; color: #1a73e8; min-width: 32px; font-size: 13px; cursor: pointer; text-decoration: underline; transition: color 0.2s; }
+        .added-modal .line-num:hover { color: #0d47a1; }
+        .added-modal .line-text { flex: 1; font-size: 13px; word-break: break-all; }
+        .added-modal .btn-del { background: #ff4444; color: #fff; border: none; border-radius: 6px; padding: 6px 12px; font-size: 13px; cursor: pointer; min-width: 32px; }
+        .added-modal .btn-clear { background: #ea4335; color: #fff; border: none; border-radius: 8px; padding: 12px 20px; font-size: 14px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 10px; }
+        .added-modal .btn-scan-more { background: #2196F3; color: #fff; border: none; border-radius: 8px; padding: 12px 20px; font-size: 14px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .added-modal .counter { text-align: center; font-size: 13px; color: #666; margin-bottom: 8px; }
+        .added-modal .empty { text-align: center; color: #999; padding: 20px; font-size: 14px; }
         
-        /* Всплывающая подсказка */
-        .line-tooltip {
-            display: none;
-            position: fixed;
-            background: white;
-            border: 2px solid #1a73e8;
-            border-radius: 10px;
-            padding: 15px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-            z-index: 5000;
-            max-width: 320px;
-            font-size: 13px;
-            animation: tooltipFadeIn 0.2s ease-out;
-        }
-        .line-tooltip.show {
-            display: block;
-        }
-        .line-tooltip .tooltip-row {
-            padding: 4px 0;
-            border-bottom: 1px solid #f0f0f0;
-        }
-        .line-tooltip .tooltip-row:last-child {
-            border-bottom: none;
-        }
-        .line-tooltip .tooltip-label {
-            font-weight: bold;
-            color: #555;
-            font-size: 11px;
-        }
-        .line-tooltip .tooltip-value {
-            color: #333;
-            font-size: 12px;
-        }
-        @keyframes tooltipFadeIn {
-            from { opacity: 0; transform: translateY(-5px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        .line-tooltip { display: none; position: fixed; background: white; border: 2px solid #1a73e8; border-radius: 10px; padding: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.2); z-index: 5000; max-width: 320px; font-size: 13px; animation: tooltipFadeIn 0.2s ease-out; }
+        .line-tooltip.show { display: block; }
+        .line-tooltip .tooltip-row { padding: 4px 0; border-bottom: 1px solid #f0f0f0; }
+        .line-tooltip .tooltip-row:last-child { border-bottom: none; }
+        .line-tooltip .tooltip-value { color: #333; font-size: 12px; }
+        @keyframes tooltipFadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
         
-        /* Дубликаты */
-        .duplicate-barcode-modal {
-            max-width: 600px;
-        }
-        .duplicate-item {
-            padding: 12px;
-            margin: 8px 0;
-            background: #f8f9fa;
-            border-radius: 8px;
-            border-left: 4px solid #2196F3;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .duplicate-item:hover {
-            background: #e3f2fd;
-            transform: translateX(5px);
-        }
-        .duplicate-item.selected {
-            background: #c8e6c9;
-            border-left-color: #4CAF50;
-        }
+        .duplicate-barcode-modal { max-width: 600px; }
+        .duplicate-item { padding: 12px; margin: 8px 0; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #2196F3; cursor: pointer; transition: all 0.2s; }
+        .duplicate-item:hover { background: #e3f2fd; transform: translateX(5px); }
+        .duplicate-item.selected { background: #c8e6c9; border-left-color: #4CAF50; }
         
-        .product-header-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 5px;
-        }
-        .product-header-left {
-            display: flex;
-            align-items: center;
-        }
-        .product-header-right {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+        .product-header-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 5px; }
+        .product-header-left { display: flex; align-items: center; }
+        .product-header-right { display: flex; align-items: center; gap: 10px; }
     </style>
 </head>
 <body>
@@ -1604,11 +1451,11 @@
     <!-- Модальное окно "Добавлено" со списком из cen.txt -->
     <div class="modal-overlay" id="addedModal">
         <div class="modal-frame added-modal">
-            <div class="scan-result-title">&#9989; Добавлено!</div>
+            <div class="scan-result-title">✅ Добавлено!</div>
             <div class="counter" id="addedCounter">Загрузка...</div>
             <div id="addedLinesList"></div>
             <button class="btn-scan-more" id="btnScanMore">&#128247; Сканировать еще</button>
-            <button class="btn-clear" id="btnClearAll">Очистить всё</button>
+            <button class="btn-clear" id="btnClearAll">🗑 Очистить всё</button>
             <button class="close-modal" id="closeAddedModal" style="margin-top: 10px;">Закрыть</button>
         </div>
     </div>
@@ -1619,11 +1466,11 @@
     <!-- Модальное окно для выбора товара при дубликатах штрихкодов -->
     <div class="modal-overlay" id="duplicateModal">
         <div class="modal-frame duplicate-barcode-modal">
-            <h3 style="color: #e74c3c; margin-bottom: 15px;">Найдено несколько товаров</h3>
+            <h3 style="color: #e74c3c; margin-bottom: 15px;">⚠️ Найдено несколько товаров</h3>
             <p style="color: #666; margin-bottom: 15px;">Штрихкод <strong id="dupBarcodeDisplay"></strong> найден у разных товаров. Выберите нужный:</p>
             <div id="duplicateItemsList"></div>
             <div style="display: flex; gap: 10px; margin-top: 20px;">
-                <button class="action-btn continue-scan-btn" id="confirmDuplicateBtn" disabled>Подтвердить выбор</button>
+                <button class="action-btn continue-scan-btn" id="confirmDuplicateBtn" disabled>✅ Подтвердить выбор</button>
                 <button class="action-btn close-result-btn" id="cancelDuplicateBtn">Отмена</button>
             </div>
         </div>
@@ -1729,7 +1576,6 @@
 4600797004630;ФЗ-407057;Фреска с блестками Морской конек;204,00;204,00;;;8;;;;0,400;;;Cb010003481_1;;;20;Cb010003481_1;
 `;
 
-        // ===== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ =====
         function parseStockValue(value) {
             if (!value) return 0;
             const cleanValue = value.toString().replace(/\s/g, '').replace(/\u00A0/g, '');
@@ -1977,7 +1823,6 @@
             const allProducts = parseProductsData(productsData);
             const cleanLine = lineData.trim();
             
-            // 1. Пробуем распарсить как JSON
             try {
                 const parsed = JSON.parse(cleanLine);
                 if (parsed.barcode) {
@@ -1991,42 +1836,29 @@
                     );
                     if (found.length > 0) return found[0];
                 }
-            } catch (e) {
-                // Не JSON, идём дальше
-            }
+            } catch (e) {}
             
-            // 2. Проверяем как чистый штрихкод (8-14 цифр)
             if (/^\d{8,14}$/.test(cleanLine)) {
                 const found = allProducts.filter(p => p.barcode.includes(cleanLine));
                 if (found.length > 0) return found[0];
             }
             
-            // 3. Ищем по артикулу
-            const byArticle = allProducts.filter(p => 
-                p.article.toLowerCase().includes(cleanLine.toLowerCase())
-            );
+            const byArticle = allProducts.filter(p => p.article.toLowerCase().includes(cleanLine.toLowerCase()));
             if (byArticle.length > 0) return byArticle[0];
             
-            // 4. Ищем по наименованию
-            const byName = allProducts.filter(p => 
-                p.name.toLowerCase().includes(cleanLine.toLowerCase())
-            );
+            const byName = allProducts.filter(p => p.name.toLowerCase().includes(cleanLine.toLowerCase()));
             if (byName.length > 0) return byName[0];
             
             return null;
         }
 
-        // ===== ВСПЛЫВАЮЩАЯ ПОДСКАЗКА ПРИ КЛИКЕ НА НОМЕР СТРОКИ =====
+        // ===== ВСПЛЫВАЮЩАЯ ПОДСКАЗКА =====
         function showLineTooltip(event, index, lineData) {
             event.stopPropagation();
             const tooltip = document.getElementById('lineTooltip');
             const product = findProductByLineData(lineData);
             
             if (product) {
-                // Формат как в примере:
-                // KS-8001
-                // Набор для творчества "ЧАСТИЧНАЯ ВЫКЛАДКА СТРАЗАМИ" 10*15 в пакете
-                // 6080010075148
                 tooltip.innerHTML = `
                     <div class="tooltip-row">
                         <span class="tooltip-value" style="font-weight: bold; font-size: 14px;">${escapeHtml(product.article)}</span>
@@ -2046,21 +1878,14 @@
                     </div>`}
                 `;
             } else {
-                // Если товар не найден, показываем саму строку
-                tooltip.innerHTML = `
-                    <div class="tooltip-row">
-                        <span class="tooltip-value">${escapeHtml(lineData)}</span>
-                    </div>
-                `;
+                tooltip.innerHTML = `<div class="tooltip-row"><span class="tooltip-value">${escapeHtml(lineData)}</span></div>`;
             }
             
-            // Позиционируем подсказку
             const rect = event.target.getBoundingClientRect();
             tooltip.style.left = Math.min(rect.left, window.innerWidth - 330) + 'px';
             tooltip.style.top = (rect.bottom + 5) + 'px';
             tooltip.classList.add('show');
             
-            // Закрытие по клику вне подсказки
             const closeTooltip = (e) => {
                 if (!tooltip.contains(e.target) && e.target !== event.target) {
                     tooltip.classList.remove('show');
@@ -2076,12 +1901,11 @@
             return d.innerHTML;
         }
 
-        // ===== ОТОБРАЖЕНИЕ МОДАЛЬНОГО ОКНА "ДОБАВЛЕНО" =====
+        // ===== МОДАЛЬНОЕ ОКНО "ДОБАВЛЕНО" =====
         async function showAddedModal() {
             const modal = document.getElementById('addedModal');
             const counter = document.getElementById('addedCounter');
             const linesList = document.getElementById('addedLinesList');
-            
             const lines = await getCenTxtLines();
             
             if (lines.length === 0) {
@@ -2092,67 +1916,52 @@
                 let html = '';
                 lines.forEach((line, i) => {
                     let displayText = line;
-                    if (displayText.length > 60) {
-                        displayText = displayText.substring(0, 60) + '...';
-                    }
-                    // Экранируем строку для безопасной вставки в onclick
+                    if (displayText.length > 60) displayText = displayText.substring(0, 60) + '...';
                     const escapedLine = line.replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/\n/g, '\\n');
                     html += `
                     <div class="line-item">
                         <span class="line-num" onclick="showLineTooltip(event, ${i}, '${escapedLine}')">#${i + 1}</span>
                         <span class="line-text">${escapeHtml(displayText)}</span>
-                        <button class="btn-del" onclick="deleteAddedLine(${i})">&#10006;</button>
+                        <button class="btn-del" onclick="deleteAddedLine(${i})">✕</button>
                     </div>`;
                 });
                 linesList.innerHTML = html;
             }
-            
             modal.style.display = 'flex';
         }
 
         async function deleteAddedLine(index) {
             if (!confirm('Удалить строку #' + (index + 1) + '?')) return;
-            const ok = await deleteCenTxtLine(index);
-            if (ok) showAddedModal(); // Обновляем список
+            if (await deleteCenTxtLine(index)) showAddedModal();
         }
 
         async function clearAllLines() {
-            if (!confirm('Удалить ВСЕ строки безвозвратно?')) return;
-            const ok = await clearCenTxt();
-            if (ok) showAddedModal(); // Обновляем список
+            if (!confirm('Удалить ВСЕ строки?')) return;
+            if (await clearCenTxt()) showAddedModal();
         }
 
-        // ===== ДОБАВЛЕНИЕ ШТРИХКОДА В CEN.TXT =====
+        // ===== ДОБАВЛЕНИЕ ШТРИХКОДА =====
         async function addBarcodeToList(barcode, product) {
-            // Проверяем на дубликаты штрихкодов в БД (один штрихкод — разные товары)
             const allProducts = parseProductsData(productsData);
             const allWithBarcode = allProducts.filter(p => p.barcode.includes(barcode));
-            
-            // Убираем полные дубликаты (одинаковые товары)
             const uniqueProducts = [];
             const seen = new Set();
             allWithBarcode.forEach(p => {
                 const key = createProductKey(p);
-                if (!seen.has(key)) {
-                    seen.add(key);
-                    uniqueProducts.push(p);
-                }
+                if (!seen.has(key)) { seen.add(key); uniqueProducts.push(p); }
             });
             
             if (uniqueProducts.length > 1) {
-                // Есть разные товары с одинаковым штрихкодом — показываем окно выбора
                 showDuplicateModal(barcode, uniqueProducts);
                 return;
             }
             
-            // Выбираем штрихкод для отправки (если у товара несколько — берём первый)
             let barcodeToSend = barcode;
             if (product && product.barcodes && product.barcodes.length > 1) {
                 barcodeToSend = product.barcodes[0];
             }
             
-            const ok = await addToCenTxt(barcodeToSend);
-            if (ok) {
+            if (await addToCenTxt(barcodeToSend)) {
                 document.getElementById('resultModal').style.display = 'none';
                 showAddedModal();
             } else {
@@ -2160,32 +1969,21 @@
             }
         }
 
-        // ===== МОДАЛЬНОЕ ОКНО ВЫБОРА ПРИ ДУБЛИКАТАХ =====
+        // ===== ДУБЛИКАТЫ =====
         function showDuplicateModal(barcode, products) {
             const modal = document.getElementById('duplicateModal');
-            const display = document.getElementById('dupBarcodeDisplay');
-            const list = document.getElementById('duplicateItemsList');
-            const confirmBtn = document.getElementById('confirmDuplicateBtn');
-            
-            display.textContent = barcode;
-            selectedDuplicateProduct = null;
-            confirmBtn.disabled = true;
-            
-            let html = '';
-            products.forEach((product, i) => {
-                html += `
+            document.getElementById('dupBarcodeDisplay').textContent = barcode;
+            document.getElementById('duplicateItemsList').innerHTML = products.map((p, i) => `
                 <div class="duplicate-item" data-index="${i}" onclick="selectDuplicateItem(this, ${i})">
-                    <div style="font-weight: bold;">${product.article}</div>
-                    <div style="font-size: 14px;">${product.name}</div>
-                    <div style="color: #e74c3c; margin-top: 5px;">
-                        ${product.discountPrice ? product.discountPrice + ' руб. (-' + product.discountPercent + '%)' : product.wholesalePrice + ' руб.'}
-                    </div>
-                </div>`;
-            });
-            list.innerHTML = html;
-            modal.style.display = 'flex';
-            
+                    <div style="font-weight: bold;">${p.article}</div>
+                    <div style="font-size: 14px;">${p.name}</div>
+                    <div style="color: #e74c3c; margin-top: 5px;">${p.discountPrice ? p.discountPrice + ' руб. (-' + p.discountPercent + '%)' : p.wholesalePrice + ' руб.'}</div>
+                </div>
+            `).join('');
+            selectedDuplicateProduct = null;
+            document.getElementById('confirmDuplicateBtn').disabled = true;
             window._duplicateProducts = products;
+            modal.style.display = 'flex';
         }
 
         function selectDuplicateItem(element, index) {
@@ -2194,22 +1992,7 @@
             selectedDuplicateProduct = window._duplicateProducts[index];
             document.getElementById('confirmDuplicateBtn').disabled = false;
         }
-
-        document.getElementById('confirmDuplicateBtn').addEventListener('click', async function() {
-            if (!selectedDuplicateProduct) return;
-            const barcode = selectedDuplicateProduct.barcode;
-            document.getElementById('duplicateModal').style.display = 'none';
-            const ok = await addToCenTxt(barcode);
-            if (ok) {
-                document.getElementById('resultModal').style.display = 'none';
-                showAddedModal();
-            }
-        });
-
-        document.getElementById('cancelDuplicateBtn').addEventListener('click', function() {
-            document.getElementById('duplicateModal').style.display = 'none';
-        });
-
+		
         // ===== ФУНКЦИИ ДЛЯ РАБОТЫ С СЕРИАЛЬНЫМ ПОРТОМ =====
 
         function updatePrinterStatus(message, type = 'connecting') {
@@ -2305,7 +2088,7 @@
                 throw error;
             }
         }
-		
+
 		// ===== ФУНКЦИИ ДЛЯ СОЗДАНИЯ И ПЕЧАТИ ЦЕННИКА =====
 
 		function createPriceTagImage(product, type = 'regular') {
@@ -2914,70 +2697,123 @@
             }
         }
 
-async function openCamera() {
-    try {
-        stopCameraStream();
-        
-        stream = await navigator.mediaDevices.getUserMedia({
-            video: {
-                facingMode: 'environment',
-                width: { ideal: 1280 },
-                height: { ideal: 720 }
-            },
-            audio: false
-        });
-        
-        const cameraVideo = document.getElementById('cameraVideo');
-        cameraVideo.srcObject = stream;
-        document.getElementById('cameraModal').style.display = 'flex';
-        
-        await cameraVideo.play();
-        
-        if (!barcodeDetector) {
-            barcodeDetector = await initBarcodeDetector();
-        }
-        
-        if (!barcodeDetector) {
-            alert('Ваш браузер не поддерживает прямое сканирование штрихкодов.');
-            stopCameraStream();
-            return;
-        }
-        
-        startBarcodeDetection(barcodeDetector);
-        
-    } catch (error) {
-        console.error('Ошибка доступа к камере:', error);
-        
-        try {
-            const fallbackStream = await navigator.mediaDevices.getUserMedia({
-                video: { facingMode: 'environment' },
-                audio: false
-            });
-            
-            const cameraVideo = document.getElementById('cameraVideo');
-            cameraVideo.srcObject = fallbackStream;
-            document.getElementById('cameraModal').style.display = 'flex';
-            
-            await cameraVideo.play();
-            stream = fallbackStream;
-            
-            if (!barcodeDetector) {
-                barcodeDetector = await initBarcodeDetector();
-            }
-            
-            if (barcodeDetector) {
-                startBarcodeDetection(barcodeDetector);
-            } else {
-                alert('Ваш браузер не поддерживает прямое сканирование штрихкодов.');
+        async function openCamera() {
+            try {
                 stopCameraStream();
+                
+                // Для Android выбираем заднюю камеру
+                if (isAndroid()) {
+                    // Получаем список камер
+                    const devices = await navigator.mediaDevices.enumerateDevices();
+                    const videoDevices = devices.filter(device => device.kind === 'videoinput');
+                    
+                    if (videoDevices.length > 0) {
+                        // Находим камеру с самым маленьким номером, которая не фронтальная
+                        let selectedCamera = null;
+                        
+                        // Сортируем по deviceId (обычно нумерация сохраняется)
+                        const sortedDevices = [...videoDevices].sort((a, b) => 
+                            a.deviceId.localeCompare(b.deviceId)
+                        );
+                        
+                        for (const device of sortedDevices) {
+                            const label = device.label.toLowerCase();
+                            // Пропускаем фронтальные
+                            if (label.includes('front') || label.includes('фронт')) {
+                                continue;
+                            }
+                            // Берем первую попавшуюся не фронтальную
+                            selectedCamera = device;
+                            break;
+                        }
+                        
+                        // Если не нашли, берем первую камеру
+                        if (!selectedCamera) {
+                            selectedCamera = videoDevices[0];
+                        }
+                        
+                        stream = await navigator.mediaDevices.getUserMedia({
+                            video: {
+                                deviceId: { exact: selectedCamera.deviceId },
+                                width: { ideal: 1280 },
+                                height: { ideal: 720 }
+                            },
+                            audio: false
+                        });
+                    } else {
+                        // Если не получилось получить список, используем стандартный режим
+                        stream = await navigator.mediaDevices.getUserMedia({
+                            video: {
+                                facingMode: 'environment',
+                                width: { ideal: 1280 },
+                                height: { ideal: 720 }
+                            },
+                            audio: false
+                        });
+                    }
+                } else {
+                    // Для iOS и других используем стандартный режим
+                    stream = await navigator.mediaDevices.getUserMedia({
+                        video: {
+                            facingMode: 'environment',
+                            width: { ideal: 1280 },
+                            height: { ideal: 720 }
+                        },
+                        audio: false
+                    });
+                }
+                
+                const cameraVideo = document.getElementById('cameraVideo');
+                cameraVideo.srcObject = stream;
+                document.getElementById('cameraModal').style.display = 'flex';
+                
+                await cameraVideo.play();
+                
+                if (!barcodeDetector) {
+                    barcodeDetector = await initBarcodeDetector();
+                }
+                
+                if (!barcodeDetector) {
+                    alert('Ваш браузер не поддерживает прямое сканирование штрихкодов.');
+                    stopCameraStream();
+                    return;
+                }
+                
+                startBarcodeDetection(barcodeDetector);
+                
+            } catch (error) {
+                console.error('Ошибка доступа к камере:', error);
+                
+                // Если что-то пошло не так, пробуем стандартный режим
+                try {
+                    const fallbackStream = await navigator.mediaDevices.getUserMedia({
+                        video: { facingMode: 'environment' },
+                        audio: false
+                    });
+                    
+                    const cameraVideo = document.getElementById('cameraVideo');
+                    cameraVideo.srcObject = fallbackStream;
+                    document.getElementById('cameraModal').style.display = 'flex';
+                    
+                    await cameraVideo.play();
+                    stream = fallbackStream;
+                    
+                    if (!barcodeDetector) {
+                        barcodeDetector = await initBarcodeDetector();
+                    }
+                    
+                    if (barcodeDetector) {
+                        startBarcodeDetection(barcodeDetector);
+                    } else {
+                        alert('Ваш браузер не поддерживает прямое сканирование штрихкодов.');
+                        stopCameraStream();
+                    }
+                    
+                } catch (fallbackError) {
+                    alert('Не удалось получить доступ к камере. Пожалуйста, разрешите доступ к камере в настройках браузера.');
+                }
             }
-            
-        } catch (fallbackError) {
-            alert('Не удалось получить доступ к камере. Пожалуйста, разрешите доступ к камере в настройках браузера.');
         }
-    }
-}
-
 
         function startBarcodeDetection(detector) {
             const canvas = document.createElement('canvas');
@@ -3266,7 +3102,7 @@ async function openCamera() {
                 });
             }).catch(() => {});
         }
-
+		
         // ===== ОБЩИЕ ФУНКЦИИ =====
 
         function showScanResults(code, results) {
@@ -3296,21 +3132,17 @@ async function openCamera() {
                     const printButtonHTML = `<button class="print-button" onclick="openPrintModal(${JSON.stringify(product).replace(/"/g, '&quot;')})" title="Печать ценника">&#129534;</button>`;
 
                     productCard.innerHTML = `
-                        <div class="product-header-row">
-                            <div class="product-header-left">
-                                <div style="font-size: 12px; color: #666;">
-                                    <strong>Штрихкод:</strong> ${product.count > 1 ? `Несколько (${product.count})` : product.barcode}
-                                </div>
-                            </div>
-                            <div class="product-header-right">
-                                ${printButtonHTML}
-                                <button class="add-to-list-btn" onclick="event.stopPropagation(); addBarcodeToList('${product.barcode}', ${JSON.stringify(product).replace(/"/g, '&quot;')})" title="Добавить в список">&#10133;</button>
-                            </div>
+                        <div style="font-size: 12px; color: #666; margin-bottom: 5px;">
+                            <strong>Штрихкод:</strong> ${product.count > 1 ? `Несколько (${product.count})` : product.barcode}
                         </div>
                         <div style="font-weight: bold; color: #333; margin-bottom: 5px; display: flex; align-items: center; justify-content: space-between;">
                             <div style="display: flex; align-items: center;" id="articleContainer_${product.article.replace(/[^a-zA-Z0-9]/g, '_')}">
                                 <strong>Артикул:</strong> ${product.article}
                                 ${hasImage ? '<button class="image-button" style="margin-left: 10px;">&#127750;</button>' : '<span class="no-image-text">(без изображения)</span>'}
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                ${printButtonHTML}
+                                <button class="add-to-list-btn" onclick="event.stopPropagation(); addBarcodeToList('${product.barcode}', ${JSON.stringify(product).replace(/"/g, '&quot;')})" title="Добавить в список">+</button>
                             </div>
                         </div>
                         <div style="font-size: 16px; color: #222; margin-bottom: 8px;">
@@ -3546,7 +3378,7 @@ async function openCamera() {
                 }
             });
         }
-		
+
         function createProductCard(product, query, searchMode) {
             const productCard = document.createElement('div');
             productCard.className = 'product-card';
@@ -3977,7 +3809,7 @@ async function openCamera() {
                 });
             });
         }
-
+		
         // ===== ИНИЦИАЛИЗАЦИЯ =====
         
         const searchInput = document.getElementById('searchInput');
@@ -4156,6 +3988,20 @@ async function openCamera() {
         });
 
         btnClearAll.addEventListener('click', clearAllLines);
+
+        // Обработчики для дубликатов
+        document.getElementById('confirmDuplicateBtn').addEventListener('click', async function() {
+            if (!selectedDuplicateProduct) return;
+            document.getElementById('duplicateModal').style.display = 'none';
+            if (await addToCenTxt(selectedDuplicateProduct.barcode)) {
+                document.getElementById('resultModal').style.display = 'none';
+                showAddedModal();
+            }
+        });
+
+        document.getElementById('cancelDuplicateBtn').addEventListener('click', function() {
+            document.getElementById('duplicateModal').style.display = 'none';
+        });
 
         closePrintModalBtn.addEventListener('click', closePrintModal);
 
