@@ -1240,7 +1240,7 @@
 		
         .add-to-list-btn {
             background: #4CAF50; color: white; border: none; border-radius: 50%;
-            width: 36px; height: 36px; font-size: 20px; cursor: pointer;
+            width: 24px; height: 24px; font-size: 20px; cursor: pointer;
             display: flex; align-items: center; justify-content: center;
             transition: all 0.3s; flex-shrink: 0;
         }
@@ -1248,7 +1248,7 @@
         .add-to-list-btn:active { transform: scale(0.95); }
         
         .added-modal { max-width: 600px; animation: successSlide 0.5s ease-out; }
-        .added-modal .scan-result-title { font-size: 28px; color: #4CAF50; margin-bottom: 15px; text-align: center; }
+        .added-modal .scan-result-title { font-size: 20px; color: #4CAF50; margin-bottom: 15px; text-align: center; }
         .added-modal .line-item { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; margin: 4px 0; background: #f8f9fa; border-radius: 8px; gap: 10px; }
         .added-modal .line-item:hover { background: #e8f5e9; }
         .added-modal .line-num { font-weight: bold; color: #1a73e8; min-width: 32px; font-size: 13px; cursor: pointer; text-decoration: underline; }
@@ -1485,22 +1485,22 @@
 
     <div class="modal-overlay" id="addedModal">
         <div class="modal-frame added-modal">
-            <div class="scan-result-title">✅ Добавлено!</div>
+            <div class="scan-result-title">&#9989; Добавлено!</div>
             <div class="counter" id="addedCounter">Загрузка...</div>
             <div id="addedLinesList"></div>
             <button class="btn-scan-more" id="btnScanMore">&#128247; Сканировать еще</button>
-            <button class="btn-clear" id="btnClearAll">🗑 Очистить всё</button>
+            <button class="btn-clear" id="btnClearAll">Очистить всё</button>
             <button class="close-modal" id="closeAddedModal" style="margin-top: 10px;">Закрыть</button>
         </div>
     </div>
     <div class="line-tooltip" id="lineTooltip"></div>
     <div class="modal-overlay" id="duplicateModal">
         <div class="modal-frame duplicate-barcode-modal">
-            <h3 style="color:#e74c3c;margin-bottom:15px;">⚠️ Найдено несколько товаров</h3>
+            <h3 style="color:#e74c3c;margin-bottom:15px;">Найдено несколько товаров</h3>
             <p style="color:#666;margin-bottom:15px;">Штрихкод <strong id="dupBarcodeDisplay"></strong> найден у разных товаров. Выберите нужный:</p>
             <div id="duplicateItemsList"></div>
             <div style="display:flex;gap:10px;margin-top:20px;">
-                <button class="action-btn continue-scan-btn" id="confirmDuplicateBtn" disabled>✅ Подтвердить выбор</button>
+                <button class="action-btn continue-scan-btn" id="confirmDuplicateBtn" disabled>Подтвердить выбор</button>
                 <button class="action-btn close-result-btn" id="cancelDuplicateBtn">Отмена</button>
             </div>
         </div>
@@ -1792,7 +1792,7 @@
             let h = '';
             lines.forEach((line, i) => {
                 const esc = line.replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/\n/g, '\\n');
-                h += `<div class="line-item"><span class="line-num" onclick="showLineTooltip(event,${i},'${esc}')">#${i+1}</span><span class="line-text">${line.length > 60 ? line.substring(0,60)+'...' : line}</span><button class="btn-del" onclick="deleteAddedLine(${i})">✕</button></div>`;
+                h += `<div class="line-item"><span class="line-num" onclick="showLineTooltip(event,${i},'${esc}')">#${i+1}</span><span class="line-text">${line.length > 60 ? line.substring(0,60)+'...' : line}</span><button class="btn-del" onclick="deleteAddedLine(${i})">&#10006;</button></div>`;
             });
             l.innerHTML = h; m.style.display = 'flex';
         }
@@ -2970,7 +2970,7 @@ async function openCamera() {
                                 ${hasImage ? '<button class="image-button" style="margin-left: 10px;">&#127750;</button>' : '<span class="no-image-text">(без изображения)</span>'}
                             </div>
 								${printButtonHTML}
-                                <button class="add-to-list-btn" onclick="event.stopPropagation(); addBarcodeToList('${product.barcode}', ${JSON.stringify(product).replace(/"/g, '&quot;')})" title="Добавить в список">+</button>
+                                <button class="add-to-list-btn" onclick="event.stopPropagation(); addBarcodeToList('${product.barcode}', ${JSON.stringify(product).replace(/"/g, '&quot;')})" title="Добавить в список">&#10133;</button>
                         </div>
                         <div style="font-size: 16px; color: #222; margin-bottom: 8px;">
                             ${product.name}
