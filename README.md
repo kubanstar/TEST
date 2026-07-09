@@ -1,11 +1,11 @@
-<html lang="ru">
+п»ї<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Поиск товаров</title>
+    <title>РџРѕРёСЃРє С‚РѕРІР°СЂРѕРІ</title>
     <script src="https://unpkg.com/html5-qrcode"></script>
     <style>
-        /* Базовые стили */
+        /* Р‘Р°Р·РѕРІС‹Рµ СЃС‚РёР»Рё */
         body {
             font-family: Arial, sans-serif;
             max-width: 800px;
@@ -22,7 +22,7 @@
             text-align: center;
         }
         
-        /* Стили для кнопки добавления в список */
+        /* РЎС‚РёР»Рё РґР»СЏ РєРЅРѕРїРєРё РґРѕР±Р°РІР»РµРЅРёСЏ РІ СЃРїРёСЃРѕРє */
         .add-to-list-btn {
             background: #4CAF50;
             color: white;
@@ -59,7 +59,7 @@
             100% { transform: scale(1); }
         }
         
-        /* Стили для модального окна "Добавлено" */
+        /* РЎС‚РёР»Рё РґР»СЏ РјРѕРґР°Р»СЊРЅРѕРіРѕ РѕРєРЅР° "Р”РѕР±Р°РІР»РµРЅРѕ" */
         .added-modal {
             max-width: 600px;
             animation: successSlide 0.5s ease-out;
@@ -163,7 +163,7 @@
             font-size: 14px;
         }
         
-        /* Всплывающая подсказка для строки */
+        /* Р’СЃРїР»С‹РІР°СЋС‰Р°СЏ РїРѕРґСЃРєР°Р·РєР° РґР»СЏ СЃС‚СЂРѕРєРё */
         .line-tooltip {
             display: none;
             position: fixed;
@@ -207,7 +207,7 @@
             to { opacity: 1; transform: translateY(0); }
         }
         
-        /* Существующие стили (сохранены) */
+        /* РЎСѓС‰РµСЃС‚РІСѓСЋС‰РёРµ СЃС‚РёР»Рё (СЃРѕС…СЂР°РЅРµРЅС‹) */
         .combined-search-fields {
             display: none;
             gap: 10px;
@@ -1209,7 +1209,7 @@
             gap: 10px;
         }
 
-        /* iOS сканер */
+        /* iOS СЃРєР°РЅРµСЂ */
         .ios-scanner-modal {
             display: none;
             position: fixed;
@@ -1423,40 +1423,40 @@
 </head>
 <body>
     <div class="search-container">
-        <h2>Поиск товаров</h2>
+        <h2>РџРѕРёСЃРє С‚РѕРІР°СЂРѕРІ</h2>
         
         <div class="search-input-wrapper">
             <input type="text" 
                    class="search-input" 
                    id="searchInput" 
-                   placeholder="Введите артикул для поиска..."
+                   placeholder="Р’РІРµРґРёС‚Рµ Р°СЂС‚РёРєСѓР» РґР»СЏ РїРѕРёСЃРєР°..."
                    autocomplete="off">
-            <button class="clear-search-btn" id="clearSearchBtn" title="Очистить поле поиска">&#10060;</button>
+            <button class="clear-search-btn" id="clearSearchBtn" title="РћС‡РёСЃС‚РёС‚СЊ РїРѕР»Рµ РїРѕРёСЃРєР°">&#10060;</button>
         </div>
         
         <div class="combined-search-fields" id="combinedSearchFields">
             <div class="combined-field">
-                <label for="articleInput">Артикул:</label>
+                <label for="articleInput">РђСЂС‚РёРєСѓР»:</label>
                 <input type="text" 
                        class="combined-input" 
                        id="articleInput" 
-                       placeholder="Часть артикула..."
+                       placeholder="Р§Р°СЃС‚СЊ Р°СЂС‚РёРєСѓР»Р°..."
                        autocomplete="off">
             </div>
             <div class="combined-field">
-                <label for="nameInput">Наименование:</label>
+                <label for="nameInput">РќР°РёРјРµРЅРѕРІР°РЅРёРµ:</label>
                 <input type="text" 
                        class="combined-input" 
                        id="nameInput" 
-                       placeholder="Часть наименования..."
+                       placeholder="Р§Р°СЃС‚СЊ РЅР°РёРјРµРЅРѕРІР°РЅРёСЏ..."
                        autocomplete="off">
             </div>
             <div class="combined-field">
-                <label for="barcodeInput">Штрихкод:</label>
+                <label for="barcodeInput">РЁС‚СЂРёС…РєРѕРґ:</label>
                 <input type="text" 
                        class="combined-input" 
                        id="barcodeInput" 
-                       placeholder="Часть штрихкода..."
+                       placeholder="Р§Р°СЃС‚СЊ С€С‚СЂРёС…РєРѕРґР°..."
                        autocomplete="off">
             </div>
         </div>
@@ -1464,64 +1464,64 @@
         <div class="search-mode-selector">
             <div class="mode-option">
                 <input type="radio" id="modeArticle" name="searchMode" class="mode-radio" value="article" checked>
-                <label for="modeArticle" class="mode-label">Артикул</label>
+                <label for="modeArticle" class="mode-label">РђСЂС‚РёРєСѓР»</label>
             </div>
             <div class="mode-option">
                 <input type="radio" id="modeBarcode" name="searchMode" class="mode-radio" value="barcode">
-                <label for="modeBarcode" class="mode-label">Штрихкод</label>
+                <label for="modeBarcode" class="mode-label">РЁС‚СЂРёС…РєРѕРґ</label>
             </div>
             <div class="mode-option">
                 <input type="radio" id="modeName" name="searchMode" class="mode-radio" value="name">
-                <label for="modeName" class="mode-label">Наименование</label>
+                <label for="modeName" class="mode-label">РќР°РёРјРµРЅРѕРІР°РЅРёРµ</label>
             </div>
             <div class="mode-option">
                 <input type="radio" id="modeCombined" name="searchMode" class="mode-radio" value="combined">
-                <label for="modeCombined" class="mode-label">Комбинированный</label>
+                <label for="modeCombined" class="mode-label">РљРѕРјР±РёРЅРёСЂРѕРІР°РЅРЅС‹Р№</label>
             </div>
         </div>
         
         <div class="buttons-container">
-            <button class="search-button" id="searchButton">Найти</button>
+            <button class="search-button" id="searchButton">РќР°Р№С‚Рё</button>
             <button class="scan-button scan-button-android" id="scanButtonAndroid" style="display: none;">
-                <span class="scan-icon">&#128247;</span> Сканировать штрихкод
+                <span class="scan-icon">&#128247;</span> РЎРєР°РЅРёСЂРѕРІР°С‚СЊ С€С‚СЂРёС…РєРѕРґ
             </button>
             <button class="scan-button scan-button-ios" id="scanButtonIOS" style="display: none;">
-                <span class="scan-icon">&#128247;</span> Сканировать штрихкод
+                <span class="scan-icon">&#128247;</span> РЎРєР°РЅРёСЂРѕРІР°С‚СЊ С€С‚СЂРёС…РєРѕРґ
             </button>
         </div>
 
         <div class="barcode-supported">
-            <span class="barcode-format" id="current-date" title="Нажмите для просмотра дат изменения файлов"></span>
+            <span class="barcode-format" id="current-date" title="РќР°Р¶РјРёС‚Рµ РґР»СЏ РїСЂРѕСЃРјРѕС‚СЂР° РґР°С‚ РёР·РјРµРЅРµРЅРёСЏ С„Р°Р№Р»РѕРІ"></span>
         </div>
 
         <div id="printStatus" class="print-status"></div>
         
         <div class="results-container" id="resultsContainer">
-            <!-- Результаты поиска будут здесь -->
+            <!-- Р РµР·СѓР»СЊС‚Р°С‚С‹ РїРѕРёСЃРєР° Р±СѓРґСѓС‚ Р·РґРµСЃСЊ -->
         </div>
     </div>
 
-    <!-- Кнопка "Наверх" -->
-    <button class="scroll-to-top-btn" id="scrollToTopBtn" title="Наверх">&#9650;</button>
+    <!-- РљРЅРѕРїРєР° "РќР°РІРµСЂС…" -->
+    <button class="scroll-to-top-btn" id="scrollToTopBtn" title="РќР°РІРµСЂС…">&#9650;</button>
 
-    <!-- Модальное окно камеры для Android -->
+    <!-- РњРѕРґР°Р»СЊРЅРѕРµ РѕРєРЅРѕ РєР°РјРµСЂС‹ РґР»СЏ Android -->
     <div class="modal-overlay" id="cameraModal">
         <div class="modal-frame">
-            <h3>Сканирование штрихкода</h3>
+            <h3>РЎРєР°РЅРёСЂРѕРІР°РЅРёРµ С€С‚СЂРёС…РєРѕРґР°</h3>
             <div class="video-wrapper" id="videoContainer">
                 <div class="scan-box">
                     <div class="scan-line"></div>
                 </div>
                 <video id="cameraVideo" playsinline></video>
                 <div class="camera-controls">
-                    <button class="camera-btn" id="stopCamera">Остановить</button>
+                    <button class="camera-btn" id="stopCamera">РћСЃС‚Р°РЅРѕРІРёС‚СЊ</button>
                 </div>
             </div>
-            <button class="close-modal" id="closeCameraModal">Закрыть</button>
+            <button class="close-modal" id="closeCameraModal">Р—Р°РєСЂС‹С‚СЊ</button>
         </div>
     </div>
 
-    <!-- Модальное окно сканера для iOS -->
+    <!-- РњРѕРґР°Р»СЊРЅРѕРµ РѕРєРЅРѕ СЃРєР°РЅРµСЂР° РґР»СЏ iOS -->
     <div class="ios-scanner-modal" id="iosScannerModal">
         <div class="ios-scanner-content">
             <div class="ios-scanner-container">
@@ -1531,99 +1531,99 @@
                         <div class="ios-scan-line"></div>
                     </div>
                 </div>
-                <div class="ios-scanner-info">Наведите камеру на штрихкод в рамке</div>
+                <div class="ios-scanner-info">РќР°РІРµРґРёС‚Рµ РєР°РјРµСЂСѓ РЅР° С€С‚СЂРёС…РєРѕРґ РІ СЂР°РјРєРµ</div>
                 <div class="ios-status-message" id="iosScannerStatus"></div>
-                <div class="ios-loader" id="iosScannerLoader">Загрузка...</div>
+                <div class="ios-loader" id="iosScannerLoader">Р—Р°РіСЂСѓР·РєР°...</div>
                 <div class="ios-no-camera" id="iosNoCameraMessage">
-                    <h3 style="color: #ff3b30; margin-bottom:15px;">Камера недоступна</h3>
-                    <p>Ваш браузер не поддерживает доступ к камере или камера заблокирована.</p>
-                    <p style="margin-top:15px; font-size:14px; color:#ccc;">Используйте Safari на iOS</p>
+                    <h3 style="color: #ff3b30; margin-bottom:15px;">РљР°РјРµСЂР° РЅРµРґРѕСЃС‚СѓРїРЅР°</h3>
+                    <p>Р’Р°С€ Р±СЂР°СѓР·РµСЂ РЅРµ РїРѕРґРґРµСЂР¶РёРІР°РµС‚ РґРѕСЃС‚СѓРї Рє РєР°РјРµСЂРµ РёР»Рё РєР°РјРµСЂР° Р·Р°Р±Р»РѕРєРёСЂРѕРІР°РЅР°.</p>
+                    <p style="margin-top:15px; font-size:14px; color:#ccc;">РСЃРїРѕР»СЊР·СѓР№С‚Рµ Safari РЅР° iOS</p>
                 </div>
             </div>
             <div class="ios-modal-controls">
-                <button class="ios-modal-btn ios-modal-btn-danger" id="closeIOSScanner">? Закрыть сканер</button>
-                <button class="ios-modal-btn ios-modal-btn-primary" id="switchIOSCamera" style="display: none;">Переключить камеру</button>
+                <button class="ios-modal-btn ios-modal-btn-danger" id="closeIOSScanner">? Р—Р°РєСЂС‹С‚СЊ СЃРєР°РЅРµСЂ</button>
+                <button class="ios-modal-btn ios-modal-btn-primary" id="switchIOSCamera" style="display: none;">РџРµСЂРµРєР»СЋС‡РёС‚СЊ РєР°РјРµСЂСѓ</button>
             </div>
         </div>
     </div>
 
-    <!-- Модальное окно результатов сканирования -->
+    <!-- РњРѕРґР°Р»СЊРЅРѕРµ РѕРєРЅРѕ СЂРµР·СѓР»СЊС‚Р°С‚РѕРІ СЃРєР°РЅРёСЂРѕРІР°РЅРёСЏ -->
     <div class="modal-overlay" id="resultModal">
         <div class="modal-frame scan-result-frame">
             <div class="scan-result-products" id="resultProducts"></div>
             <div class="scan-result-count" id="resultCount"></div>
             <div class="scan-result-actions">
-                <button class="action-btn continue-scan-btn" id="continueScanBtn">&#128247; Сканировать еще</button>
-                <button class="action-btn close-result-btn" id="closeResultBtn">Закрыть</button>
+                <button class="action-btn continue-scan-btn" id="continueScanBtn">&#128247; РЎРєР°РЅРёСЂРѕРІР°С‚СЊ РµС‰Рµ</button>
+                <button class="action-btn close-result-btn" id="closeResultBtn">Р—Р°РєСЂС‹С‚СЊ</button>
             </div>
         </div>
     </div>
 
-    <!-- Модальное окно "Добавлено" со списком из cen.txt -->
+    <!-- РњРѕРґР°Р»СЊРЅРѕРµ РѕРєРЅРѕ "Р”РѕР±Р°РІР»РµРЅРѕ" СЃРѕ СЃРїРёСЃРєРѕРј РёР· cen.txt -->
     <div class="modal-overlay" id="addedModal">
         <div class="modal-frame added-modal">
-            <div class="scan-result-title">? Добавлено!</div>
-            <div class="counter" id="addedCounter">Загрузка...</div>
+            <div class="scan-result-title">? Р”РѕР±Р°РІР»РµРЅРѕ!</div>
+            <div class="counter" id="addedCounter">Р—Р°РіСЂСѓР·РєР°...</div>
             <div id="addedLinesList"></div>
-            <button class="btn-scan-more" id="btnScanMore">&#128247; Сканировать еще</button>
-            <button class="btn-clear" id="btnClearAll">?? Очистить всё</button>
-            <button class="close-modal" id="closeAddedModal" style="margin-top: 10px;">Закрыть</button>
+            <button class="btn-scan-more" id="btnScanMore">&#128247; РЎРєР°РЅРёСЂРѕРІР°С‚СЊ РµС‰Рµ</button>
+            <button class="btn-clear" id="btnClearAll">?? РћС‡РёСЃС‚РёС‚СЊ РІСЃС‘</button>
+            <button class="close-modal" id="closeAddedModal" style="margin-top: 10px;">Р—Р°РєСЂС‹С‚СЊ</button>
         </div>
     </div>
 
-    <!-- Всплывающая подсказка с информацией о товаре -->
+    <!-- Р’СЃРїР»С‹РІР°СЋС‰Р°СЏ РїРѕРґСЃРєР°Р·РєР° СЃ РёРЅС„РѕСЂРјР°С†РёРµР№ Рѕ С‚РѕРІР°СЂРµ -->
     <div class="line-tooltip" id="lineTooltip"></div>
 
-    <!-- Модальное окно для выбора товара при дубликатах штрихкодов -->
+    <!-- РњРѕРґР°Р»СЊРЅРѕРµ РѕРєРЅРѕ РґР»СЏ РІС‹Р±РѕСЂР° С‚РѕРІР°СЂР° РїСЂРё РґСѓР±Р»РёРєР°С‚Р°С… С€С‚СЂРёС…РєРѕРґРѕРІ -->
     <div class="modal-overlay" id="duplicateModal">
         <div class="modal-frame duplicate-barcode-modal">
-            <h3 style="color: #e74c3c; margin-bottom: 15px;">?? Найдено несколько товаров</h3>
-            <p style="color: #666; margin-bottom: 15px;">Штрихкод <strong id="dupBarcodeDisplay"></strong> найден у разных товаров. Выберите нужный:</p>
+            <h3 style="color: #e74c3c; margin-bottom: 15px;">?? РќР°Р№РґРµРЅРѕ РЅРµСЃРєРѕР»СЊРєРѕ С‚РѕРІР°СЂРѕРІ</h3>
+            <p style="color: #666; margin-bottom: 15px;">РЁС‚СЂРёС…РєРѕРґ <strong id="dupBarcodeDisplay"></strong> РЅР°Р№РґРµРЅ Сѓ СЂР°Р·РЅС‹С… С‚РѕРІР°СЂРѕРІ. Р’С‹Р±РµСЂРёС‚Рµ РЅСѓР¶РЅС‹Р№:</p>
             <div id="duplicateItemsList"></div>
             <div style="display: flex; gap: 10px; margin-top: 20px;">
-                <button class="action-btn continue-scan-btn" id="confirmDuplicateBtn" disabled>? Подтвердить выбор</button>
-                <button class="action-btn close-result-btn" id="cancelDuplicateBtn">Отмена</button>
+                <button class="action-btn continue-scan-btn" id="confirmDuplicateBtn" disabled>? РџРѕРґС‚РІРµСЂРґРёС‚СЊ РІС‹Р±РѕСЂ</button>
+                <button class="action-btn close-result-btn" id="cancelDuplicateBtn">РћС‚РјРµРЅР°</button>
             </div>
         </div>
     </div>
 
-    <!-- Модальное окно печати -->
+    <!-- РњРѕРґР°Р»СЊРЅРѕРµ РѕРєРЅРѕ РїРµС‡Р°С‚Рё -->
     <div class="print-modal-new" id="printModal">
         <div class="print-modal-content-new">
-            <h3>Печать ценника</h3>
-            <div id="printerStatus" class="printer-status printer-connecting">Подключаюсь к принтеру...</div>
+            <h3>РџРµС‡Р°С‚СЊ С†РµРЅРЅРёРєР°</h3>
+            <div id="printerStatus" class="printer-status printer-connecting">РџРѕРґРєР»СЋС‡Р°СЋСЃСЊ Рє РїСЂРёРЅС‚РµСЂСѓ...</div>
             <div class="price-tag-type-selector" id="priceTagTypeSelector">
                 <div class="price-tag-type-option selected" data-type="regular">
                     <input type="radio" id="typeRegular" name="priceTagType" class="price-tag-type-radio" value="regular" checked>
-                    <label for="typeRegular" class="price-tag-type-label">Обычный</label>
+                    <label for="typeRegular" class="price-tag-type-label">РћР±С‹С‡РЅС‹Р№</label>
                 </div>
                 <div class="price-tag-type-option" data-type="large">
                     <input type="radio" id="typeLarge" name="priceTagType" class="price-tag-type-radio" value="large">
-                    <label for="typeLarge" class="price-tag-type-label">Большой</label>
+                    <label for="typeLarge" class="price-tag-type-label">Р‘РѕР»СЊС€РѕР№</label>
                 </div>
             </div>
             <div class="price-tag-preview">
                 <canvas id="priceTagPreviewCanvas" class="price-tag-canvas" width="440" height="284"></canvas>
             </div>
-            <button class="print-action-btn" id="printActionBtn" disabled>Распечатать</button>
-            <button class="close-modal" id="closePrintModal" style="margin-top: 15px;">Закрыть</button>
+            <button class="print-action-btn" id="printActionBtn" disabled>Р Р°СЃРїРµС‡Р°С‚Р°С‚СЊ</button>
+            <button class="close-modal" id="closePrintModal" style="margin-top: 15px;">Р—Р°РєСЂС‹С‚СЊ</button>
         </div>
     </div>
 
-    <!-- Модальное окно с датами изменения файлов -->
+    <!-- РњРѕРґР°Р»СЊРЅРѕРµ РѕРєРЅРѕ СЃ РґР°С‚Р°РјРё РёР·РјРµРЅРµРЅРёСЏ С„Р°Р№Р»РѕРІ -->
     <div class="modal-overlay" id="datesModal">
         <div class="modal-frame dates-modal">
             <div class="dates-header">
-                <div class="current-date-display" id="modalCurrentDate">Дата обновления: 04.02.2026</div>
-                <div class="data-update-container" id="dataUpdateContainer">Данные на : 14:07</div>
+                <div class="current-date-display" id="modalCurrentDate">Р”Р°С‚Р° РѕР±РЅРѕРІР»РµРЅРёСЏ: 04.02.2026</div>
+                <div class="data-update-container" id="dataUpdateContainer">Р”Р°РЅРЅС‹Рµ РЅР° : 14:07</div>
             </div>
             <div id="datesContent" class="dates-content"></div>
-            <button class="close-modal" id="closeDatesModal" style="margin-top: 15px;">Закрыть</button>
+            <button class="close-modal" id="closeDatesModal" style="margin-top: 15px;">Р—Р°РєСЂС‹С‚СЊ</button>
         </div>
     </div>
 
     <script>
-        // ===== КОНФИГУРАЦИЯ =====
+        // ===== РљРћРќР¤РР“РЈР РђР¦РРЇ =====
         const API_BASE = 'http://192.168.1.23:8080';
         const DATA_UPDATE_DATE = "";
         const URAL_OFFICE_DATE = "";
@@ -1631,7 +1631,7 @@
         const SHEVCHENKO_OFFICE_DATE = "";
         const SHEVCHENKO_DATE = "";
 
-        // ===== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ =====
+        // ===== Р“Р›РћР‘РђР›Р¬РќР«Р• РџР•Р Р•РњР•РќРќР«Р• =====
         let stream = null;
         let barcodeDetector = null;
         let scanInterval = null;
@@ -1648,16 +1648,16 @@
         let pendingBarcode = null;
         let cachedProducts = [];
 
-        // ===== ДАННЫЕ ТОВАРОВ =====
-        const productsData = `6972585255561;KS-8001;Набор для творчества "ЧАСТИЧНАЯ ВЫКЛАДКА СТРАЗАМИ" 10*15 в пакете;70,00;70,00;7;;10;2;0,035;;0,050;0,010;;Cb010003474_1;;;200;Cb010003474_1;
-ЦБ010003475;Q-А998;Парусник на радиоуправлении на батарейках с рулём.;355,00;355,00;;;8;;;;0,167;;;;50;177,50;48;Cb010003475_1;
-4606782412831;TS-MY88301;Конструктор " Гоночная машина";1780,00;1780,00;;;1;1;;;0,167;0,167;У/Ж2;KS-402-24;;;6;Cb010003476_1;
-6029111127158;KS-291A;Пакет подарочный бумажный «Сердечки» 30x40x12 (4 расцветки);45,00;45,00;;;;5;;;;0,021;;KS-291A;;;240;Cb010003477_1;
-4606782423066;30Б5Aгр_26515;Блокнот SketchBook 30л А5ф КРАФТ без линовки жесткая подложка на гребне-День-ночь-;101,00;101,00;20;;36;3;0,833;;1,500;0,125;5/53;Cb010003478_1;;;24;Cb010003478_1;
-4606782424018;30Б5Aгр_26515;Блокнот SketchBook 30л А5ф КРАФТ без линовки жесткая подложка на гребне-День-ночь-;101,00;101,00;20;;36;3;0,833;;1,500;0,125;5/53;Cb010003478_1;;;24;Cb010003478_1;
-4600797004630;ФЗ-407057;Фреска с блестками Морской конек;204,00;204,00;;;8;;;;0,400;;;Cb010003481_1;;;20;Cb010003481_1;`;
+        // ===== Р”РђРќРќР«Р• РўРћР’РђР РћР’ =====
+        const productsData = `6972585255561;KS-8001;РќР°Р±РѕСЂ РґР»СЏ С‚РІРѕСЂС‡РµСЃС‚РІР° "Р§РђРЎРўРР§РќРђРЇ Р’Р«РљР›РђР”РљРђ РЎРўР РђР—РђРњР" 10*15 РІ РїР°РєРµС‚Рµ;70,00;70,00;7;;10;2;0,035;;0,050;0,010;;Cb010003474_1;;;200;Cb010003474_1;
+Р¦Р‘010003475;Q-Рђ998;РџР°СЂСѓСЃРЅРёРє РЅР° СЂР°РґРёРѕСѓРїСЂР°РІР»РµРЅРёРё РЅР° Р±Р°С‚Р°СЂРµР№РєР°С… СЃ СЂСѓР»С‘Рј.;355,00;355,00;;;8;;;;0,167;;;;50;177,50;48;Cb010003475_1;
+4606782412831;TS-MY88301;РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ " Р“РѕРЅРѕС‡РЅР°СЏ РјР°С€РёРЅР°";1780,00;1780,00;;;1;1;;;0,167;0,167;РЈ/Р–2;KS-402-24;;;6;Cb010003476_1;
+6029111127158;KS-291A;РџР°РєРµС‚ РїРѕРґР°СЂРѕС‡РЅС‹Р№ Р±СѓРјР°Р¶РЅС‹Р№ В«РЎРµСЂРґРµС‡РєРёВ» 30x40x12 (4 СЂР°СЃС†РІРµС‚РєРё);45,00;45,00;;;;5;;;;0,021;;KS-291A;;;240;Cb010003477_1;
+4606782423066;30Р‘5AРіСЂ_26515;Р‘Р»РѕРєРЅРѕС‚ SketchBook 30Р» Рђ5С„ РљР РђР¤Рў Р±РµР· Р»РёРЅРѕРІРєРё Р¶РµСЃС‚РєР°СЏ РїРѕРґР»РѕР¶РєР° РЅР° РіСЂРµР±РЅРµ-Р”РµРЅСЊ-РЅРѕС‡СЊ-;101,00;101,00;20;;36;3;0,833;;1,500;0,125;5/53;Cb010003478_1;;;24;Cb010003478_1;
+4606782424018;30Р‘5AРіСЂ_26515;Р‘Р»РѕРєРЅРѕС‚ SketchBook 30Р» Рђ5С„ РљР РђР¤Рў Р±РµР· Р»РёРЅРѕРІРєРё Р¶РµСЃС‚РєР°СЏ РїРѕРґР»РѕР¶РєР° РЅР° РіСЂРµР±РЅРµ-Р”РµРЅСЊ-РЅРѕС‡СЊ-;101,00;101,00;20;;36;3;0,833;;1,500;0,125;5/53;Cb010003478_1;;;24;Cb010003478_1;
+4600797004630;Р¤Р—-407057;Р¤СЂРµСЃРєР° СЃ Р±Р»РµСЃС‚РєР°РјРё РњРѕСЂСЃРєРѕР№ РєРѕРЅРµРє;204,00;204,00;;;8;;;;0,400;;;Cb010003481_1;;;20;Cb010003481_1;`;
 
-        // ===== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ =====
+        // ===== Р’РЎРџРћРњРћР“РђРўР•Р›Р¬РќР«Р• Р¤РЈРќРљР¦РР =====
         function parseStockValue(value) {
             if (!value) return 0;
             const cleanValue = value.toString().replace(/\s/g, '').replace(/\u00A0/g, '');
@@ -1743,7 +1743,7 @@
             return Object.values(groups);
         }
 
-        // ===== ФУНКЦИИ API ДЛЯ РАБОТЫ С cen.txt =====
+        // ===== Р¤РЈРќРљР¦РР API Р”Р›РЇ Р РђР‘РћРўР« РЎ cen.txt =====
         async function addToCenTxt(data) {
             try {
                 const response = await fetch(API_BASE, {
@@ -1754,7 +1754,7 @@
                 const json = await response.json();
                 return json.status === 'ok';
             } catch (e) {
-                console.error('Ошибка отправки в cen.txt:', e);
+                console.error('РћС€РёР±РєР° РѕС‚РїСЂР°РІРєРё РІ cen.txt:', e);
                 return false;
             }
         }
@@ -1765,7 +1765,7 @@
                 const lines = await response.json();
                 return lines;
             } catch (e) {
-                console.error('Ошибка чтения cen.txt:', e);
+                console.error('РћС€РёР±РєР° С‡С‚РµРЅРёСЏ cen.txt:', e);
                 return [];
             }
         }
@@ -1776,7 +1776,7 @@
                 const json = await response.json();
                 return json.status === 'ok';
             } catch (e) {
-                console.error('Ошибка удаления строки:', e);
+                console.error('РћС€РёР±РєР° СѓРґР°Р»РµРЅРёСЏ СЃС‚СЂРѕРєРё:', e);
                 return false;
             }
         }
@@ -1787,12 +1787,12 @@
                 const json = await response.json();
                 return json.status === 'ok';
             } catch (e) {
-                console.error('Ошибка очистки:', e);
+                console.error('РћС€РёР±РєР° РѕС‡РёСЃС‚РєРё:', e);
                 return false;
             }
         }
 
-        // ===== ПОИСК ТОВАРА ПО ШТРИХКОДУ В БД =====
+        // ===== РџРћРРЎРљ РўРћР’РђР Рђ РџРћ РЁРўР РРҐРљРћР”РЈ Р’ Р‘Р” =====
         function findProductsByBarcode(barcode) {
             const allProducts = parseProductsData(productsData);
             return allProducts.filter(p => p.barcode.includes(barcode));
@@ -1809,7 +1809,7 @@
             };
         }
 
-        // ===== ОТОБРАЖЕНИЕ МОДАЛЬНОГО ОКНА "ДОБАВЛЕНО" =====
+        // ===== РћРўРћР‘Р РђР–Р•РќРР• РњРћР”РђР›Р¬РќРћР“Рћ РћРљРќРђ "Р”РћР‘РђР’Р›Р•РќРћ" =====
         async function showAddedModal() {
             const modal = document.getElementById('addedModal');
             const counter = document.getElementById('addedCounter');
@@ -1818,21 +1818,21 @@
             const lines = await getCenTxtLines();
             
             if (lines.length === 0) {
-                counter.textContent = 'Строк: 0';
-                linesList.innerHTML = '<div class="empty">Список пуст</div>';
+                counter.textContent = 'РЎС‚СЂРѕРє: 0';
+                linesList.innerHTML = '<div class="empty">РЎРїРёСЃРѕРє РїСѓСЃС‚</div>';
             } else {
-                counter.textContent = 'Строк: ' + lines.length;
+                counter.textContent = 'РЎС‚СЂРѕРє: ' + lines.length;
                 let html = '';
                 lines.forEach((line, i) => {
                     let displayText = line;
                     let productInfo = null;
                     
-                    // Пробуем распарсить как JSON или как штрихкод
+                    // РџСЂРѕР±СѓРµРј СЂР°СЃРїР°СЂСЃРёС‚СЊ РєР°Рє JSON РёР»Рё РєР°Рє С€С‚СЂРёС…РєРѕРґ
                     try {
                         const parsed = JSON.parse(line);
                         displayText = parsed.barcode || parsed.action || line;
                     } catch (e) {
-                        // Не JSON, пробуем найти товар по штрихкоду
+                        // РќРµ JSON, РїСЂРѕР±СѓРµРј РЅР°Р№С‚Рё С‚РѕРІР°СЂ РїРѕ С€С‚СЂРёС…РєРѕРґСѓ
                         const cleanLine = line.trim();
                         if (/^\d{8,14}$/.test(cleanLine)) {
                             const products = findProductsByBarcode(cleanLine);
@@ -1864,16 +1864,16 @@
             return d.innerHTML;
         }
 
-        // ===== ВСПЛЫВАЮЩАЯ ПОДСКАЗКА С ИНФОРМАЦИЕЙ О ТОВАРЕ =====
+        // ===== Р’РЎРџР›Р«Р’РђР®Р©РђРЇ РџРћР”РЎРљРђР—РљРђ РЎ РРќР¤РћР РњРђР¦РР•Р™ Рћ РўРћР’РђР Р• =====
         async function showLineTooltip(event, index, lineData) {
             event.stopPropagation();
             const tooltip = document.getElementById('lineTooltip');
             
-            // Ищем товар по данным строки
+            // РС‰РµРј С‚РѕРІР°СЂ РїРѕ РґР°РЅРЅС‹Рј СЃС‚СЂРѕРєРё
             let info = null;
             const cleanLine = lineData.trim();
             
-            // Пробуем как JSON
+            // РџСЂРѕР±СѓРµРј РєР°Рє JSON
             try {
                 const parsed = JSON.parse(cleanLine);
                 if (parsed.barcode) {
@@ -1881,7 +1881,7 @@
                     if (products.length > 0) info = getProductInfoForDisplay(products[0]);
                 }
             } catch (e) {
-                // Пробуем как штрихкод
+                // РџСЂРѕР±СѓРµРј РєР°Рє С€С‚СЂРёС…РєРѕРґ
                 if (/^\d{8,14}$/.test(cleanLine)) {
                     const products = findProductsByBarcode(cleanLine);
                     if (products.length > 0) info = getProductInfoForDisplay(products[0]);
@@ -1890,10 +1890,10 @@
             
             if (info) {
                 tooltip.innerHTML = `
-                    <div class="tooltip-row"><span class="tooltip-label">Артикул:</span><br><span class="tooltip-value">${info.article}</span></div>
-                    <div class="tooltip-row"><span class="tooltip-label">Наименование:</span><br><span class="tooltip-value">${info.name}</span></div>
-                    <div class="tooltip-row"><span class="tooltip-label">Штрихкод:</span><br><span class="tooltip-value">${info.barcode}</span></div>
-                    ${info.discountPrice ? `<div class="tooltip-row"><span class="tooltip-label">Цена со скидкой:</span><br><span class="tooltip-value" style="color:#e74c3c;">${info.discountPrice} руб. (-${info.discountPercent}%)</span></div>` : `<div class="tooltip-row"><span class="tooltip-label">Цена:</span><br><span class="tooltip-value">${info.price} руб.</span></div>`}
+                    <div class="tooltip-row"><span class="tooltip-label">РђСЂС‚РёРєСѓР»:</span><br><span class="tooltip-value">${info.article}</span></div>
+                    <div class="tooltip-row"><span class="tooltip-label">РќР°РёРјРµРЅРѕРІР°РЅРёРµ:</span><br><span class="tooltip-value">${info.name}</span></div>
+                    <div class="tooltip-row"><span class="tooltip-label">РЁС‚СЂРёС…РєРѕРґ:</span><br><span class="tooltip-value">${info.barcode}</span></div>
+                    ${info.discountPrice ? `<div class="tooltip-row"><span class="tooltip-label">Р¦РµРЅР° СЃРѕ СЃРєРёРґРєРѕР№:</span><br><span class="tooltip-value" style="color:#e74c3c;">${info.discountPrice} СЂСѓР±. (-${info.discountPercent}%)</span></div>` : `<div class="tooltip-row"><span class="tooltip-label">Р¦РµРЅР°:</span><br><span class="tooltip-value">${info.price} СЂСѓР±.</span></div>`}
                 `;
             } else {
                 tooltip.innerHTML = `<div class="tooltip-row"><span class="tooltip-value">${escapeHtml(cleanLine)}</span></div>`;
@@ -1913,23 +1913,23 @@
             setTimeout(() => document.addEventListener('click', closeTooltip), 100);
         }
 
-        // ===== УДАЛЕНИЕ СТРОКИ ИЗ СПИСКА =====
+        // ===== РЈР”РђР›Р•РќРР• РЎРўР РћРљР РР— РЎРџРРЎРљРђ =====
         async function deleteAddedLine(index) {
-            if (!confirm('Удалить строку #' + (index + 1) + '?')) return;
+            if (!confirm('РЈРґР°Р»РёС‚СЊ СЃС‚СЂРѕРєСѓ #' + (index + 1) + '?')) return;
             const ok = await deleteCenTxtLine(index);
             if (ok) showAddedModal();
         }
 
-        // ===== ОЧИСТКА ВСЕГО СПИСКА =====
+        // ===== РћР§РРЎРўРљРђ Р’РЎР•Р“Рћ РЎРџРРЎРљРђ =====
         async function clearAllLines() {
-            if (!confirm('Удалить ВСЕ строки безвозвратно?')) return;
+            if (!confirm('РЈРґР°Р»РёС‚СЊ Р’РЎР• СЃС‚СЂРѕРєРё Р±РµР·РІРѕР·РІСЂР°С‚РЅРѕ?')) return;
             const ok = await clearCenTxt();
             if (ok) showAddedModal();
         }
 
-        // ===== ДОБАВЛЕНИЕ ШТРИХКОДА В cen.txt =====
+        // ===== Р”РћР‘РђР’Р›Р•РќРР• РЁРўР РРҐРљРћР”Рђ Р’ cen.txt =====
         async function addBarcodeToList(barcode, product) {
-            // Проверяем на дубликаты штрихкодов в БД
+            // РџСЂРѕРІРµСЂСЏРµРј РЅР° РґСѓР±Р»РёРєР°С‚С‹ С€С‚СЂРёС…РєРѕРґРѕРІ РІ Р‘Р”
             const allWithBarcode = findProductsByBarcode(barcode);
             const uniqueProducts = [];
             const seen = new Set();
@@ -1942,15 +1942,15 @@
             });
             
             if (uniqueProducts.length > 1) {
-                // Есть дубликаты — показываем модальное окно выбора
+                // Р•СЃС‚СЊ РґСѓР±Р»РёРєР°С‚С‹ вЂ” РїРѕРєР°Р·С‹РІР°РµРј РјРѕРґР°Р»СЊРЅРѕРµ РѕРєРЅРѕ РІС‹Р±РѕСЂР°
                 showDuplicateModal(barcode, uniqueProducts);
                 return;
             }
             
-            // Выбираем штрихкод для отправки
+            // Р’С‹Р±РёСЂР°РµРј С€С‚СЂРёС…РєРѕРґ РґР»СЏ РѕС‚РїСЂР°РІРєРё
             let barcodeToSend = barcode;
             if (product && product.barcodes && product.barcodes.length > 1) {
-                barcodeToSend = product.barcodes[0]; // Первый штрихкод
+                barcodeToSend = product.barcodes[0]; // РџРµСЂРІС‹Р№ С€С‚СЂРёС…РєРѕРґ
             }
             
             const ok = await addToCenTxt(barcodeToSend);
@@ -1958,11 +1958,11 @@
                 document.getElementById('resultModal').style.display = 'none';
                 showAddedModal();
             } else {
-                alert('Ошибка при добавлении. Проверьте соединение с сервером.');
+                alert('РћС€РёР±РєР° РїСЂРё РґРѕР±Р°РІР»РµРЅРёРё. РџСЂРѕРІРµСЂСЊС‚Рµ СЃРѕРµРґРёРЅРµРЅРёРµ СЃ СЃРµСЂРІРµСЂРѕРј.');
             }
         }
 
-        // ===== МОДАЛЬНОЕ ОКНО ВЫБОРА ПРИ ДУБЛИКАТАХ =====
+        // ===== РњРћР”РђР›Р¬РќРћР• РћРљРќРћ Р’Р«Р‘РћР Рђ РџР Р Р”РЈР‘Р›РРљРђРўРђРҐ =====
         let selectedDuplicateProduct = null;
 
         function showDuplicateModal(barcode, products) {
@@ -1980,7 +1980,7 @@
                 html += `<div class="duplicate-item" data-index="${i}" onclick="selectDuplicateItem(this, ${i})">
                     <div style="font-weight: bold;">${product.article}</div>
                     <div style="font-size: 14px;">${product.name}</div>
-                    <div style="color: #e74c3c; margin-top: 5px;">${product.discountPrice ? product.discountPrice + ' руб. (-' + product.discountPercent + '%)' : product.wholesalePrice + ' руб.'}</div>
+                    <div style="color: #e74c3c; margin-top: 5px;">${product.discountPrice ? product.discountPrice + ' СЂСѓР±. (-' + product.discountPercent + '%)' : product.wholesalePrice + ' СЂСѓР±.'}</div>
                 </div>`;
             });
             list.innerHTML = html;
@@ -2011,7 +2011,7 @@
             document.getElementById('duplicateModal').style.display = 'none';
         });
 
-        // ===== ОБРАБОТКА СКАНИРОВАНИЯ =====
+        // ===== РћР‘Р РђР‘РћРўРљРђ РЎРљРђРќРР РћР’РђРќРРЇ =====
         function handleScannedCode(code) {
             if (!code || code.trim().length === 0) return;
             stopCameraStream();
@@ -2030,17 +2030,17 @@
             const resultProducts = document.getElementById('resultProducts');
             const resultModal = document.getElementById('resultModal');
             
-            // Закрываем камеру
+            // Р—Р°РєСЂС‹РІР°РµРј РєР°РјРµСЂСѓ
             document.getElementById('cameraModal').style.display = 'none';
             document.getElementById('iosScannerModal').style.display = 'none';
             
             if (results.length === 0) {
-                resultCount.textContent = 'Товары не найдены';
+                resultCount.textContent = 'РўРѕРІР°СЂС‹ РЅРµ РЅР°Р№РґРµРЅС‹';
                 resultCount.style.color = '#f44336';
-                resultProducts.innerHTML = '<div class="scan-result-card" style="text-align: center; color: #666; font-style: italic;">По этому штрихкоду товары не найдены в базе данных</div>';
+                resultProducts.innerHTML = '<div class="scan-result-card" style="text-align: center; color: #666; font-style: italic;">РџРѕ СЌС‚РѕРјСѓ С€С‚СЂРёС…РєРѕРґСѓ С‚РѕРІР°СЂС‹ РЅРµ РЅР°Р№РґРµРЅС‹ РІ Р±Р°Р·Рµ РґР°РЅРЅС‹С…</div>';
             } else {
                 const groupedResults = groupProductsByKey(results);
-                resultCount.textContent = `Найдено товаров: ${results.length} (${groupedResults.length} уникальных)`;
+                resultCount.textContent = `РќР°Р№РґРµРЅРѕ С‚РѕРІР°СЂРѕРІ: ${results.length} (${groupedResults.length} СѓРЅРёРєР°Р»СЊРЅС‹С…)`;
                 resultCount.style.color = '#4CAF50';
                 
                 resultProducts.innerHTML = '';
@@ -2052,16 +2052,16 @@
                         <div class="product-header-row">
                             <div class="product-header-left">
                                 <div style="font-size: 12px; color: #666;">
-                                    <strong>Штрихкод:</strong> ${product.count > 1 ? `Несколько (${product.count})` : product.barcode}
+                                    <strong>РЁС‚СЂРёС…РєРѕРґ:</strong> ${product.count > 1 ? `РќРµСЃРєРѕР»СЊРєРѕ (${product.count})` : product.barcode}
                                 </div>
                             </div>
                             <div class="product-header-right">
-                                <button class="print-button" onclick="event.stopPropagation(); openPrintModal(${JSON.stringify(product).replace(/"/g, '&quot;')})" title="Печать ценника">&#129534;</button>
-                                <button class="add-to-list-btn" onclick="event.stopPropagation(); addBarcodeToList('${product.barcode}', ${JSON.stringify(product).replace(/"/g, '&quot;')})" title="Добавить в список">+</button>
+                                <button class="print-button" onclick="event.stopPropagation(); openPrintModal(${JSON.stringify(product).replace(/"/g, '&quot;')})" title="РџРµС‡Р°С‚СЊ С†РµРЅРЅРёРєР°">&#129534;</button>
+                                <button class="add-to-list-btn" onclick="event.stopPropagation(); addBarcodeToList('${product.barcode}', ${JSON.stringify(product).replace(/"/g, '&quot;')})" title="Р”РѕР±Р°РІРёС‚СЊ РІ СЃРїРёСЃРѕРє">+</button>
                             </div>
                         </div>
                         <div style="font-weight: bold; color: #333; margin-bottom: 5px;">
-                            <strong>Артикул:</strong> ${product.article}
+                            <strong>РђСЂС‚РёРєСѓР»:</strong> ${product.article}
                         </div>
                         <div style="font-size: 16px; color: #222; margin-bottom: 8px;">${product.name}</div>
                         ${formatPriceWithDiscountModal(product)}
@@ -2075,7 +2075,7 @@
             resultModal.style.display = 'flex';
         }
 
-        // ===== ФУНКЦИИ ДЛЯ РЕЗУЛЬТАТОВ ПОИСКА =====
+        // ===== Р¤РЈРќРљР¦РР Р”Р›РЇ Р Р•Р—РЈР›Р¬РўРђРўРћР’ РџРћРРЎРљРђ =====
         function createProductCard(product, query, searchMode) {
             const productCard = document.createElement('div');
             productCard.className = 'product-card';
@@ -2084,14 +2084,14 @@
             let highlightedArticle = product.article;
             let highlightedBarcode = '';
             
-            if (searchMode === 'комбинированный') {
+            if (searchMode === 'РєРѕРјР±РёРЅРёСЂРѕРІР°РЅРЅС‹Р№') {
                 if (query.article) highlightedArticle = highlightMatch(product.article, query.article);
                 if (query.name) highlightedName = highlightMatch(product.name, query.name);
                 if (query.barcode) highlightedBarcode = product.count > 1 ? createMultipleBarcodesHTML(product.barcodes, query.barcode) : highlightMatch(product.barcode, query.barcode);
             } else {
-                if (searchMode === 'по артикулу') highlightedArticle = highlightMatch(product.article, query);
-                if (searchMode === 'по наименованию') highlightedName = highlightMatch(product.name, query);
-                if (searchMode === 'по штрихкоду') highlightedBarcode = product.count > 1 ? createMultipleBarcodesHTML(product.barcodes, query) : highlightMatch(product.barcode, query);
+                if (searchMode === 'РїРѕ Р°СЂС‚РёРєСѓР»Сѓ') highlightedArticle = highlightMatch(product.article, query);
+                if (searchMode === 'РїРѕ РЅР°РёРјРµРЅРѕРІР°РЅРёСЋ') highlightedName = highlightMatch(product.name, query);
+                if (searchMode === 'РїРѕ С€С‚СЂРёС…РєРѕРґСѓ') highlightedBarcode = product.count > 1 ? createMultipleBarcodesHTML(product.barcodes, query) : highlightMatch(product.barcode, query);
             }
             
             if (!highlightedBarcode) {
@@ -2108,20 +2108,20 @@
             
             const articleRow = document.createElement('div');
             articleRow.className = 'article';
-            articleRow.innerHTML = `Артикул: ${highlightedArticle}`;
+            articleRow.innerHTML = `РђСЂС‚РёРєСѓР»: ${highlightedArticle}`;
             
             const hasImage = product.imageCode && product.imageCode.trim() !== '';
             if (hasImage) {
                 const imageButton = document.createElement('button');
                 imageButton.className = 'image-button';
-                imageButton.title = 'Показать изображение товара';
+                imageButton.title = 'РџРѕРєР°Р·Р°С‚СЊ РёР·РѕР±СЂР°Р¶РµРЅРёРµ С‚РѕРІР°СЂР°';
                 imageButton.innerHTML = '&#127750;';
                 imageButton.onclick = function() { showProductImage(product); };
                 articleRow.appendChild(imageButton);
             } else {
                 const noImageSpan = document.createElement('span');
                 noImageSpan.className = 'no-image-text';
-                noImageSpan.textContent = '(без изображения)';
+                noImageSpan.textContent = '(Р±РµР· РёР·РѕР±СЂР°Р¶РµРЅРёСЏ)';
                 articleRow.appendChild(noImageSpan);
             }
             
@@ -2132,13 +2132,13 @@
             
             const printButton = document.createElement('button');
             printButton.className = 'print-button';
-            printButton.title = 'Печать ценника';
+            printButton.title = 'РџРµС‡Р°С‚СЊ С†РµРЅРЅРёРєР°';
             printButton.innerHTML = '&#129534;';
             printButton.onclick = function() { openPrintModal(product); };
             
             const addButton = document.createElement('button');
             addButton.className = 'add-to-list-btn';
-            addButton.title = 'Добавить в список';
+            addButton.title = 'Р”РѕР±Р°РІРёС‚СЊ РІ СЃРїРёСЃРѕРє';
             addButton.textContent = '+';
             addButton.onclick = function() {
                 addBarcodeToList(product.barcode, product);
@@ -2151,7 +2151,7 @@
             headerRow.appendChild(headerRight);
             
             container.innerHTML = `
-                <div class="product-field barcode">Штрихкод: ${highlightedBarcode}</div>
+                <div class="product-field barcode">РЁС‚СЂРёС…РєРѕРґ: ${highlightedBarcode}</div>
                 <div class="product-field name">${highlightedName}</div>
                 ${formatPriceWithDiscount(product)}
             `;
@@ -2161,20 +2161,20 @@
             const stockInfo = document.createElement('div');
             stockInfo.innerHTML = `
                 <div class="stock-info">
-                    <div class="stock-title">Остатки:</div>
-                    <div class="stock-item"><span class="stock-name">Уральская 97:</span><span class="stock-quantity ${product.stocks.warehouse1 < 0 ? 'negative' : 'positive'}">${formatNumber(product.stocks.warehouse1)} шт. <span class="box-coefficient">(${formatCoefficient(product.coefficients.warehouse1)} кор.)</span></span></div>
-                    <div class="stock-item"><span class="stock-name">ОСНОВНОЙ СКЛАД:</span><span class="stock-quantity ${product.stocks.warehouse2 < 0 ? 'negative' : 'positive'}">${formatNumber(product.stocks.warehouse2)} шт. <span class="box-coefficient">(${formatCoefficient(product.coefficients.warehouse2)} кор.)</span></span></div>
-                    <div class="stock-item"><span class="stock-name">Шевченко 139:</span><span class="stock-quantity ${product.stocks.warehouse3 < 0 ? 'negative' : 'positive'}">${formatNumber(product.stocks.warehouse3)} шт. <span class="box-coefficient">(${formatCoefficient(product.coefficients.warehouse3)} кор.)</span></span></div>
-                    <div class="stock-item"><span class="stock-name">МАГАЗИН 234:</span><span class="stock-quantity ${product.stocks.warehouse4 < 0 ? 'negative' : 'positive'}">${formatNumber(product.stocks.warehouse4)} шт. <span class="box-coefficient">(${formatCoefficient(product.coefficients.warehouse4)} кор.)</span></span></div>
+                    <div class="stock-title">РћСЃС‚Р°С‚РєРё:</div>
+                    <div class="stock-item"><span class="stock-name">РЈСЂР°Р»СЊСЃРєР°СЏ 97:</span><span class="stock-quantity ${product.stocks.warehouse1 < 0 ? 'negative' : 'positive'}">${formatNumber(product.stocks.warehouse1)} С€С‚. <span class="box-coefficient">(${formatCoefficient(product.coefficients.warehouse1)} РєРѕСЂ.)</span></span></div>
+                    <div class="stock-item"><span class="stock-name">РћРЎРќРћР’РќРћР™ РЎРљР›РђР”:</span><span class="stock-quantity ${product.stocks.warehouse2 < 0 ? 'negative' : 'positive'}">${formatNumber(product.stocks.warehouse2)} С€С‚. <span class="box-coefficient">(${formatCoefficient(product.coefficients.warehouse2)} РєРѕСЂ.)</span></span></div>
+                    <div class="stock-item"><span class="stock-name">РЁРµРІС‡РµРЅРєРѕ 139:</span><span class="stock-quantity ${product.stocks.warehouse3 < 0 ? 'negative' : 'positive'}">${formatNumber(product.stocks.warehouse3)} С€С‚. <span class="box-coefficient">(${formatCoefficient(product.coefficients.warehouse3)} РєРѕСЂ.)</span></span></div>
+                    <div class="stock-item"><span class="stock-name">РњРђР“РђР—РРќ 234:</span><span class="stock-quantity ${product.stocks.warehouse4 < 0 ? 'negative' : 'positive'}">${formatNumber(product.stocks.warehouse4)} С€С‚. <span class="box-coefficient">(${formatCoefficient(product.coefficients.warehouse4)} РєРѕСЂ.)</span></span></div>
                 </div>
             `;
             
             if (product.boxQuantity && product.boxQuantity.trim() !== '') {
-                stockInfo.innerHTML += `<div class="box-quantity-info"><div class="box-quantity-title">Кол-во в коробке:</div><div class="box-quantity-value">${product.boxQuantity} шт.</div></div>`;
+                stockInfo.innerHTML += `<div class="box-quantity-info"><div class="box-quantity-title">РљРѕР»-РІРѕ РІ РєРѕСЂРѕР±РєРµ:</div><div class="box-quantity-value">${product.boxQuantity} С€С‚.</div></div>`;
             }
             
             if (product.storageLocation && product.storageLocation.trim() !== '') {
-                stockInfo.innerHTML += `<div class="storage-location"><div class="storage-title">Место хранения:</div><div class="storage-value">${product.storageLocation}</div></div>`;
+                stockInfo.innerHTML += `<div class="storage-location"><div class="storage-title">РњРµСЃС‚Рѕ С…СЂР°РЅРµРЅРёСЏ:</div><div class="storage-value">${product.storageLocation}</div></div>`;
             }
             
             productCard.appendChild(container);
@@ -2183,21 +2183,21 @@
             return productCard;
         }
 
-        // ===== ОСТАЛЬНЫЕ ФУНКЦИИ (цены, сканер, печать и т.д.) =====
+        // ===== РћРЎРўРђР›Р¬РќР«Р• Р¤РЈРќРљР¦РР (С†РµРЅС‹, СЃРєР°РЅРµСЂ, РїРµС‡Р°С‚СЊ Рё С‚.Рґ.) =====
         function formatPriceWithDiscount(product) {
             const hasDiscount = product.discountPercent && product.discountPercent.trim() !== '';
             if (!hasDiscount) {
-                return `<div class="price-container"><span class="discount-price">Цена: ${product.wholesalePrice} руб.</span></div>`;
+                return `<div class="price-container"><span class="discount-price">Р¦РµРЅР°: ${product.wholesalePrice} СЂСѓР±.</span></div>`;
             }
-            return `<div class="price-container"><span class="discount-price">Цена: ${product.discountPrice} руб.</span><div class="old-price-container"><span class="original-price">${product.wholesalePrice} </span><span class="discount-percent">-${product.discountPercent}% &#128165;</span></div></div>`;
+            return `<div class="price-container"><span class="discount-price">Р¦РµРЅР°: ${product.discountPrice} СЂСѓР±.</span><div class="old-price-container"><span class="original-price">${product.wholesalePrice} </span><span class="discount-percent">-${product.discountPercent}% &#128165;</span></div></div>`;
         }
 
         function formatPriceWithDiscountModal(product) {
             const hasDiscount = product.discountPercent && product.discountPercent.trim() !== '';
             if (!hasDiscount) {
-                return `<div class="scan-price-container"><span class="scan-discount-price">Цена: ${product.wholesalePrice} руб.</span></div>`;
+                return `<div class="scan-price-container"><span class="scan-discount-price">Р¦РµРЅР°: ${product.wholesalePrice} СЂСѓР±.</span></div>`;
             }
-            return `<div class="scan-price-container"><span class="scan-discount-price">Цена: ${product.discountPrice} руб.</span><div class="scan-old-price-container"><span class="scan-original-price">${product.wholesalePrice}</span><span class="scan-discount-percent">-${product.discountPercent}% &#128165;</span></div></div>`;
+            return `<div class="scan-price-container"><span class="scan-discount-price">Р¦РµРЅР°: ${product.discountPrice} СЂСѓР±.</span><div class="scan-old-price-container"><span class="scan-original-price">${product.wholesalePrice}</span><span class="scan-discount-percent">-${product.discountPercent}% &#128165;</span></div></div>`;
         }
 
         function formatStockInfoModal(product) {
@@ -2207,18 +2207,18 @@
             const barcodes = product.barcodes;
             const boxQuantity = product.boxQuantity || '';
             
-            let html = '<div class="scan-result-stock"><div style="font-weight: bold; color: #333; margin-bottom: 5px; font-size: 13px;">Остатки:</div>';
+            let html = '<div class="scan-result-stock"><div style="font-weight: bold; color: #333; margin-bottom: 5px; font-size: 13px;">РћСЃС‚Р°С‚РєРё:</div>';
             [1, 2, 3, 4].forEach(i => {
                 const quantity = stocks[`warehouse${i}`];
                 const coeff = coefficients[`warehouse${i}`];
                 const color = quantity < 0 ? '#f44336' : '#2e7d32';
-                const names = ['Уральская 97:', 'ОСНОВНОЙ СКЛАД:', 'Шевченко 139:', 'МАГАЗИН 234:'];
-                html += `<div style="display: flex; justify-content: space-between; padding: 2px 0; font-size: 12px;"><span style="color: #555;">${names[i-1]}</span><span style="color: ${color}; font-weight: bold;">${formatNumber(quantity)} шт. <span style="color: #666; font-size: 11px;">(${formatCoefficient(coeff)} кор.)</span></span></div>`;
+                const names = ['РЈСЂР°Р»СЊСЃРєР°СЏ 97:', 'РћРЎРќРћР’РќРћР™ РЎРљР›РђР”:', 'РЁРµРІС‡РµРЅРєРѕ 139:', 'РњРђР“РђР—РРќ 234:'];
+                html += `<div style="display: flex; justify-content: space-between; padding: 2px 0; font-size: 12px;"><span style="color: #555;">${names[i-1]}</span><span style="color: ${color}; font-weight: bold;">${formatNumber(quantity)} С€С‚. <span style="color: #666; font-size: 11px;">(${formatCoefficient(coeff)} РєРѕСЂ.)</span></span></div>`;
             });
             html += '</div>';
             
             if (boxQuantity && boxQuantity.trim() !== '') {
-                html += `<div class="scan-result-storage" style="background-color: #e8f5e9; border-left-color: #4CAF50;"><div style="font-weight: bold; color: #2e7d32; margin-bottom: 3px; font-size: 12px;">Кол-во в коробке:</div><div style="color: #333; font-weight: bold; font-size: 13px;">${boxQuantity} шт.</div></div>`;
+                html += `<div class="scan-result-storage" style="background-color: #e8f5e9; border-left-color: #4CAF50;"><div style="font-weight: bold; color: #2e7d32; margin-bottom: 3px; font-size: 12px;">РљРѕР»-РІРѕ РІ РєРѕСЂРѕР±РєРµ:</div><div style="color: #333; font-weight: bold; font-size: 13px;">${boxQuantity} С€С‚.</div></div>`;
             }
             
             if (barcodes && barcodes.length > 1) {
@@ -2226,7 +2226,7 @@
             }
             
             if (storageLocation && storageLocation.trim() !== '') {
-                html += `<div class="scan-result-storage"><div style="font-weight: bold; color: #856404; margin-bottom: 3px; font-size: 12px;">Место хранения:</div><div style="color: #333; font-weight: bold; font-size: 13px;">${storageLocation}</div></div>`;
+                html += `<div class="scan-result-storage"><div style="font-weight: bold; color: #856404; margin-bottom: 3px; font-size: 12px;">РњРµСЃС‚Рѕ С…СЂР°РЅРµРЅРёСЏ:</div><div style="color: #333; font-weight: bold; font-size: 13px;">${storageLocation}</div></div>`;
             }
             
             return html;
@@ -2234,7 +2234,7 @@
 
         function createMultipleBarcodesHTML(barcodes, query) {
             const uniqueBarcodes = [...new Set(barcodes)];
-            let html = `<span class="multiple-barcodes" onclick="showBarcodeTooltip(event, this)">Несколько (${uniqueBarcodes.length})</span>`;
+            let html = `<span class="multiple-barcodes" onclick="showBarcodeTooltip(event, this)">РќРµСЃРєРѕР»СЊРєРѕ (${uniqueBarcodes.length})</span>`;
             html += `<div class="barcode-tooltip"><div class="barcode-list">`;
             uniqueBarcodes.forEach(barcode => {
                 html += `<div class="barcode-item">${highlightMatch(barcode, query)}</div>`;
@@ -2246,7 +2246,7 @@
         function createBarcodesListHTML(barcodes, scannedCode) {
             const uniqueBarcodes = [...new Set(barcodes)];
             let html = `<div class="scan-result-barcodes" onclick="toggleBarcodesList(this)">`;
-            html += `<div class="scan-result-barcodes-title"><span>Штрихкоды (${uniqueBarcodes.length}):</span><span style="font-size: 10px; color: #666;">нажмите для просмотра</span></div>`;
+            html += `<div class="scan-result-barcodes-title"><span>РЁС‚СЂРёС…РєРѕРґС‹ (${uniqueBarcodes.length}):</span><span style="font-size: 10px; color: #666;">РЅР°Р¶РјРёС‚Рµ РґР»СЏ РїСЂРѕСЃРјРѕС‚СЂР°</span></div>`;
             html += `<div class="scan-result-barcodes-list">`;
             uniqueBarcodes.forEach(barcode => {
                 const isScanned = barcode === scannedCode;
@@ -2280,7 +2280,7 @@
             const list = element.querySelector('.scan-result-barcodes-list');
             list.classList.toggle('expanded');
             const title = element.querySelector('.scan-result-barcodes-title span:last-child');
-            title.textContent = list.classList.contains('expanded') ? 'нажмите для скрытия' : 'нажмите для просмотра';
+            title.textContent = list.classList.contains('expanded') ? 'РЅР°Р¶РјРёС‚Рµ РґР»СЏ СЃРєСЂС‹С‚РёСЏ' : 'РЅР°Р¶РјРёС‚Рµ РґР»СЏ РїСЂРѕСЃРјРѕС‚СЂР°';
         }
 
         function highlightMatch(text, searchTerm) {
@@ -2296,11 +2296,11 @@
 
         function getSearchModeDisplayName(mode) {
             switch(mode) {
-                case 'article': return 'по артикулу';
-                case 'barcode': return 'по штрихкоду';
-                case 'name': return 'по наименованию';
-                case 'combined': return 'комбинированный';
-                default: return 'по артикулу';
+                case 'article': return 'РїРѕ Р°СЂС‚РёРєСѓР»Сѓ';
+                case 'barcode': return 'РїРѕ С€С‚СЂРёС…РєРѕРґСѓ';
+                case 'name': return 'РїРѕ РЅР°РёРјРµРЅРѕРІР°РЅРёСЋ';
+                case 'combined': return 'РєРѕРјР±РёРЅРёСЂРѕРІР°РЅРЅС‹Р№';
+                default: return 'РїРѕ Р°СЂС‚РёРєСѓР»Сѓ';
             }
         }
 
@@ -2331,7 +2331,7 @@
             const resultsContainer = document.getElementById('resultsContainer');
             resultsContainer.innerHTML = '';
             if (results.length === 0) {
-                resultsContainer.innerHTML = '<div class="no-results">Товары не найдены</div>';
+                resultsContainer.innerHTML = '<div class="no-results">РўРѕРІР°СЂС‹ РЅРµ РЅР°Р№РґРµРЅС‹</div>';
                 resultsContainer.style.display = 'block';
                 scrollToResults();
                 return;
@@ -2339,11 +2339,11 @@
             const groupedResults = groupProductsByKey(results);
             const countElement = document.createElement('div');
             countElement.className = 'results-count';
-            countElement.textContent = `Найдено товаров: ${results.length} (${groupedResults.length} уникальных)`;
+            countElement.textContent = `РќР°Р№РґРµРЅРѕ С‚РѕРІР°СЂРѕРІ: ${results.length} (${groupedResults.length} СѓРЅРёРєР°Р»СЊРЅС‹С…)`;
             resultsContainer.appendChild(countElement);
             const modeElement = document.createElement('div');
             modeElement.className = 'search-mode';
-            modeElement.textContent = `Режим поиска: ${searchMode}`;
+            modeElement.textContent = `Р РµР¶РёРј РїРѕРёСЃРєР°: ${searchMode}`;
             resultsContainer.appendChild(modeElement);
             groupedResults.forEach(product => {
                 resultsContainer.appendChild(createProductCard(product, query, searchMode));
@@ -2393,7 +2393,7 @@
             }
         }
 
-        // ===== ФУНКЦИИ КАМЕРЫ (Android) =====
+        // ===== Р¤РЈРќРљР¦РР РљРђРњР•Р Р« (Android) =====
         function isIOS() { return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream; }
         function isAndroid() { return /Android/.test(navigator.userAgent); }
 
@@ -2406,7 +2406,7 @@
                     let selectedCamera = null;
                     const sortedDevices = [...videoDevices].sort((a, b) => a.deviceId.localeCompare(b.deviceId));
                     for (const device of sortedDevices) {
-                        if (device.label.toLowerCase().includes('front') || device.label.toLowerCase().includes('фронт')) continue;
+                        if (device.label.toLowerCase().includes('front') || device.label.toLowerCase().includes('С„СЂРѕРЅС‚')) continue;
                         selectedCamera = device; break;
                     }
                     if (!selectedCamera) selectedCamera = videoDevices[0];
@@ -2419,10 +2419,10 @@
                 document.getElementById('cameraModal').style.display = 'flex';
                 await cameraVideo.play();
                 if (!barcodeDetector) barcodeDetector = await initBarcodeDetector();
-                if (!barcodeDetector) { alert('Браузер не поддерживает сканирование штрихкодов.'); stopCameraStream(); return; }
+                if (!barcodeDetector) { alert('Р‘СЂР°СѓР·РµСЂ РЅРµ РїРѕРґРґРµСЂР¶РёРІР°РµС‚ СЃРєР°РЅРёСЂРѕРІР°РЅРёРµ С€С‚СЂРёС…РєРѕРґРѕРІ.'); stopCameraStream(); return; }
                 startBarcodeDetection(barcodeDetector);
             } catch (error) {
-                console.error('Ошибка камеры:', error);
+                console.error('РћС€РёР±РєР° РєР°РјРµСЂС‹:', error);
                 try {
                     const fallbackStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' }, audio: false });
                     const cameraVideo = document.getElementById('cameraVideo');
@@ -2432,8 +2432,8 @@
                     stream = fallbackStream;
                     if (!barcodeDetector) barcodeDetector = await initBarcodeDetector();
                     if (barcodeDetector) startBarcodeDetection(barcodeDetector);
-                    else { alert('Браузер не поддерживает сканирование штрихкодов.'); stopCameraStream(); }
-                } catch (fallbackError) { alert('Не удалось получить доступ к камере.'); }
+                    else { alert('Р‘СЂР°СѓР·РµСЂ РЅРµ РїРѕРґРґРµСЂР¶РёРІР°РµС‚ СЃРєР°РЅРёСЂРѕРІР°РЅРёРµ С€С‚СЂРёС…РєРѕРґРѕРІ.'); stopCameraStream(); }
+                } catch (fallbackError) { alert('РќРµ СѓРґР°Р»РѕСЃСЊ РїРѕР»СѓС‡РёС‚СЊ РґРѕСЃС‚СѓРї Рє РєР°РјРµСЂРµ.'); }
             }
         }
 
@@ -2471,7 +2471,7 @@
             if (cameraVideo) cameraVideo.srcObject = null;
         }
 
-        // ===== iOS СКАНЕР =====
+        // ===== iOS РЎРљРђРќР•Р  =====
         async function openIOSScanner() {
             document.getElementById('iosScannerModal').style.display = 'block';
             document.getElementById('iosScannerLoader').style.display = 'block';
@@ -2489,12 +2489,12 @@
                     iosIsScanning = true;
                     document.getElementById('iosScannerLoader').style.display = 'none';
                 }).catch(err => {
-                    console.error('Ошибка iOS сканера:', err);
+                    console.error('РћС€РёР±РєР° iOS СЃРєР°РЅРµСЂР°:', err);
                     document.getElementById('iosScannerLoader').style.display = 'none';
                     document.getElementById('iosNoCameraMessage').style.display = 'block';
                 });
             } catch (error) {
-                console.error('Критическая ошибка iOS сканера:', error);
+                console.error('РљСЂРёС‚РёС‡РµСЃРєР°СЏ РѕС€РёР±РєР° iOS СЃРєР°РЅРµСЂР°:', error);
                 document.getElementById('iosScannerLoader').style.display = 'none';
                 document.getElementById('iosNoCameraMessage').style.display = 'block';
             }
@@ -2521,7 +2521,7 @@
 
         function onIOSScanError(error) {
             if (!error.includes('NotFoundException') && !error.includes('No multi format readers configured')) {
-                console.warn('Ошибка iOS сканирования:', error);
+                console.warn('РћС€РёР±РєР° iOS СЃРєР°РЅРёСЂРѕРІР°РЅРёСЏ:', error);
             }
         }
 
@@ -2533,7 +2533,7 @@
             document.getElementById('iosNoCameraMessage').style.display = 'none';
         }
 
-        // ===== ПЕЧАТЬ =====
+        // ===== РџР•Р§РђРўР¬ =====
         function updatePrinterStatus(message, type = 'connecting') {
             const statusEl = document.getElementById('printerStatus');
             statusEl.textContent = message;
@@ -2547,17 +2547,17 @@
 
         async function connectToPrinter() {
             try {
-                updatePrinterStatus('Подключаюсь к принтеру...', 'connecting');
-                if (!navigator.serial) throw new Error('Браузер не поддерживает Web Serial');
+                updatePrinterStatus('РџРѕРґРєР»СЋС‡Р°СЋСЃСЊ Рє РїСЂРёРЅС‚РµСЂСѓ...', 'connecting');
+                if (!navigator.serial) throw new Error('Р‘СЂР°СѓР·РµСЂ РЅРµ РїРѕРґРґРµСЂР¶РёРІР°РµС‚ Web Serial');
                 const ports = await navigator.serial.getPorts();
                 serialPort = ports.length > 0 ? ports[0] : await navigator.serial.requestPort();
                 await serialPort.open({ baudRate: 115200, dataBits: 8, stopBits: 1, parity: 'none' });
                 serialWriter = serialPort.writable.getWriter();
                 isPrinterConnected = true;
-                updatePrinterStatus('Принтер подключен', 'connected');
+                updatePrinterStatus('РџСЂРёРЅС‚РµСЂ РїРѕРґРєР»СЋС‡РµРЅ', 'connected');
                 return true;
             } catch (error) {
-                updatePrinterStatus(`Ошибка: ${error.message}`, 'disconnected');
+                updatePrinterStatus(`РћС€РёР±РєР°: ${error.message}`, 'disconnected');
                 return false;
             }
         }
@@ -2567,13 +2567,13 @@
                 if (serialWriter) { serialWriter.releaseLock(); serialWriter = null; }
                 if (serialPort) { await serialPort.close(); serialPort = null; }
                 isPrinterConnected = false;
-                updatePrinterStatus('Принтер отключен', 'disconnected');
+                updatePrinterStatus('РџСЂРёРЅС‚РµСЂ РѕС‚РєР»СЋС‡РµРЅ', 'disconnected');
                 return true;
             } catch (error) { return false; }
         }
 
         async function sendRawData(data) {
-            if (!isPrinterConnected || !serialWriter) throw new Error('Принтер не подключен');
+            if (!isPrinterConnected || !serialWriter) throw new Error('РџСЂРёРЅС‚РµСЂ РЅРµ РїРѕРґРєР»СЋС‡РµРЅ');
             await serialWriter.write(data);
             return true;
         }
@@ -2590,11 +2590,11 @@
             if (type === 'large') {
                 const baseFonts = { company: 22 * textScale, article: 18 * textScale, product: 16 * textScale, price: 88 * textScale, date: 14 * textScale };
                 ctx.font = `bold ${baseFonts.company}px "Arial"`;
-                ctx.fillText('ООО "КУБАНЬСТАР"', canvas.width / 2, 30);
+                ctx.fillText('РћРћРћ "РљРЈР‘РђРќР¬РЎРўРђР "', canvas.width / 2, 30);
                 ctx.beginPath(); ctx.moveTo(-8, 40); ctx.lineTo(canvas.width - 0, 40); ctx.lineWidth = 3; ctx.stroke();
                 ctx.font = `bold ${baseFonts.article}px "Arial"`; ctx.textAlign = 'left';
                 ctx.fillText(product.article, 6, 70); ctx.textAlign = 'right';
-                ctx.fillText(`${product.boxQuantity || '0'} шт. в кор.`, canvas.width - 6, 70);
+                ctx.fillText(`${product.boxQuantity || '0'} С€С‚. РІ РєРѕСЂ.`, canvas.width - 6, 70);
                 ctx.beginPath(); ctx.moveTo(-8, 80); ctx.lineTo(canvas.width - 0, 80); ctx.lineWidth = 3; ctx.stroke(); ctx.lineWidth = 1;
                 let productName = product.name;
                 if (productName.length > 70) productName = productName.substring(0, 70) + '...';
@@ -2615,11 +2615,11 @@
             } else {
                 const baseFonts = { company: 22 * textScale, article: 18 * textScale, product: 16 * textScale, price: 44 * textScale, date: 14 * textScale };
                 ctx.font = `bold ${baseFonts.company}px "Arial"`;
-                ctx.fillText('ООО "КУБАНЬСТАР"', canvas.width / 2, 30);
+                ctx.fillText('РћРћРћ "РљРЈР‘РђРќР¬РЎРўРђР "', canvas.width / 2, 30);
                 ctx.beginPath(); ctx.moveTo(-8, 40); ctx.lineTo(canvas.width - 0, 40); ctx.lineWidth = 3; ctx.stroke();
                 ctx.font = `bold ${baseFonts.article}px "Arial"`; ctx.textAlign = 'left';
                 ctx.fillText(product.article, 6, 70); ctx.textAlign = 'right';
-                ctx.fillText(`${product.boxQuantity || '0'} шт. в кор.`, canvas.width - 6, 70);
+                ctx.fillText(`${product.boxQuantity || '0'} С€С‚. РІ РєРѕСЂ.`, canvas.width - 6, 70);
                 ctx.beginPath(); ctx.moveTo(-8, 80); ctx.lineTo(canvas.width - 0, 80); ctx.lineWidth = 3; ctx.stroke(); ctx.lineWidth = 1;
                 let productName = product.name;
                 if (productName.length > 59) productName = productName.substring(0, 59) + '...';
@@ -2648,12 +2648,12 @@
                     ctx.strokeStyle = '#666666'; ctx.lineWidth = 2; ctx.stroke();
                     if (discountPercent) { ctx.font = `bold italic ${baseFonts.price * 0.4}px "Arial"`; ctx.fillStyle = '#666666'; ctx.fillText(discountPercent, oldPriceX, oldPriceY + 30); }
                     ctx.textAlign = 'right'; ctx.font = `bold ${baseFonts.price * 0.76}px "Arial"`; ctx.fillStyle = 'black';
-                    ctx.fillText(`${discountPriceFormatted} Руб.`, canvas.width - 15, oldPriceY + 20);
+                    ctx.fillText(`${discountPriceFormatted} Р СѓР±.`, canvas.width - 15, oldPriceY + 20);
                     ctx.textAlign = 'center';
                 } else {
                     ctx.textAlign = 'center';
                     ctx.font = `bold ${baseFonts.price}px "Arial"`;
-                    ctx.fillText(`${formatNumber(product.wholesalePrice, true)} Руб.`, canvas.width / 2, 207 + 12);
+                    ctx.fillText(`${formatNumber(product.wholesalePrice, true)} Р СѓР±.`, canvas.width / 2, 207 + 12);
                 }
                 ctx.beginPath(); ctx.moveTo(-8, 225 + 12); ctx.lineTo(canvas.width - 0, 225 + 12); ctx.lineWidth = 3; ctx.stroke();
                 const today = new Date();
@@ -2691,7 +2691,7 @@
         }
 
         async function printPriceTag(product, type = 'regular') {
-            if (!isPrinterConnected) { const connected = await connectToPrinter(); if (!connected) throw new Error('Не удалось подключиться к принтеру'); }
+            if (!isPrinterConnected) { const connected = await connectToPrinter(); if (!connected) throw new Error('РќРµ СѓРґР°Р»РѕСЃСЊ РїРѕРґРєР»СЋС‡РёС‚СЊСЃСЏ Рє РїСЂРёРЅС‚РµСЂСѓ'); }
             const canvas = createPriceTagImage(product, type);
             const bitmap = canvasToEscPosBitmap(canvas);
             const imageCommand = createEscPosImageCommand(bitmap);
@@ -2729,13 +2729,13 @@
             });
             updatePriceTagPreview(product, 'regular');
             const printBtn = document.getElementById('printActionBtn');
-            printBtn.disabled = true; printBtn.textContent = 'Подключаюсь к принтеру...';
+            printBtn.disabled = true; printBtn.textContent = 'РџРѕРґРєР»СЋС‡Р°СЋСЃСЊ Рє РїСЂРёРЅС‚РµСЂСѓ...';
             try {
                 const connected = await connectToPrinter();
                 printBtn.disabled = !connected;
-                printBtn.textContent = connected ? 'Распечатать' : 'Не удалось подключиться';
+                printBtn.textContent = connected ? 'Р Р°СЃРїРµС‡Р°С‚Р°С‚СЊ' : 'РќРµ СѓРґР°Р»РѕСЃСЊ РїРѕРґРєР»СЋС‡РёС‚СЊСЃСЏ';
             } catch (error) {
-                printBtn.disabled = true; printBtn.textContent = 'Ошибка подключения';
+                printBtn.disabled = true; printBtn.textContent = 'РћС€РёР±РєР° РїРѕРґРєР»СЋС‡РµРЅРёСЏ';
             }
         }
 
@@ -2745,27 +2745,27 @@
         }
 
         async function handlePrint() {
-            if (!currentProductForPrint) { showPrintStatus('Товар не выбран', 'error'); return; }
+            if (!currentProductForPrint) { showPrintStatus('РўРѕРІР°СЂ РЅРµ РІС‹Р±СЂР°РЅ', 'error'); return; }
             const printBtn = document.getElementById('printActionBtn');
-            printBtn.disabled = true; printBtn.textContent = 'Печатаю...';
+            printBtn.disabled = true; printBtn.textContent = 'РџРµС‡Р°С‚Р°СЋ...';
             try {
                 await printPriceTag(currentProductForPrint, currentPriceTagType);
-                showPrintStatus('Ценник успешно отправлен на печать!', 'success');
+                showPrintStatus('Р¦РµРЅРЅРёРє СѓСЃРїРµС€РЅРѕ РѕС‚РїСЂР°РІР»РµРЅ РЅР° РїРµС‡Р°С‚СЊ!', 'success');
                 setTimeout(() => closePrintModal(), 1500);
             } catch (error) {
-                showPrintStatus('Ошибка печати: ' + error.message, 'error');
-                printBtn.disabled = false; printBtn.textContent = 'Распечатать';
+                showPrintStatus('РћС€РёР±РєР° РїРµС‡Р°С‚Рё: ' + error.message, 'error');
+                printBtn.disabled = false; printBtn.textContent = 'Р Р°СЃРїРµС‡Р°С‚Р°С‚СЊ';
             }
         }
 
-        // ===== ДАТЫ ФАЙЛОВ =====
+        // ===== Р”РђРўР« Р¤РђР™Р›РћР’ =====
         function getFileDatesData() {
-            let displayDate = DATA_UPDATE_DATE ? (DATA_UPDATE_DATE.includes(" ") ? DATA_UPDATE_DATE.split(" ")[0] : DATA_UPDATE_DATE) : "Дата не указана";
+            let displayDate = DATA_UPDATE_DATE ? (DATA_UPDATE_DATE.includes(" ") ? DATA_UPDATE_DATE.split(" ")[0] : DATA_UPDATE_DATE) : "Р”Р°С‚Р° РЅРµ СѓРєР°Р·Р°РЅР°";
             return {
                 currentDate: displayDate,
                 files: [
-                    { location: "Уральская", items: [{ label: "Офис", lastModified: URAL_OFFICE_DATE || "Дата не указана" }, { label: "Уральская", lastModified: URAL_DATE || "Дата не указана" }] },
-                    { location: "Шевченко", items: [{ label: "Офис", lastModified: SHEVCHENKO_OFFICE_DATE || "Дата не указана" }, { label: "Шевченко", lastModified: SHEVCHENKO_DATE || "Дата не указана" }] }
+                    { location: "РЈСЂР°Р»СЊСЃРєР°СЏ", items: [{ label: "РћС„РёСЃ", lastModified: URAL_OFFICE_DATE || "Р”Р°С‚Р° РЅРµ СѓРєР°Р·Р°РЅР°" }, { label: "РЈСЂР°Р»СЊСЃРєР°СЏ", lastModified: URAL_DATE || "Р”Р°С‚Р° РЅРµ СѓРєР°Р·Р°РЅР°" }] },
+                    { location: "РЁРµРІС‡РµРЅРєРѕ", items: [{ label: "РћС„РёСЃ", lastModified: SHEVCHENKO_OFFICE_DATE || "Р”Р°С‚Р° РЅРµ СѓРєР°Р·Р°РЅР°" }, { label: "РЁРµРІС‡РµРЅРєРѕ", lastModified: SHEVCHENKO_DATE || "Р”Р°С‚Р° РЅРµ СѓРєР°Р·Р°РЅР°" }] }
                 ]
             };
         }
@@ -2774,26 +2774,26 @@
             const data = getFileDatesData();
             const modal = document.getElementById('datesModal');
             const content = document.getElementById('datesContent');
-            document.getElementById('modalCurrentDate').textContent = `Дата обновления: ${data.currentDate}`;
+            document.getElementById('modalCurrentDate').textContent = `Р”Р°С‚Р° РѕР±РЅРѕРІР»РµРЅРёСЏ: ${data.currentDate}`;
             let updateTime = "00:00";
             if (DATA_UPDATE_DATE && DATA_UPDATE_DATE.includes(" ")) {
                 const timeMatch = DATA_UPDATE_DATE.match(/\s(\d{2}:\d{2})$/);
                 if (timeMatch && timeMatch[1]) updateTime = timeMatch[1];
             } else { const now = new Date(); updateTime = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0'); }
-            document.getElementById('dataUpdateContainer').textContent = `Данные на : ${updateTime}`;
+            document.getElementById('dataUpdateContainer').textContent = `Р”Р°РЅРЅС‹Рµ РЅР° : ${updateTime}`;
             let html = '';
             data.files.forEach(section => {
                 html += `<div class="date-section"><div class="date-section-title">${section.location}:</div>`;
                 section.items.forEach(item => { html += `<div class="date-item"><div class="date-item-row"><div class="date-item-label">${item.label}:</div><div class="date-item-time">${item.lastModified}</div></div></div>`; });
                 html += `</div>`;
             });
-            content.innerHTML = html || '<div class="no-dates-info">Информация отсутствует</div>';
+            content.innerHTML = html || '<div class="no-dates-info">РРЅС„РѕСЂРјР°С†РёСЏ РѕС‚СЃСѓС‚СЃС‚РІСѓРµС‚</div>';
             modal.style.display = 'flex';
         }
 
         function closeDatesModal() { document.getElementById('datesModal').style.display = 'none'; }
 
-        // ===== ИЗОБРАЖЕНИЯ =====
+        // ===== РР—РћР‘Р РђР–Р•РќРРЇ =====
         function showProductImage(product) {
             const modal = document.createElement('div');
             modal.className = 'modal-overlay'; modal.id = 'imageModal'; modal.style.display = 'flex';
@@ -2804,7 +2804,7 @@
                 if (!fileName.includes('.')) fileName += '.jpg';
                 imageUrl = `https://kubanstar.ru/images/virtuemart/product/${fileName}`;
             }
-            modal.innerHTML = `<div class="modal-frame" style="max-width: 90%; max-height: 90%;"><div style="text-align: center; padding: 20px;"><h3 style="margin-bottom: 20px;">${product.article} - ${product.name}</h3><div style="max-height: 70vh; overflow: auto; margin: 20px 0;" id="imageContainer"><img id="productImage" src="${imageUrl || 'data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text x=%2250%25%22 y=%2250%25%22 font-size=%2250%22 text-anchor=%22middle%22 dy=%22.3em%22>&#128247;</text></svg>'}" style="max-width: 100%; max-height: 60vh; border-radius: 8px; display: block; margin: 0 auto;" onerror="handleImageError(this, '${alternativeImageCode.replace(/'/g, "\\'")}')" alt="Изображение товара"><div id="imageError" style="display: none; padding: 40px; color: #999;"><div style="font-size: 48px;">&#128247;</div><div style="font-size: 18px; font-weight: bold; color: #666;">Изображение не найдено</div></div></div><button onclick="this.closest('.modal-overlay').style.display='none'" class="camera-btn" style="background-color: #f44336; min-width: 200px;">Закрыть</button></div></div>`;
+            modal.innerHTML = `<div class="modal-frame" style="max-width: 90%; max-height: 90%;"><div style="text-align: center; padding: 20px;"><h3 style="margin-bottom: 20px;">${product.article} - ${product.name}</h3><div style="max-height: 70vh; overflow: auto; margin: 20px 0;" id="imageContainer"><img id="productImage" src="${imageUrl || 'data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text x=%2250%25%22 y=%2250%25%22 font-size=%2250%22 text-anchor=%22middle%22 dy=%22.3em%22>&#128247;</text></svg>'}" style="max-width: 100%; max-height: 60vh; border-radius: 8px; display: block; margin: 0 auto;" onerror="handleImageError(this, '${alternativeImageCode.replace(/'/g, "\\'")}')" alt="РР·РѕР±СЂР°Р¶РµРЅРёРµ С‚РѕРІР°СЂР°"><div id="imageError" style="display: none; padding: 40px; color: #999;"><div style="font-size: 48px;">&#128247;</div><div style="font-size: 18px; font-weight: bold; color: #666;">РР·РѕР±СЂР°Р¶РµРЅРёРµ РЅРµ РЅР°Р№РґРµРЅРѕ</div></div></div><button onclick="this.closest('.modal-overlay').style.display='none'" class="camera-btn" style="background-color: #f44336; min-width: 200px;">Р—Р°РєСЂС‹С‚СЊ</button></div></div>`;
             const oldModal = document.getElementById('imageModal'); if (oldModal) oldModal.remove();
             document.body.appendChild(modal);
             modal.onclick = function(e) { if (e.target === modal) modal.style.display = 'none'; };
@@ -2816,28 +2816,28 @@
                 let fileName = alternativeImageCode.trim();
                 if (!fileName.includes('.')) fileName += '.jpg';
                 const alternativeUrl = `https://kubanstar.ru/images/virtuemart/product/${fileName}`;
-                if (errorDiv) { errorDiv.style.display = 'block'; errorDiv.innerHTML = '<div style="font-size: 48px;">&#128260;</div><div style="font-size: 18px; font-weight: bold; color: #666;">Загружаем альтернативное изображение...</div>'; }
+                if (errorDiv) { errorDiv.style.display = 'block'; errorDiv.innerHTML = '<div style="font-size: 48px;">&#128260;</div><div style="font-size: 18px; font-weight: bold; color: #666;">Р—Р°РіСЂСѓР¶Р°РµРј Р°Р»СЊС‚РµСЂРЅР°С‚РёРІРЅРѕРµ РёР·РѕР±СЂР°Р¶РµРЅРёРµ...</div>'; }
                 const newImg = new Image();
                 newImg.onload = function() { imgElement.src = alternativeUrl; imgElement.style.display = 'block'; if (errorDiv) errorDiv.style.display = 'none'; };
                 newImg.onerror = function() {
-                    if (errorDiv) { errorDiv.style.display = 'block'; errorDiv.innerHTML = '<div style="font-size: 48px;">&#10060;</div><div style="font-size: 18px; font-weight: bold; color: #666;">Изображение не найдено</div>'; }
+                    if (errorDiv) { errorDiv.style.display = 'block'; errorDiv.innerHTML = '<div style="font-size: 48px;">&#10060;</div><div style="font-size: 18px; font-weight: bold; color: #666;">РР·РѕР±СЂР°Р¶РµРЅРёРµ РЅРµ РЅР°Р№РґРµРЅРѕ</div>'; }
                     imgElement.style.display = 'none';
                 };
                 newImg.src = alternativeUrl;
             } else {
-                if (errorDiv) { errorDiv.style.display = 'block'; errorDiv.innerHTML = '<div style="font-size: 48px;">&#10060;</div><div style="font-size: 18px; font-weight: bold; color: #666;">Изображение не найдено</div>'; }
+                if (errorDiv) { errorDiv.style.display = 'block'; errorDiv.innerHTML = '<div style="font-size: 48px;">&#10060;</div><div style="font-size: 18px; font-weight: bold; color: #666;">РР·РѕР±СЂР°Р¶РµРЅРёРµ РЅРµ РЅР°Р№РґРµРЅРѕ</div>'; }
                 imgElement.style.display = 'none';
             }
         }
 
-        // ===== КНОПКА "НАВЕРХ" =====
+        // ===== РљРќРћРџРљРђ "РќРђР’Р•Р РҐ" =====
         function initScrollToTopButton() {
             const btn = document.getElementById('scrollToTopBtn');
             window.addEventListener('scroll', () => btn.classList.toggle('show', window.pageYOffset > 300));
             btn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
         }
 
-        // ===== ИНИЦИАЛИЗАЦИЯ =====
+        // ===== РРќРР¦РРђР›РР—РђР¦РРЇ =====
         const searchInput = document.getElementById('searchInput');
         const clearSearchBtn = document.getElementById('clearSearchBtn');
         const searchButton = document.getElementById('searchButton');
@@ -2899,7 +2899,7 @@
             });
         }
 
-        // ===== ОБРАБОТЧИКИ СОБЫТИЙ =====
+        // ===== РћР‘Р РђР‘РћРўР§РРљР РЎРћР‘Р«РўРР™ =====
         searchButton.addEventListener('click', searchProducts);
         clearSearchBtn.addEventListener('click', clearSearchFields);
         searchInput.addEventListener('input', updateClearButton);
@@ -2949,20 +2949,20 @@
             });
         });
 
-        // Кнопки в модальном окне "Добавлено"
+        // РљРЅРѕРїРєРё РІ РјРѕРґР°Р»СЊРЅРѕРј РѕРєРЅРµ "Р”РѕР±Р°РІР»РµРЅРѕ"
         btnScanMore.addEventListener('click', () => {
             addedModal.style.display = 'none';
             setTimeout(() => isIOS() ? openIOSScanner() : openCamera(), 300);
         });
         btnClearAll.addEventListener('click', clearAllLines);
 
-        // Обработчик видимости страницы
+        // РћР±СЂР°Р±РѕС‚С‡РёРє РІРёРґРёРјРѕСЃС‚Рё СЃС‚СЂР°РЅРёС†С‹
         document.addEventListener('visibilitychange', () => { if (document.hidden && iosIsScanning) closeIOSScanner(); });
         window.addEventListener('orientationchange', () => {
             if (iosIsScanning) { setTimeout(() => { if (iosIsScanning) { closeIOSScanner(); setTimeout(openIOSScanner, 500); } }, 300); }
         });
 
-        // Инициализация при загрузке
+        // РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ РїСЂРё Р·Р°РіСЂСѓР·РєРµ
         window.addEventListener('load', function() {
             document.getElementById('modeArticle').checked = true;
             updateSearchUI();
