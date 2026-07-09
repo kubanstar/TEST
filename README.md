@@ -3773,6 +3773,17 @@ async function openCamera() {
             }, 300);
         });
 
+        btnScanMore.addEventListener('click', function() {
+            addedModal.style.display = 'none';
+            setTimeout(() => {
+                if (isIOS()) {
+                    openIOSScanner();
+                } else {
+                    openCamera();
+                }
+            }, 300);
+        });
+
         closeResultBtn.addEventListener('click', function() {
             resultModal.style.display = 'none';
         });
@@ -3799,7 +3810,6 @@ async function openCamera() {
 
         closeAddedModalBtn.addEventListener('click', function() { addedModal.style.display = 'none'; });
         addedModal.addEventListener('click', function(e) { if (e.target === addedModal) addedModal.style.display = 'none'; });
-        btnScanMore.addEventListener('click', function() { addedModal.style.display = 'none'; setTimeout(() => { if (isIOS()) openIOSScanner(); else openCamera(); }, 300); });
         btnClearAll.addEventListener('click', clearAllLines);
         document.getElementById('confirmDuplicateBtn').addEventListener('click', async function() {
             if (!selectedDuplicateProduct) return;
