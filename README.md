@@ -2914,6 +2914,7 @@
             }
         }
 
+
         async function openCamera() {
             try {
                 stopCameraStream();
