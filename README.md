@@ -1237,41 +1237,6 @@
             z-index: 3100;
             display: none;
         }
-		
-        .add-to-list-btn {
-            background: #4CAF50; color: white; border: none; border-radius: 50%;
-            width: 24px; height: 24px; font-size: 20px; cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-            transition: all 0.3s; flex-shrink: 0;
-        }
-        .add-to-list-btn:hover { background: #45a049; transform: scale(1.1); }
-        .add-to-list-btn:active { transform: scale(0.95); }
-        
-        .added-modal { max-width: 600px; animation: successSlide 0.5s ease-out; }
-        .added-modal .scan-result-title { font-size: 20px; color: #4CAF50; margin-bottom: 15px; text-align: center; }
-        .added-modal .line-item { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; margin: 4px 0; background: #f8f9fa; border-radius: 8px; gap: 10px; }
-        .added-modal .line-item:hover { background: #e8f5e9; }
-        .added-modal .line-num { font-weight: bold; color: #1a73e8; min-width: 32px; font-size: 13px; cursor: pointer; text-decoration: underline; }
-        .added-modal .line-text { flex: 1; font-size: 13px; word-break: break-all; }
-        .added-modal .btn-del { background: #ff4444; color: #fff; border: none; border-radius: 6px; padding: 6px 12px; font-size: 13px; cursor: pointer; }
-        .added-modal .btn-clear { background: #ea4335; color: #fff; border: none; border-radius: 8px; padding: 12px 20px; font-size: 14px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 10px; }
-        .added-modal .btn-scan-more { background: #2196F3; color: #fff; border: none; border-radius: 8px; padding: 12px 20px; font-size: 14px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 8px; }
-        .added-modal .counter { text-align: center; font-size: 13px; color: #666; margin-bottom: 8px; }
-        .added-modal .empty { text-align: center; color: #999; padding: 20px; font-size: 14px; }
-        
-        .line-tooltip { display: none; position: fixed; background: white; border: 2px solid #1a73e8; border-radius: 10px; padding: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.2); z-index: 5000; max-width: 320px; font-size: 13px; }
-        .line-tooltip.show { display: block; }
-        .line-tooltip .tooltip-row { padding: 4px 0; border-bottom: 1px solid #f0f0f0; }
-        .line-tooltip .tooltip-row:last-child { border-bottom: none; }
-        .line-tooltip .tooltip-value { color: #333; font-size: 12px; }
-        
-        .duplicate-barcode-modal { max-width: 600px; }
-        .duplicate-item { padding: 12px; margin: 8px 0; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #2196F3; cursor: pointer; }
-        .duplicate-item:hover { background: #e3f2fd; }
-        .duplicate-item.selected { background: #c8e6c9; border-left-color: #4CAF50; }
-        
-        .product-header-right { display: flex; align-items: center; gap: 10px; }		
-		
     </style>
 </head>
 <body>
@@ -1483,29 +1448,6 @@
         </div>
     </div>
 
-    <div class="modal-overlay" id="addedModal">
-        <div class="modal-frame added-modal">
-            <div class="scan-result-title">&#9989; Добавлено!</div>
-            <div class="counter" id="addedCounter">Загрузка...</div>
-            <div id="addedLinesList"></div>
-            <button class="btn-scan-more" id="btnScanMore">&#128247; Сканировать еще</button>
-            <button class="btn-clear" id="btnClearAll">Очистить всё</button>
-            <button class="close-modal" id="closeAddedModal" style="margin-top: 10px;">Закрыть</button>
-        </div>
-    </div>
-    <div class="line-tooltip" id="lineTooltip"></div>
-    <div class="modal-overlay" id="duplicateModal">
-        <div class="modal-frame duplicate-barcode-modal">
-            <h3 style="color:#e74c3c;margin-bottom:15px;">Найдено несколько товаров</h3>
-            <p style="color:#666;margin-bottom:15px;">Штрихкод <strong id="dupBarcodeDisplay"></strong> найден у разных товаров. Выберите нужный:</p>
-            <div id="duplicateItemsList"></div>
-            <div style="display:flex;gap:10px;margin-top:20px;">
-                <button class="action-btn continue-scan-btn" id="confirmDuplicateBtn" disabled>Подтвердить выбор</button>
-                <button class="action-btn close-result-btn" id="cancelDuplicateBtn">Отмена</button>
-            </div>
-        </div>
-    </div>
-
     <script>
 		// ===== ДАТА =====
         const DATA_UPDATE_DATE = ""; // Будет заполнена AHK скриптом: "04.02.2026"
@@ -1538,10 +1480,6 @@
         let iosIsScanning = false;
         let iosLastScannedCode = '';
         let iosCurrentFacingMode = 'environment';
-		
-		const API_BASE = 'http://192.168.1.23:8080';
-        let selectedDuplicateProduct = null;
-        window._duplicateProducts = [];		
 
         // Пример данных
         const productsData = `6080010075148;KS-8001;Набор для творчества "ЧАСТИЧНАЯ ВЫКЛАДКА СТРАЗАМИ" 10*15 в пакете;70,00;70,00;7;;10;2;0,035;;0,050;0,010;;Cb010003474_1;;;200;Cb010003474_1;
@@ -1744,82 +1682,6 @@
                     </div>
                 </div>
             `;
-        }
-
-        async function addToCenTxt(data) {
-            try { const r = await fetch(API_BASE, { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: data }); return (await r.json()).status === 'ok'; }
-            catch (e) { console.error(e); return false; }
-        }
-        async function getCenTxtLines() {
-            try { return await (await fetch(API_BASE + '/lines')).json(); }
-            catch (e) { return []; }
-        }
-        async function deleteCenTxtLine(i) {
-            try { return (await (await fetch(API_BASE + '/line?id=' + i, { method: 'DELETE' })).json()).status === 'ok'; }
-            catch (e) { return false; }
-        }
-        async function clearCenTxt() {
-            try { return (await (await fetch(API_BASE + '/all', { method: 'DELETE' })).json()).status === 'ok'; }
-            catch (e) { return false; }
-        }
-        function findProductByLineData(lineData) {
-            const all = parseProductsData(productsData); const clean = lineData.trim();
-            try { const p = JSON.parse(clean); if (p.barcode) { const f = all.filter(x => x.barcode.includes(p.barcode)); if (f.length) return f[0]; } } catch (e) {}
-            if (/^\d{8,14}$/.test(clean)) { const f = all.filter(x => x.barcode.includes(clean)); if (f.length) return f[0]; }
-            const ba = all.filter(x => x.article.toLowerCase().includes(clean.toLowerCase())); if (ba.length) return ba[0];
-            return null;
-        }
-        function showLineTooltip(event, index, lineData) {
-            event.stopPropagation();
-            const tip = document.getElementById('lineTooltip');
-            const product = findProductByLineData(lineData);
-            if (product) {
-                tip.innerHTML = `<div class="tooltip-row"><span class="tooltip-value" style="font-weight:bold;font-size:14px;">${product.article}</span></div><div class="tooltip-row"><span class="tooltip-value">${product.name}</span></div><div class="tooltip-row"><span class="tooltip-value" style="font-family:monospace;">${product.barcode}</span></div>`;
-            } else {
-                tip.innerHTML = `<div class="tooltip-row"><span class="tooltip-value">${lineData}</span></div>`;
-            }
-            const rect = event.target.getBoundingClientRect();
-            tip.style.left = Math.min(rect.left, window.innerWidth - 330) + 'px';
-            tip.style.top = (rect.bottom + 5) + 'px'; tip.classList.add('show');
-            const close = (e) => { if (!tip.contains(e.target) && e.target !== event.target) { tip.classList.remove('show'); document.removeEventListener('click', close); } };
-            setTimeout(() => document.addEventListener('click', close), 100);
-        }
-        async function showAddedModal() {
-            const m = document.getElementById('addedModal'), c = document.getElementById('addedCounter'), l = document.getElementById('addedLinesList');
-            const lines = await getCenTxtLines();
-            if (!lines.length) { c.textContent = 'Строк: 0'; l.innerHTML = '<div class="empty">Список пуст</div>'; return; }
-            c.textContent = 'Строк: ' + lines.length;
-            let h = '';
-            lines.forEach((line, i) => {
-                const esc = line.replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/\n/g, '\\n');
-                h += `<div class="line-item"><span class="line-num" onclick="showLineTooltip(event,${i},'${esc}')">#${i+1}</span><span class="line-text">${line.length > 60 ? line.substring(0,60)+'...' : line}</span><button class="btn-del" onclick="deleteAddedLine(${i})">&#10006;</button></div>`;
-            });
-            l.innerHTML = h; m.style.display = 'flex';
-        }
-        async function deleteAddedLine(i) { if (!confirm('Удалить строку #' + (i+1) + '?')) return; if (await deleteCenTxtLine(i)) showAddedModal(); }
-        async function clearAllLines() { if (!confirm('Удалить ВСЕ строки?')) return; if (await clearCenTxt()) showAddedModal(); }
-        async function addBarcodeToList(barcode, product) {
-            const all = parseProductsData(productsData);
-            const withBc = all.filter(p => p.barcode.includes(barcode));
-            const unique = []; const seen = new Set();
-            withBc.forEach(p => { const k = createProductKey(p); if (!seen.has(k)) { seen.add(k); unique.push(p); } });
-            if (unique.length > 1) { showDuplicateModal(barcode, unique); return; }
-            let toSend = barcode;
-            if (product && product.barcodes && product.barcodes.length > 1) toSend = product.barcodes[0];
-            if (await addToCenTxt(toSend)) { document.getElementById('resultModal').style.display = 'none'; showAddedModal(); }
-            else { alert('Ошибка при добавлении.'); }
-        }
-        function showDuplicateModal(barcode, products) {
-            document.getElementById('dupBarcodeDisplay').textContent = barcode;
-            document.getElementById('duplicateItemsList').innerHTML = products.map((p, i) => `<div class="duplicate-item" onclick="selectDuplicateItem(this,${i})"><div style="font-weight:bold;">${p.article}</div><div style="font-size:14px;">${p.name}</div><div style="color:#e74c3c;margin-top:5px;">${p.discountPrice ? p.discountPrice+' руб.' : p.wholesalePrice+' руб.'}</div></div>`).join('');
-            selectedDuplicateProduct = null; document.getElementById('confirmDuplicateBtn').disabled = true;
-            window._duplicateProducts = products; document.getElementById('duplicateModal').style.display = 'flex';
-        }
-        function selectDuplicateItem(el, i) {
-            document.querySelectorAll('.duplicate-item').forEach(x => x.classList.remove('selected'));
-            el.classList.add('selected');
-            selectedDuplicateProduct = window._duplicateProducts[i];
-            document.getElementById('confirmDuplicateBtn').disabled = false;
         }
 
         // ===== ФУНКЦИИ ДЛЯ РАБОТЫ С СЕРИАЛЬНЫМ ПОРТОМ =====
@@ -2969,8 +2831,7 @@ async function openCamera() {
                                 <strong>Артикул:</strong> ${product.article}
                                 ${hasImage ? '<button class="image-button" style="margin-left: 10px;">&#127750;</button>' : '<span class="no-image-text">(без изображения)</span>'}
                             </div>
-								${printButtonHTML}
-                                <button class="add-to-list-btn" onclick="event.stopPropagation(); addBarcodeToList('${product.barcode}', ${JSON.stringify(product).replace(/"/g, '&quot;')})" title="Добавить в список">&#10133;</button>
+                            ${printButtonHTML}
                         </div>
                         <div style="font-size: 16px; color: #222; margin-bottom: 8px;">
                             ${product.name}
@@ -3292,12 +3153,6 @@ async function openCamera() {
             
             articleContainer.appendChild(articleRow);
             articleContainer.appendChild(printButton);
-			const addButton = document.createElement('button');
-            addButton.className = 'add-to-list-btn';
-            addButton.title = 'Добавить в список';
-            addButton.textContent = '+';
-            addButton.onclick = function() { addBarcodeToList(product.barcode, product); };
-            articleContainer.appendChild(addButton);
             
             container.innerHTML = `
                 <div class="product-field barcode">Штрихкод: ${highlightedBarcode}</div>
@@ -3656,11 +3511,6 @@ async function openCamera() {
         const printActionBtn = document.getElementById('printActionBtn');
 
         const priceTagTypeSelector = document.getElementById('priceTagTypeSelector');
-		
-		const addedModal = document.getElementById('addedModal');
-        const closeAddedModalBtn = document.getElementById('closeAddedModal');
-        const btnScanMore = document.getElementById('btnScanMore');
-        const btnClearAll = document.getElementById('btnClearAll');
 
         // Элементы iOS сканера
         const closeIOSScannerBtn = document.getElementById('closeIOSScanner');
@@ -3773,17 +3623,6 @@ async function openCamera() {
             }, 300);
         });
 
-        btnScanMore.addEventListener('click', function() {
-            addedModal.style.display = 'none';
-            setTimeout(() => {
-                if (isIOS()) {
-                    openIOSScanner();
-                } else {
-                    openCamera();
-                }
-            }, 300);
-        });
-
         closeResultBtn.addEventListener('click', function() {
             resultModal.style.display = 'none';
         });
@@ -3807,16 +3646,6 @@ async function openCamera() {
         printActionBtn.addEventListener('click', handlePrint);
 
         document.getElementById('current-date').addEventListener('click', openDatesModal);
-
-        closeAddedModalBtn.addEventListener('click', function() { addedModal.style.display = 'none'; });
-        addedModal.addEventListener('click', function(e) { if (e.target === addedModal) addedModal.style.display = 'none'; });
-        btnClearAll.addEventListener('click', clearAllLines);
-        document.getElementById('confirmDuplicateBtn').addEventListener('click', async function() {
-            if (!selectedDuplicateProduct) return;
-            document.getElementById('duplicateModal').style.display = 'none';
-            if (await addToCenTxt(selectedDuplicateProduct.barcode)) { document.getElementById('resultModal').style.display = 'none'; showAddedModal(); }
-        });
-        document.getElementById('cancelDuplicateBtn').addEventListener('click', function() { document.getElementById('duplicateModal').style.display = 'none'; });
 
         // Обработчики iOS сканера
         closeIOSScannerBtn.addEventListener('click', closeIOSScanner);
