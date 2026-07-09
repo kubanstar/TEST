@@ -1,10 +1,21 @@
-﻿<html lang="ru">
+﻿<!DOCTYPE html>
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>Поиск товаров</title>
+    <link rel="icon" type="image/png" href="favicon.png">
     <script src="https://unpkg.com/html5-qrcode"></script>
     <style>
+        * {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+        
         body {
             font-family: Arial, sans-serif;
             max-width: 800px;
@@ -1365,14 +1376,11 @@
         <div id="printStatus" class="print-status"></div>
         
         <div class="results-container" id="resultsContainer">
-            <!-- Результаты поиска будут здесь -->
         </div>
     </div>
 
-    <!-- Кнопка "Наверх" -->
     <button class="scroll-to-top-btn" id="scrollToTopBtn" title="Наверх">&#9650;</button>
 
-    <!-- Модальное окно камеры для Android -->
     <div class="modal-overlay" id="cameraModal">
         <div class="modal-frame">
             <h3>Сканирование штрихкода</h3>
@@ -1389,7 +1397,6 @@
         </div>
     </div>
 
-    <!-- Модальное окно сканера для iOS -->
     <div class="ios-scanner-modal" id="iosScannerModal">
         <div class="ios-scanner-content">
             <div class="ios-scanner-container">
@@ -1428,14 +1435,11 @@
         </div>
     </div>
 
-    <!-- Модальное окно результатов сканирования -->
     <div class="modal-overlay" id="resultModal">
         <div class="modal-frame scan-result-frame">
             <div class="scan-result-products" id="resultProducts">
-                <!-- Список товаров будет здесь -->
             </div>
             <div class="scan-result-count" id="resultCount">
-                <!-- Количество найденных товаров -->
             </div>
             <div class="scan-result-actions">
                 <button class="action-btn continue-scan-btn" id="continueScanBtn">
@@ -1448,7 +1452,6 @@
         </div>
     </div>
 
-    <!-- Модальное окно "Добавлено" со списком из cen.txt -->
     <div class="modal-overlay" id="addedModal">
         <div class="modal-frame added-modal">
             <div class="scan-result-title">✅ Добавлено!</div>
@@ -1460,10 +1463,8 @@
         </div>
     </div>
 
-    <!-- Всплывающая подсказка с информацией о товаре -->
     <div class="line-tooltip" id="lineTooltip"></div>
 
-    <!-- Модальное окно для выбора товара при дубликатах штрихкодов -->
     <div class="modal-overlay" id="duplicateModal">
         <div class="modal-frame duplicate-barcode-modal">
             <h3 style="color: #e74c3c; margin-bottom: 15px;">⚠️ Найдено несколько товаров</h3>
@@ -1476,7 +1477,6 @@
         </div>
     </div>
 
-    <!-- Новое модальное окно печати -->
     <div class="print-modal-new" id="printModal">
         <div class="print-modal-content-new">
             <h3>Печать ценника</h3>
@@ -1510,7 +1510,6 @@
         </div>
     </div>
 
-    <!-- Модальное окно с датами изменения файлов -->
     <div class="modal-overlay" id="datesModal">
         <div class="modal-frame dates-modal">
             <div class="dates-header">
@@ -1518,55 +1517,43 @@
                 <div class="data-update-container" id="dataUpdateContainer">Данные на : 14:07</div>
             </div>
             <div id="datesContent" class="dates-content">
-                <!-- Содержимое будет сгенерировано JavaScript -->
             </div>
             <button class="close-modal" id="closeDatesModal" style="margin-top: 15px;">
                 Закрыть
             </button>
         </div>
     </div>
-	
-    <script>
-		// ===== ДАТА =====
-        const DATA_UPDATE_DATE = ""; // Будет заполнена AHK скриптом: "04.02.2026"
-        
-        // ===== ДАТЫ ИЗМЕНЕНИЯ ФАЙЛОВ =====
-        const URAL_OFFICE_DATE = ""; // Будет заполнена AHK скриптом: "03.02.2026 14:32"
-        const URAL_DATE = ""; // Будет заполнена AHK скриптом: "04.02.2026 8:19"
-        const SHEVCHENKO_OFFICE_DATE = ""; // Будет заполнена AHK скриптом: "04.02.2026 07:33"
-        const SHEVCHENKO_DATE = ""; // Будет заполнена AHK скриптом: "04.02.2026 09:02"
 
-        // ===== КОНФИГУРАЦИЯ API ДЛЯ CEN.TXT =====
+    <script>
+		const DATA_UPDATE_DATE = "";
+        const URAL_OFFICE_DATE = "";
+        const URAL_DATE = "";
+        const SHEVCHENKO_OFFICE_DATE = "";
+        const SHEVCHENKO_DATE = "";
+
         const API_BASE = 'http://192.168.1.23:8080';
 
-        // ===== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ =====
         let stream = null;
         let barcodeDetector = null;
         let scanInterval = null;
         let lastScannedCode = '';
         
-        // Переменные для печати
         let serialPort = null;
         let serialWriter = null;
         let isPrinterConnected = false;
         
-        // Текущий товар для печати
         let currentProductForPrint = null;
         
-        // Переменная: тип ценника (по умолчанию обычный)
         let currentPriceTagType = 'regular';
         
-        // ===== ПЕРЕМЕННЫЕ ДЛЯ iOS СКАНЕРА =====
         let iosHtml5QrCode = null;
         let iosIsScanning = false;
         let iosLastScannedCode = '';
         let iosCurrentFacingMode = 'environment';
         
-        // ===== ПЕРЕМЕННЫЕ ДЛЯ ДУБЛИКАТОВ =====
         let selectedDuplicateProduct = null;
         window._duplicateProducts = [];
 
-        // Пример данных
         const productsData = `6080010075148;KS-8001;Набор для творчества "ЧАСТИЧНАЯ ВЫКЛАДКА СТРАЗАМИ" 10*15 в пакете;70,00;70,00;7;;10;2;0,035;;0,050;0,010;;Cb010003474_1;;;200;Cb010003474_1;
 ЦБ010003475;Q-А998;Парусник на радиоуправлении на батарейках с рулём.;355,00;355,00;;;8;;;;0,167;;;;50;177,50;48;Cb010003475_1;
 6132588301003;TS-MY88301;Конструктор " Гоночная машина";1780,00;1780,00;;;1;1;;;0,167;0,167;У/Ж2;KS-402-24;;;6;Cb010003476_1;
@@ -1992,7 +1979,7 @@
             selectedDuplicateProduct = window._duplicateProducts[index];
             document.getElementById('confirmDuplicateBtn').disabled = false;
         }
-		
+
         // ===== ФУНКЦИИ ДЛЯ РАБОТЫ С СЕРИАЛЬНЫМ ПОРТОМ =====
 
         function updatePrinterStatus(message, type = 'connecting') {
@@ -2284,7 +2271,7 @@
     
 			ctx.font = `bold italic ${baseFonts.price * 0.5}px "Arial"`;
 			ctx.fillStyle = '#666666';
-			const oldPriceX = 20; // Слева с отступом
+			const oldPriceX = 20;
 			const oldPriceY = 193;
 			ctx.fillText(originalPriceFormatted, oldPriceX, oldPriceY);
     
@@ -2640,7 +2627,7 @@
         function closeDatesModal() {
             document.getElementById('datesModal').style.display = 'none';
         }
-		
+
         // ===== ФУНКЦИИ ДЛЯ СКАНИРОВАНИЯ (Android) =====
 
         function isIOS() {
@@ -2686,6 +2673,7 @@
         function setupPlatformUI() {
             const scanButtonAndroid = document.getElementById('scanButtonAndroid');
             const scanButtonIOS = document.getElementById('scanButtonIOS');
+            const searchButton = document.getElementById('searchButton');
             
             if (isIOS()) {
                 scanButtonAndroid.style.display = 'none';
@@ -2701,33 +2689,26 @@
             try {
                 stopCameraStream();
                 
-                // Для Android выбираем заднюю камеру
                 if (isAndroid()) {
-                    // Получаем список камер
                     const devices = await navigator.mediaDevices.enumerateDevices();
                     const videoDevices = devices.filter(device => device.kind === 'videoinput');
                     
                     if (videoDevices.length > 0) {
-                        // Находим камеру с самым маленьким номером, которая не фронтальная
                         let selectedCamera = null;
                         
-                        // Сортируем по deviceId (обычно нумерация сохраняется)
                         const sortedDevices = [...videoDevices].sort((a, b) => 
                             a.deviceId.localeCompare(b.deviceId)
                         );
                         
                         for (const device of sortedDevices) {
                             const label = device.label.toLowerCase();
-                            // Пропускаем фронтальные
                             if (label.includes('front') || label.includes('фронт')) {
                                 continue;
                             }
-                            // Берем первую попавшуюся не фронтальную
                             selectedCamera = device;
                             break;
                         }
                         
-                        // Если не нашли, берем первую камеру
                         if (!selectedCamera) {
                             selectedCamera = videoDevices[0];
                         }
@@ -2741,7 +2722,6 @@
                             audio: false
                         });
                     } else {
-                        // Если не получилось получить список, используем стандартный режим
                         stream = await navigator.mediaDevices.getUserMedia({
                             video: {
                                 facingMode: 'environment',
@@ -2752,7 +2732,6 @@
                         });
                     }
                 } else {
-                    // Для iOS и других используем стандартный режим
                     stream = await navigator.mediaDevices.getUserMedia({
                         video: {
                             facingMode: 'environment',
@@ -2784,7 +2763,6 @@
             } catch (error) {
                 console.error('Ошибка доступа к камере:', error);
                 
-                // Если что-то пошло не так, пробуем стандартный режим
                 try {
                     const fallbackStream = await navigator.mediaDevices.getUserMedia({
                         video: { facingMode: 'environment' },
@@ -3102,7 +3080,7 @@
                 });
             }).catch(() => {});
         }
-		
+
         // ===== ОБЩИЕ ФУНКЦИИ =====
 
         function showScanResults(code, results) {
@@ -3311,8 +3289,6 @@
             const regex = new RegExp(`(${searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
             return text.toString().replace(regex, '<mark>$1</mark>');
         }
-
-        // ===== ОСТАЛЬНЫЕ ФУНКЦИИ =====
 
         function getCurrentSearchMode() {
             const selectedRadio = document.querySelector('input[name="searchMode"]:checked');
@@ -3809,7 +3785,7 @@
                 });
             });
         }
-		
+
         // ===== ИНИЦИАЛИЗАЦИЯ =====
         
         const searchInput = document.getElementById('searchInput');
@@ -3848,7 +3824,6 @@
 
         const priceTagTypeSelector = document.getElementById('priceTagTypeSelector');
 
-        // Элементы iOS сканера
         const closeIOSScannerBtn = document.getElementById('closeIOSScanner');
         const switchIOSCameraBtn = document.getElementById('switchIOSCamera');
 
@@ -3967,7 +3942,6 @@
             if (e.target === resultModal) resultModal.style.display = 'none';
         });
 
-        // Обработчики для модального окна "Добавлено"
         closeAddedModalBtn.addEventListener('click', function() {
             addedModal.style.display = 'none';
         });
@@ -3989,7 +3963,6 @@
 
         btnClearAll.addEventListener('click', clearAllLines);
 
-        // Обработчики для дубликатов
         document.getElementById('confirmDuplicateBtn').addEventListener('click', async function() {
             if (!selectedDuplicateProduct) return;
             document.getElementById('duplicateModal').style.display = 'none';
@@ -4019,7 +3992,6 @@
 
         document.getElementById('current-date').addEventListener('click', openDatesModal);
 
-        // Обработчики iOS сканера
         closeIOSScannerBtn.addEventListener('click', closeIOSScanner);
         
         switchIOSCameraBtn.addEventListener('click', switchIOSCamera);
@@ -4074,14 +4046,12 @@
             }
         });
 
-        // Обработчик видимости страницы для iOS
         document.addEventListener('visibilitychange', function() {
             if (document.hidden && iosIsScanning) {
                 closeIOSScanner();
             }
         });
 
-        // Обработчик ориентации для iOS
         window.addEventListener('orientationchange', function() {
             if (iosIsScanning) {
                 setTimeout(() => {
