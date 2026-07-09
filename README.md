@@ -2915,123 +2915,112 @@
         }
 
 
-        async function openCamera() {
-            try {
-                stopCameraStream();
+async function openCamera() {
+    try {
+        stopCameraStream();
+        
+        if (isAndroid()) {
+            const devices = await navigator.mediaDevices.enumerateDevices();
+            const videoDevices = devices.filter(device => device.kind === 'videoinput');
+            
+            if (videoDevices.length > 0) {
+                let selectedCamera = null;
+                const sortedDevices = [...videoDevices].sort((a, b) => 
+                    a.deviceId.localeCompare(b.deviceId)
+                );
                 
-                // Для Android выбираем заднюю камеру
-                if (isAndroid()) {
-                    // Получаем список камер
-                    const devices = await navigator.mediaDevices.enumerateDevices();
-                    const videoDevices = devices.filter(device => device.kind === 'videoinput');
-                    
-                    if (videoDevices.length > 0) {
-                        // Находим камеру с самым маленьким номером, которая не фронтальная
-                        let selectedCamera = null;
-                        
-                        // Сортируем по deviceId (обычно нумерация сохраняется)
-                        const sortedDevices = [...videoDevices].sort((a, b) => 
-                            a.deviceId.localeCompare(b.deviceId)
-                        );
-                        
-                        for (const device of sortedDevices) {
-                            const label = device.label.toLowerCase();
-                            // Пропускаем фронтальные
-                            if (label.includes('front') || label.includes('фронт')) {
-                                continue;
-                            }
-                            // Берем первую попавшуюся не фронтальную
-                            selectedCamera = device;
-                            break;
-                        }
-                        
-                        // Если не нашли, берем первую камеру
-                        if (!selectedCamera) {
-                            selectedCamera = videoDevices[0];
-                        }
-                        
-                        stream = await navigator.mediaDevices.getUserMedia({
-                            video: {
-                                deviceId: { exact: selectedCamera.deviceId },
-                                width: { ideal: 1280 },
-                                height: { ideal: 720 }
-                            },
-                            audio: false
-                        });
-                    } else {
-                        // Если не получилось получить список, используем стандартный режим
-                        stream = await navigator.mediaDevices.getUserMedia({
-                            video: {
-                                facingMode: 'environment',
-                                width: { ideal: 1280 },
-                                height: { ideal: 720 }
-                            },
-                            audio: false
-                        });
+                for (const device of sortedDevices) {
+                    const label = device.label.toLowerCase();
+                    if (label.includes('front') || label.includes('фронт')) {
+                        continue;
                     }
-                } else {
-                    // Для iOS и других используем стандартный режим
-                    stream = await navigator.mediaDevices.getUserMedia({
-                        video: {
-                            facingMode: 'environment',
-                            width: { ideal: 1280 },
-                            height: { ideal: 720 }
-                        },
-                        audio: false
-                    });
+                    selectedCamera = device;
+                    break;
                 }
                 
-                const cameraVideo = document.getElementById('cameraVideo');
-                cameraVideo.srcObject = stream;
-                document.getElementById('cameraModal').style.display = 'flex';
-                
-                await cameraVideo.play();
-                
-                if (!barcodeDetector) {
-                    barcodeDetector = await initBarcodeDetector();
+                if (!selectedCamera) {
+                    selectedCamera = videoDevices[0];
                 }
                 
-                if (!barcodeDetector) {
-                    alert('Ваш браузер не поддерживает прямое сканирование штрихкодов.');
-                    stopCameraStream();
-                    return;
-                }
-                
-                startBarcodeDetection(barcodeDetector);
-                
-            } catch (error) {
-                console.error('Ошибка доступа к камере:', error);
-                
-                // Если что-то пошло не так, пробуем стандартный режим
-                try {
-                    const fallbackStream = await navigator.mediaDevices.getUserMedia({
-                        video: { facingMode: 'environment' },
-                        audio: false
-                    });
-                    
-                    const cameraVideo = document.getElementById('cameraVideo');
-                    cameraVideo.srcObject = fallbackStream;
-                    document.getElementById('cameraModal').style.display = 'flex';
-                    
-                    await cameraVideo.play();
-                    stream = fallbackStream;
-                    
-                    if (!barcodeDetector) {
-                        barcodeDetector = await initBarcodeDetector();
-                    }
-                    
-                    if (barcodeDetector) {
-                        startBarcodeDetection(barcodeDetector);
-                    } else {
-                        alert('Ваш браузер не поддерживает прямое сканирование штрихкодов.');
-                        stopCameraStream();
-                    }
-                    
-                } catch (fallbackError) {
-                    alert('Не удалось получить доступ к камере. Пожалуйста, разрешите доступ к камере в настройках браузера.');
-                }
+                stream = await navigator.mediaDevices.getUserMedia({
+                    video: {
+                        deviceId: { exact: selectedCamera.deviceId },
+                        width: { ideal: 1280 },
+                        height: { ideal: 720 }
+                    },
+                    audio: false
+                });
+            } else {
+                stream = await navigator.mediaDevices.getUserMedia({
+                    video: {
+                        facingMode: 'environment',
+                        width: { ideal: 1280 },
+                        height: { ideal: 720 }
+                    },
+                    audio: false
+                });
             }
+        } else {
+            stream = await navigator.mediaDevices.getUserMedia({
+                video: {
+                    facingMode: 'environment',
+                    width: { ideal: 1280 },
+                    height: { ideal: 720 }
+                },
+                audio: false
+            });
         }
+        
+        const cameraVideo = document.getElementById('cameraVideo');
+        cameraVideo.srcObject = stream;
+        document.getElementById('cameraModal').style.display = 'flex';
+        
+        await cameraVideo.play();
+        
+        if (!barcodeDetector) {
+            barcodeDetector = await initBarcodeDetector();
+        }
+        
+        if (!barcodeDetector) {
+            alert('Ваш браузер не поддерживает прямое сканирование штрихкодов.');
+            stopCameraStream();
+            return;
+        }
+        
+        startBarcodeDetection(barcodeDetector);
+        
+    } catch (error) {
+        console.error('Ошибка доступа к камере:', error);
+        
+        try {
+            const fallbackStream = await navigator.mediaDevices.getUserMedia({
+                video: { facingMode: 'environment' },
+                audio: false
+            });
+            
+            const cameraVideo = document.getElementById('cameraVideo');
+            cameraVideo.srcObject = fallbackStream;
+            document.getElementById('cameraModal').style.display = 'flex';
+            
+            await cameraVideo.play();
+            stream = fallbackStream;
+            
+            if (!barcodeDetector) {
+                barcodeDetector = await initBarcodeDetector();
+            }
+            
+            if (barcodeDetector) {
+                startBarcodeDetection(barcodeDetector);
+            } else {
+                alert('Ваш браузер не поддерживает прямое сканирование штрихкодов.');
+                stopCameraStream();
+            }
+            
+        } catch (fallbackError) {
+            alert('Не удалось получить доступ к камере. Пожалуйста, разрешите доступ к камере в настройках браузера.');
+        }
+    }
+}
 
         function startBarcodeDetection(detector) {
             const canvas = document.createElement('canvas');
