@@ -1,48 +1,56 @@
 ﻿<!DOCTYPE html>
 <html>
 <body>
-<h3>Камеры OnePlus 15:</h3>
+<h3>Отладка камер OnePlus 15</h3>
 <pre id="result">Загрузка...</pre>
 <script>
-async function getCameras() {
+async function debugCameras() {
     let output = '';
-    const modes = ['environment', 'user'];
     
-    for (const mode of modes) {
+    // 1. Список всех камер
+    const devices = await navigator.mediaDevices.enumerateDevices();
+    const videoDevices = devices.filter(d => d.kind === 'videoinput');
+    output += `Всего камер: ${videoDevices.length}\n\n`;
+    
+    // 2. Пробуем открыть КАЖДУЮ камеру по deviceId
+    for (let i = 0; i < videoDevices.length; i++) {
         try {
             const stream = await navigator.mediaDevices.getUserMedia({
-                video: { facingMode: mode },
+                video: { deviceId: { exact: videoDevices[i].deviceId } },
                 audio: false
             });
-            
             const track = stream.getVideoTracks()[0];
+            const label = track.label;
             const settings = track.getSettings();
-            const label = track.label || 'Без названия';
-            
-            output += `${mode}: ${label}\n`;
-            output += `  width: ${settings.width}, height: ${settings.height}\n`;
-            output += `  deviceId: ${settings.deviceId || 'нет'}\n`;
+            output += `Камера ${i}: ${label}\n`;
+            output += `  deviceId: ${videoDevices[i].deviceId.substring(0, 30)}...\n`;
+            output += `  Разрешение: ${settings.width}x${settings.height}\n`;
             output += `  facingMode: ${settings.facingMode || 'нет'}\n\n`;
-            
             track.stop();
         } catch (e) {
-            output += `${mode}: ОШИБКА — ${e.message}\n\n`;
+            output += `Камера ${i}: ОШИБКА - ${e.message}\n\n`;
         }
     }
     
-    // Теперь попробуем получить все камеры через enumerateDevices
-    const devices = await navigator.mediaDevices.enumerateDevices();
-    const videoDevices = devices.filter(d => d.kind === 'videoinput');
-    
-    output += `Всего камер в системе: ${videoDevices.length}\n`;
-    videoDevices.forEach((d, i) => {
-        output += `  Камера ${i}: deviceId=${d.deviceId?.substring(0,20)}... groupId=${d.groupId?.substring(0,20)}...\n`;
-    });
+    // 3. Пробуем через facingMode
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+            video: { facingMode: 'environment' },
+            audio: false
+        });
+        const track = stream.getVideoTracks()[0];
+        output += `facingMode 'environment':\n`;
+        output += `  Название: ${track.label}\n`;
+        output += `  deviceId: ${track.getSettings().deviceId?.substring(0, 30)}...\n`;
+        track.stop();
+    } catch (e) {
+        output += `facingMode 'environment': ОШИБКА\n`;
+    }
     
     document.getElementById('result').textContent = output;
 }
 
-getCameras();
+debugCameras();
 </script>
 </body>
 </html>
