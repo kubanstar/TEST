@@ -2914,62 +2914,18 @@
             }
         }
 
-
 async function openCamera() {
     try {
         stopCameraStream();
         
-        if (isAndroid()) {
-            const devices = await navigator.mediaDevices.enumerateDevices();
-            const videoDevices = devices.filter(device => device.kind === 'videoinput');
-            
-            if (videoDevices.length > 0) {
-                let selectedCamera = null;
-                const sortedDevices = [...videoDevices].sort((a, b) => 
-                    a.deviceId.localeCompare(b.deviceId)
-                );
-                
-                for (const device of sortedDevices) {
-                    const label = device.label.toLowerCase();
-                    if (label.includes('front') || label.includes('фронт')) {
-                        continue;
-                    }
-                    selectedCamera = device;
-                    break;
-                }
-                
-                if (!selectedCamera) {
-                    selectedCamera = videoDevices[0];
-                }
-                
-                stream = await navigator.mediaDevices.getUserMedia({
-                    video: {
-                        deviceId: { exact: selectedCamera.deviceId },
-                        width: { ideal: 1280 },
-                        height: { ideal: 720 }
-                    },
-                    audio: false
-                });
-            } else {
-                stream = await navigator.mediaDevices.getUserMedia({
-                    video: {
-                        facingMode: 'environment',
-                        width: { ideal: 1280 },
-                        height: { ideal: 720 }
-                    },
-                    audio: false
-                });
-            }
-        } else {
-            stream = await navigator.mediaDevices.getUserMedia({
-                video: {
-                    facingMode: 'environment',
-                    width: { ideal: 1280 },
-                    height: { ideal: 720 }
-                },
-                audio: false
-            });
-        }
+        stream = await navigator.mediaDevices.getUserMedia({
+            video: {
+                facingMode: 'environment',
+                width: { ideal: 1280 },
+                height: { ideal: 720 }
+            },
+            audio: false
+        });
         
         const cameraVideo = document.getElementById('cameraVideo');
         cameraVideo.srcObject = stream;
@@ -3021,6 +2977,7 @@ async function openCamera() {
         }
     }
 }
+
 
         function startBarcodeDetection(detector) {
             const canvas = document.createElement('canvas');
