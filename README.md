@@ -2631,7 +2631,6 @@ function addCameraSelector(videoDevices, currentCamera) {
         if (label.includes('front') || label.includes('фронт')) {
             displayName += ' (Фронтальная)';
         } else {
-            // Даём понятные названия задним камерам
             if (index === 1 && label.includes('4')) displayName += ' (Основная)';
             else if (index === 2) displayName += ' (Телевик)';
             else if (index === 3) displayName += ' (Ширик)';
@@ -2648,16 +2647,10 @@ function addCameraSelector(videoDevices, currentCamera) {
         selector.appendChild(option);
     });
     
-    // Добавляем подсказку
-    const hint = document.createElement('div');
-    hint.style.cssText = 'font-size:11px;color:#888;margin-top:5px;text-align:left;';
-    hint.textContent = '💡 Если камера не подходит — выберите другую из списка';
-    
     // Вставляем перед кнопкой "Остановить"
     const cameraControls = document.querySelector('.camera-controls');
     if (cameraControls) {
         cameraControls.parentNode.insertBefore(selector, cameraControls);
-        cameraControls.parentNode.insertBefore(hint, cameraControls);
     }
     
     // Обработчик смены камеры
