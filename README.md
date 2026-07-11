@@ -2039,7 +2039,10 @@ function createPriceTagImage(product, type = 'regular') {
     
     // ===== РИСУЕМ ШТРИХКОД ВВЕРХУ =====
     const barcodeData = product.barcode || product.article || '0';
-    const barcodeWidth = canvas.width * 0.5; // 50% ширины - компактный штрихкод
+    
+    // Фиксированная ширина штрихкода для обоих типов ценников
+    // 220px - оптимальная ширина для читаемости сканером
+    const barcodeWidth = 220;
     const barcodeX = (canvas.width - barcodeWidth) / 2;
     const barcodeY = barcodeTopMargin;
     
