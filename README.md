@@ -1918,8 +1918,6 @@
             }
         }
 
-		// ===== ФУНКЦИИ ДЛЯ СОЗДАНИЯ И ПЕЧАТИ ЦЕННИКА =====
-
 // ===== ФУНКЦИИ ДЛЯ ГЕНЕРАЦИИ ШТРИХКОДА =====
 
 function encodeEAN13(data) {
@@ -1991,17 +1989,29 @@ function encodeEAN13(data) {
 
 function generateBarcodeOnCanvas(ctx, data, x, y, width, height) {
     const barcodePattern = encodeEAN13(data);
-    const totalWidth = barcodePattern.length;
-    const barWidth = width / totalWidth;
+    
+    // Общее количество модулей в EAN-13: 3 + 7*6 + 5 + 7*6 + 3 = 95 модулей
+    const totalModules = 95;
+    const moduleWidth = width / totalModules;
+    
+    // Минимальная ширина модуля для читаемости сканером
+    const minModuleWidth = 2;
+    const actualModuleWidth = Math.max(moduleWidth, minModuleWidth);
+    
+    // Пересчитываем ширину штрихкода
+    const actualBarcodeWidth = actualModuleWidth * totalModules;
+    const startX = x + (width - actualBarcodeWidth) / 2; // Центрируем
     
     ctx.fillStyle = 'black';
     for (let i = 0; i < barcodePattern.length; i++) {
         if (barcodePattern[i] === '1') {
-            const barX = x + (i * barWidth);
-            ctx.fillRect(barX, y, barWidth, height);
+            const barX = startX + (i * actualModuleWidth);
+            ctx.fillRect(barX, y, actualModuleWidth, height);
         }
     }
 }
+
+// ===== ФУНКЦИИ ДЛЯ СОЗДАНИЯ И ПЕЧАТИ ЦЕННИКА =====
 
 function createPriceTagImage(product, type = 'regular') {
     const canvas = document.createElement('canvas');
@@ -2029,7 +2039,7 @@ function createPriceTagImage(product, type = 'regular') {
     
     // ===== РИСУЕМ ШТРИХКОД ВВЕРХУ =====
     const barcodeData = product.barcode || product.article || '0';
-    const barcodeWidth = canvas.width * 0.7; // 70% ширины
+    const barcodeWidth = canvas.width * 0.5; // 50% ширины - компактный штрихкод
     const barcodeX = (canvas.width - barcodeWidth) / 2;
     const barcodeY = barcodeTopMargin;
     
@@ -2261,131 +2271,131 @@ function createPriceTagImage(product, type = 'regular') {
     return canvas;
 }
 
-        function canvasToEscPosBitmap(canvas) {
-            const ctx = canvas.getContext('2d');
-            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-            const data = imageData.data;
-            const width = canvas.width;
-            const height = canvas.height;
+function canvasToEscPosBitmap(canvas) {
+    const ctx = canvas.getContext('2d');
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const data = imageData.data;
+    const width = canvas.width;
+    const height = canvas.height;
+    
+    const bytesPerLine = Math.ceil(width / 8);
+    const bitmap = new Uint8Array(bytesPerLine * height);
+    
+    for (let y = 0; y < height; y++) {
+        for (let x = 0; x < width; x++) {
+            const pixelIndex = (y * width + x) * 4;
+            const r = data[pixelIndex];
+            const g = data[pixelIndex + 1];
+            const b = data[pixelIndex + 2];
             
-            const bytesPerLine = Math.ceil(width / 8);
-            const bitmap = new Uint8Array(bytesPerLine * height);
+            const isBlack = (r + g + b) < 384;
             
-            for (let y = 0; y < height; y++) {
-                for (let x = 0; x < width; x++) {
-                    const pixelIndex = (y * width + x) * 4;
-                    const r = data[pixelIndex];
-                    const g = data[pixelIndex + 1];
-                    const b = data[pixelIndex + 2];
-                    
-                    const isBlack = (r + g + b) < 384;
-                    
-                    if (isBlack) {
-                        const byteIndex = y * bytesPerLine + Math.floor(x / 8);
-                        const bitPosition = 7 - (x % 8);
-                        bitmap[byteIndex] |= (1 << bitPosition);
-                    }
-                }
-            }
-            
-            return {
-                data: bitmap,
-                width: width,
-                height: height,
-                bytesPerLine: bytesPerLine
-            };
-        }
-
-        function createEscPosImageCommand(bitmap) {
-            const width = bitmap.width;
-            const height = bitmap.height;
-            const bytesPerLine = bitmap.bytesPerLine;
-            
-            const command = new Uint8Array(bitmap.data.length + 8);
-            
-            command[0] = 0x1D;
-            command[1] = 0x76;
-            command[2] = 0x30;
-            command[3] = 0x00;
-            
-            const xL = bytesPerLine & 0xFF;
-            const xH = (bytesPerLine >> 8) & 0xFF;
-            command[4] = xL;
-            command[5] = xH;
-            
-            const yL = height & 0xFF;
-            const yH = (height >> 8) & 0xFF;
-            command[6] = yL;
-            command[7] = yH;
-            
-            command.set(bitmap.data, 8);
-            
-            return command;
-        }
-
-        async function printPriceTag(product, type = 'regular') {
-            try {
-                if (!isPrinterConnected) {
-                    const connected = await connectToPrinter();
-                    if (!connected) {
-                        throw new Error('Не удалось подключиться к принтеру');
-                    }
-                }
-                
-                const canvas = createPriceTagImage(product, type);
-                const bitmap = canvasToEscPosBitmap(canvas);
-                const imageCommand = createEscPosImageCommand(bitmap);
-                
-                const leftMargin = 0;
-                
-                const fullCommand = new Uint8Array(imageCommand.length + 10);
-                
-                fullCommand[0] = 0x1B;
-                fullCommand[1] = 0x40;
-                
-                fullCommand[2] = 0x1B;
-                fullCommand[3] = 0x6C;
-                fullCommand[4] = leftMargin;
-                
-                fullCommand.set(imageCommand, 5);
-                
-                const imageEnd = 5 + imageCommand.length;
-                fullCommand[imageEnd] = 0x0A;
-                fullCommand[imageEnd + 1] = 0x0A;
-                
-                await sendRawData(fullCommand);
-                return true;
-                
-            } catch (error) {
-                console.error('Ошибка печати:', error);
-                throw error;
+            if (isBlack) {
+                const byteIndex = y * bytesPerLine + Math.floor(x / 8);
+                const bitPosition = 7 - (x % 8);
+                bitmap[byteIndex] |= (1 << bitPosition);
             }
         }
+    }
+    
+    return {
+        data: bitmap,
+        width: width,
+        height: height,
+        bytesPerLine: bytesPerLine
+    };
+}
 
-        function updatePriceTagPreview(product, type = 'regular') {
-            const canvas = document.getElementById('priceTagPreviewCanvas');
-            const ctx = canvas.getContext('2d');
-            
-            ctx.fillStyle = 'white';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            
-            if (type === 'large') {
-                canvas.width = 440;
-                canvas.height = 300;
-            } else {
-                canvas.width = 440;
-                canvas.height = 284;
+function createEscPosImageCommand(bitmap) {
+    const width = bitmap.width;
+    const height = bitmap.height;
+    const bytesPerLine = bitmap.bytesPerLine;
+    
+    const command = new Uint8Array(bitmap.data.length + 8);
+    
+    command[0] = 0x1D;
+    command[1] = 0x76;
+    command[2] = 0x30;
+    command[3] = 0x00;
+    
+    const xL = bytesPerLine & 0xFF;
+    const xH = (bytesPerLine >> 8) & 0xFF;
+    command[4] = xL;
+    command[5] = xH;
+    
+    const yL = height & 0xFF;
+    const yH = (height >> 8) & 0xFF;
+    command[6] = yL;
+    command[7] = yH;
+    
+    command.set(bitmap.data, 8);
+    
+    return command;
+}
+
+async function printPriceTag(product, type = 'regular') {
+    try {
+        if (!isPrinterConnected) {
+            const connected = await connectToPrinter();
+            if (!connected) {
+                throw new Error('Не удалось подключиться к принтеру');
             }
-            
-            const scale = 0.7;
-            ctx.save();
-            ctx.scale(scale, scale);
-            
-            const previewCanvas = createPriceTagImage(product, type);
-            ctx.drawImage(previewCanvas, 0, 0);
-            
-            ctx.restore();
         }
+        
+        const canvas = createPriceTagImage(product, type);
+        const bitmap = canvasToEscPosBitmap(canvas);
+        const imageCommand = createEscPosImageCommand(bitmap);
+        
+        const leftMargin = 0;
+        
+        const fullCommand = new Uint8Array(imageCommand.length + 10);
+        
+        fullCommand[0] = 0x1B;
+        fullCommand[1] = 0x40;
+        
+        fullCommand[2] = 0x1B;
+        fullCommand[3] = 0x6C;
+        fullCommand[4] = leftMargin;
+        
+        fullCommand.set(imageCommand, 5);
+        
+        const imageEnd = 5 + imageCommand.length;
+        fullCommand[imageEnd] = 0x0A;
+        fullCommand[imageEnd + 1] = 0x0A;
+        
+        await sendRawData(fullCommand);
+        return true;
+        
+    } catch (error) {
+        console.error('Ошибка печати:', error);
+        throw error;
+    }
+}
+
+function updatePriceTagPreview(product, type = 'regular') {
+    const canvas = document.getElementById('priceTagPreviewCanvas');
+    const ctx = canvas.getContext('2d');
+    
+    ctx.fillStyle = 'white';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    if (type === 'large') {
+        canvas.width = 440;
+        canvas.height = 300;
+    } else {
+        canvas.width = 440;
+        canvas.height = 284;
+    }
+    
+    const scale = 0.7;
+    ctx.save();
+    ctx.scale(scale, scale);
+    
+    const previewCanvas = createPriceTagImage(product, type);
+    ctx.drawImage(previewCanvas, 0, 0);
+    
+    ctx.restore();
+}
 
         // ===== ОБНОВЛЕННЫЕ ФУНКЦИИ ДЛЯ ПЕЧАТИ =====
 
