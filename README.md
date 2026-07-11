@@ -1920,29 +1920,130 @@
 
 		// ===== ФУНКЦИИ ДЛЯ СОЗДАНИЯ И ПЕЧАТИ ЦЕННИКА =====
 
-		function createPriceTagImage(product, type = 'regular') {
-			const canvas = document.createElement('canvas');
-    
-			if (type === 'large') {
-				canvas.width = 576;
-				canvas.height = 300;
-			} else {
-				canvas.width = 440;
-				canvas.height = 284;
-			}
-    
-			const ctx = canvas.getContext('2d');
-    
-			ctx.fillStyle = 'white';
-			ctx.fillRect(0, 0, canvas.width, canvas.height);
-    
-			ctx.fillStyle = 'black';
-			ctx.textAlign = 'center';
-    
-			const textScale = 1.5;
-    
-			if (type === 'large') {
+// ===== ФУНКЦИИ ДЛЯ ГЕНЕРАЦИИ ШТРИХКОДА =====
 
+function encodeEAN13(data) {
+    // Приводим к 12 цифрам (EAN-13 без контрольной суммы)
+    let code = data.toString().replace(/[^0-9]/g, '');
+    
+    // Дополняем или обрезаем до 12 цифр
+    if (code.length > 12) {
+        code = code.substring(0, 12);
+    } else {
+        while (code.length < 12) {
+            code = '0' + code;
+        }
+    }
+    
+    // Вычисляем контрольную сумму EAN-13
+    let sum = 0;
+    for (let i = 0; i < 12; i++) {
+        sum += parseInt(code[i]) * (i % 2 === 0 ? 1 : 3);
+    }
+    const checkDigit = (10 - (sum % 10)) % 10;
+    code += checkDigit.toString();
+    
+    // Структура кодирования EAN-13
+    const L = {
+        '0': '0001101', '1': '0011001', '2': '0010011', '3': '0111101', '4': '0100011',
+        '5': '0110001', '6': '0101111', '7': '0111011', '8': '0110111', '9': '0001011'
+    };
+    const G = {
+        '0': '0100111', '1': '0110011', '2': '0011011', '3': '0100001', '4': '0011101',
+        '5': '0111001', '6': '0000101', '7': '0010001', '8': '0001001', '9': '0010111'
+    };
+    const R = {
+        '0': '1110010', '1': '1100110', '2': '1101100', '3': '1000010', '4': '1011100',
+        '5': '1001110', '6': '1010000', '7': '1000100', '8': '1001000', '9': '1110100'
+    };
+    
+    const firstDigit = parseInt(code[0]);
+    const patterns = [
+        'LLLLLL', 'LLGLGG', 'LLGGLG', 'LLGGGL', 'LGLLGG',
+        'LGGLLG', 'LGGGLL', 'LGLGLG', 'LGLGGL', 'LGGLGL'
+    ];
+    
+    let pattern = patterns[firstDigit];
+    let barcode = '101'; // Стартовый маркер
+    
+    // Левая часть
+    for (let i = 0; i < 6; i++) {
+        const digit = code[i + 1];
+        const encoding = pattern[i];
+        if (encoding === 'L') {
+            barcode += L[digit];
+        } else {
+            barcode += G[digit];
+        }
+    }
+    
+    barcode += '01010'; // Центральный маркер
+    
+    // Правая часть
+    for (let i = 7; i < 13; i++) {
+        barcode += R[code[i]];
+    }
+    
+    barcode += '101'; // Стоповый маркер
+    
+    return barcode;
+}
+
+function generateBarcodeOnCanvas(ctx, data, x, y, width, height) {
+    const barcodePattern = encodeEAN13(data);
+    const totalWidth = barcodePattern.length;
+    const barWidth = width / totalWidth;
+    
+    ctx.fillStyle = 'black';
+    for (let i = 0; i < barcodePattern.length; i++) {
+        if (barcodePattern[i] === '1') {
+            const barX = x + (i * barWidth);
+            ctx.fillRect(barX, y, barWidth, height);
+        }
+    }
+}
+
+function createPriceTagImage(product, type = 'regular') {
+    const canvas = document.createElement('canvas');
+    
+    // Параметры штрихкода
+    const barcodeHeight = 20; // высота ~5мм
+    const barcodeTopMargin = 3;
+    const barcodeBottomMargin = 3;
+    const barcodeSectionHeight = barcodeHeight + barcodeTopMargin + barcodeBottomMargin;
+    
+    // Увеличиваем высоту канвы для штрихкода
+    if (type === 'large') {
+        canvas.width = 576;
+        canvas.height = 300 + barcodeSectionHeight;
+    } else {
+        canvas.width = 440;
+        canvas.height = 284 + barcodeSectionHeight;
+    }
+    
+    const ctx = canvas.getContext('2d');
+    
+    // Белый фон
+    ctx.fillStyle = 'white';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    // ===== РИСУЕМ ШТРИХКОД ВВЕРХУ =====
+    const barcodeData = product.barcode || product.article || '0';
+    const barcodeWidth = canvas.width * 0.7; // 70% ширины
+    const barcodeX = (canvas.width - barcodeWidth) / 2;
+    const barcodeY = barcodeTopMargin;
+    
+    generateBarcodeOnCanvas(ctx, barcodeData, barcodeX, barcodeY, barcodeWidth, barcodeHeight);
+    
+    // Смещение всего остального контента
+    const yOffset = barcodeSectionHeight;
+    
+    ctx.fillStyle = 'black';
+    ctx.textAlign = 'center';
+    
+    const textScale = 1.5;
+    
+    if (type === 'large') {
         const baseFonts = {
             company: 22 * textScale,
             article: 18 * textScale,
@@ -1952,24 +2053,24 @@
         };
         
         ctx.font = `bold ${baseFonts.company}px "Arial"`;
-        ctx.fillText('ООО "КУБАНЬСТАР"', canvas.width / 2, 30);
+        ctx.fillText('ООО "КУБАНЬСТАР"', canvas.width / 2, 30 + yOffset);
         
         ctx.beginPath();
-        ctx.moveTo(-8, 40);
-        ctx.lineTo(canvas.width - 0, 40);
+        ctx.moveTo(-8, 40 + yOffset);
+        ctx.lineTo(canvas.width - 0, 40 + yOffset);
         ctx.lineWidth = 3;
         ctx.stroke();
         
         ctx.font = `bold ${baseFonts.article}px "Arial"`;
         ctx.textAlign = 'left';
-        ctx.fillText(product.article, 6, 70);
+        ctx.fillText(product.article, 6, 70 + yOffset);
         ctx.textAlign = 'right';
         const boxQty = product.boxQuantity || '0';
-        ctx.fillText(`${boxQty} шт. в кор.`, canvas.width - 6, 70);
+        ctx.fillText(`${boxQty} шт. в кор.`, canvas.width - 6, 70 + yOffset);
         
         ctx.beginPath();
-        ctx.moveTo(-8, 80);
-        ctx.lineTo(canvas.width - 0, 80);
+        ctx.moveTo(-8, 80 + yOffset);
+        ctx.lineTo(canvas.width - 0, 80 + yOffset);
         ctx.lineWidth = 3;
         ctx.stroke();
         ctx.lineWidth = 1;
@@ -1996,14 +2097,14 @@
             }
         }
         
-        ctx.fillText(line1, canvas.width / 2, 110);
+        ctx.fillText(line1, canvas.width / 2, 110 + yOffset);
         if (line2) {
-            ctx.fillText(line2, canvas.width / 2, 135);
+            ctx.fillText(line2, canvas.width / 2, 135 + yOffset);
         }
         
         ctx.beginPath();
-        ctx.moveTo(-8, 145);
-        ctx.lineTo(canvas.width - 0, 145);
+        ctx.moveTo(-8, 145 + yOffset);
+        ctx.lineTo(canvas.width - 0, 145 + yOffset);
         ctx.lineWidth = 3;
         ctx.stroke();
         ctx.lineWidth = 1;
@@ -2015,21 +2116,20 @@
         const priceFormatted = formatNumber(price, true);
         
         ctx.font = `bold ${baseFonts.price}px "Arial"`;
-        ctx.fillText(priceFormatted, canvas.width / 2, 255);
+        ctx.fillText(priceFormatted, canvas.width / 2, 255 + yOffset);
         
         ctx.beginPath();
-        ctx.moveTo(-8, 271);
-        ctx.lineTo(canvas.width - 0, 271);
+        ctx.moveTo(-8, 271 + yOffset);
+        ctx.lineTo(canvas.width - 0, 271 + yOffset);
         ctx.lineWidth = 3;
         ctx.stroke();
         
         const today = new Date();
         const dateStr = `${today.getDate().toString().padStart(2, '0')}.${(today.getMonth()+1).toString().padStart(2, '0')}.${today.getFullYear()}`;
         ctx.font = `${baseFonts.date}px "Arial"`;
-        ctx.fillText(dateStr, canvas.width / 2, 291);
+        ctx.fillText(dateStr, canvas.width / 2, 291 + yOffset);
         
     } else {
-
         const baseFonts = {
             company: 22 * textScale,
             article: 18 * textScale,
@@ -2039,24 +2139,24 @@
         };
         
         ctx.font = `bold ${baseFonts.company}px "Arial"`;
-        ctx.fillText('ООО "КУБАНЬСТАР"', canvas.width / 2, 30);
+        ctx.fillText('ООО "КУБАНЬСТАР"', canvas.width / 2, 30 + yOffset);
         
         ctx.beginPath();
-        ctx.moveTo(-8, 40);
-        ctx.lineTo(canvas.width - 0, 40);
+        ctx.moveTo(-8, 40 + yOffset);
+        ctx.lineTo(canvas.width - 0, 40 + yOffset);
         ctx.lineWidth = 3;
         ctx.stroke();
         
         ctx.font = `bold ${baseFonts.article}px "Arial"`;
         ctx.textAlign = 'left';
-        ctx.fillText(product.article, 6, 70);
+        ctx.fillText(product.article, 6, 70 + yOffset);
         ctx.textAlign = 'right';
         const boxQty = product.boxQuantity || '0';
-        ctx.fillText(`${boxQty} шт. в кор.`, canvas.width - 6, 70);
+        ctx.fillText(`${boxQty} шт. в кор.`, canvas.width - 6, 70 + yOffset);
         
         ctx.beginPath();
-        ctx.moveTo(-8, 80);
-        ctx.lineTo(canvas.width - 0, 80);
+        ctx.moveTo(-8, 80 + yOffset);
+        ctx.lineTo(canvas.width - 0, 80 + yOffset);
         ctx.lineWidth = 3;
         ctx.stroke();
         ctx.lineWidth = 1;
@@ -2083,80 +2183,80 @@
             }
         }
         
-        ctx.fillText(line1, canvas.width / 2, 110);
+        ctx.fillText(line1, canvas.width / 2, 110 + yOffset);
         if (line2) {
-            ctx.fillText(line2, canvas.width / 2, 135);
+            ctx.fillText(line2, canvas.width / 2, 135 + yOffset);
         }
         
         ctx.beginPath();
-        ctx.moveTo(-8, 155);
-        ctx.lineTo(canvas.width - 0, 155);
+        ctx.moveTo(-8, 155 + yOffset);
+        ctx.lineTo(canvas.width - 0, 155 + yOffset);
         ctx.lineWidth = 3;
         ctx.stroke();
         ctx.lineWidth = 1;
       
-		const hasDiscount = product.discountPrice && product.discountPrice.trim() !== '';
+        const hasDiscount = product.discountPrice && product.discountPrice.trim() !== '';
 
-		if (hasDiscount) {
-			const originalPriceFormatted = formatNumber(product.wholesalePrice, true);
-			const discountPriceFormatted = formatNumber(product.discountPrice, true);
+        if (hasDiscount) {
+            const originalPriceFormatted = formatNumber(product.wholesalePrice, true);
+            const discountPriceFormatted = formatNumber(product.discountPrice, true);
     
-			const originalNum = parseFloat(product.wholesalePrice) || 0;
-			const discountNum = parseFloat(product.discountPrice) || 0;
-			let discountPercent = '';
-			if (originalNum > 0 && discountNum > 0) {
-				const percent = Math.round((1 - discountNum / originalNum) * 100);
-				discountPercent = `-${percent}%`;
-			}
+            const originalNum = parseFloat(product.wholesalePrice) || 0;
+            const discountNum = parseFloat(product.discountPrice) || 0;
+            let discountPercent = '';
+            if (originalNum > 0 && discountNum > 0) {
+                const percent = Math.round((1 - discountNum / originalNum) * 100);
+                discountPercent = `-${percent}%`;
+            }
     
-			ctx.textAlign = 'left';
+            ctx.textAlign = 'left';
     
-			ctx.font = `bold italic ${baseFonts.price * 0.5}px "Arial"`;
-			ctx.fillStyle = '#666666';
-			const oldPriceX = 20; // Слева с отступом
-			const oldPriceY = 193;
-			ctx.fillText(originalPriceFormatted, oldPriceX, oldPriceY);
+            ctx.font = `bold italic ${baseFonts.price * 0.5}px "Arial"`;
+            ctx.fillStyle = '#666666';
+            const oldPriceX = 20;
+            const oldPriceY = 193 + yOffset;
+            ctx.fillText(originalPriceFormatted, oldPriceX, oldPriceY);
     
-			const oldPriceWidth = ctx.measureText(originalPriceFormatted).width;
-			ctx.beginPath();
-			ctx.moveTo(oldPriceX, oldPriceY - 30);
-			ctx.lineTo(oldPriceX + oldPriceWidth, oldPriceY + 4);
-			ctx.strokeStyle = '#666666';
-			ctx.lineWidth = 2;
-			ctx.stroke();
+            const oldPriceWidth = ctx.measureText(originalPriceFormatted).width;
+            ctx.beginPath();
+            ctx.moveTo(oldPriceX, oldPriceY - 30);
+            ctx.lineTo(oldPriceX + oldPriceWidth, oldPriceY + 4);
+            ctx.strokeStyle = '#666666';
+            ctx.lineWidth = 2;
+            ctx.stroke();
     
-			if (discountPercent) {
-				ctx.font = `bold italic ${baseFonts.price * 0.4}px "Arial"`;
-				ctx.fillStyle = '#666666';
-				ctx.fillText(discountPercent, oldPriceX, oldPriceY + 30);
-			}
+            if (discountPercent) {
+                ctx.font = `bold italic ${baseFonts.price * 0.4}px "Arial"`;
+                ctx.fillStyle = '#666666';
+                ctx.fillText(discountPercent, oldPriceX, oldPriceY + 30);
+            }
     
-			ctx.textAlign = 'right';
-			ctx.font = `bold ${baseFonts.price * 0.76}px "Arial"`;
-			ctx.fillStyle = 'black';
-			ctx.fillText(`${discountPriceFormatted} Руб.`, canvas.width - 15, oldPriceY + 20);
+            ctx.textAlign = 'right';
+            ctx.font = `bold ${baseFonts.price * 0.76}px "Arial"`;
+            ctx.fillStyle = 'black';
+            ctx.fillText(`${discountPriceFormatted} Руб.`, canvas.width - 15, oldPriceY + 20);
     
-			ctx.textAlign = 'center';
-		} else {
-			ctx.textAlign = 'center';
-			const price = product.wholesalePrice;
-			const priceFormatted = formatNumber(price, true);
+            ctx.textAlign = 'center';
+        } else {
+            ctx.textAlign = 'center';
+            const price = product.wholesalePrice;
+            const priceFormatted = formatNumber(price, true);
     
-			ctx.font = `bold ${baseFonts.price}px "Arial"`;
-			ctx.fillText(`${priceFormatted} Руб.`, canvas.width / 2, 207 + 12);
-		}
+            ctx.font = `bold ${baseFonts.price}px "Arial"`;
+            ctx.fillText(`${priceFormatted} Руб.`, canvas.width / 2, 207 + 12 + yOffset);
+        }
         
-			ctx.beginPath();
-			ctx.moveTo(-8, 225 + 12);
-			ctx.lineTo(canvas.width - 0, 225 + 12);
-			ctx.lineWidth = 3;
-			ctx.stroke();
-        
-			const today = new Date();
-			const dateStr = `${today.getDate().toString().padStart(2, '0')}.${(today.getMonth()+1).toString().padStart(2, '0')}.${today.getFullYear()}`;
-			ctx.font = `${baseFonts.date}px "Arial"`;
-			ctx.fillText(dateStr, canvas.width / 2, 245 + 20);
-		}
+        ctx.beginPath();
+        ctx.moveTo(-8, 225 + 12 + yOffset);
+        ctx.lineTo(canvas.width - 0, 225 + 12 + yOffset);
+        ctx.lineWidth = 3;
+        ctx.stroke();
+    
+        const today = new Date();
+        const dateStr = `${today.getDate().toString().padStart(2, '0')}.${(today.getMonth()+1).toString().padStart(2, '0')}.${today.getFullYear()}`;
+        ctx.font = `${baseFonts.date}px "Arial"`;
+        ctx.fillText(dateStr, canvas.width / 2, 245 + 20 + yOffset);
+    }
     
     return canvas;
 }
