@@ -2876,73 +2876,89 @@ async function openIOSScanner() {
 }
 
 function addIOSCameraSelector() {
-    // Удаляем старый селектор, если есть
-    const oldSelector = document.getElementById('iosCameraSelector');
-    if (oldSelector) oldSelector.remove();
-    
-    // Создаём селектор
-    const selector = document.createElement('select');
-    selector.id = 'iosCameraSelector';
-    selector.style.cssText = 'width:90%;padding:12px;margin:10px auto;display:block;border-radius:8px;border:2px solid rgba(76,175,80,0.8);font-size:14px;background:rgba(0,0,0,0.8);color:#fff;';
-    
-    const savedDeviceId = localStorage.getItem('iosSelectedCameraDeviceId');
-    
-    navigator.mediaDevices.enumerateDevices().then(devices => {
-        const videoDevices = devices.filter(d => d.kind === 'videoinput');
+    // Ждём, пока модальное окно полностью отобразится
+    setTimeout(async () => {
+        // Удаляем старый селектор, если есть
+        const oldSelector = document.getElementById('iosCameraSelector');
+        if (oldSelector) oldSelector.remove();
         
-        videoDevices.forEach((device, index) => {
-            const option = document.createElement('option');
-            option.value = device.deviceId;
+        const oldHint = document.getElementById('iosCameraHint');
+        if (oldHint) oldHint.remove();
+        
+        // Создаём подсказку
+        const hint = document.createElement('div');
+        hint.id = 'iosCameraHint';
+        hint.style.cssText = 'color:#aaa;font-size:12px;text-align:center;margin-top:5px;';
+        hint.textContent = 'Выберите камеру';
+        
+        // Создаём селектор
+        const selector = document.createElement('select');
+        selector.id = 'iosCameraSelector';
+        selector.style.cssText = 'width:90%;padding:12px;margin:0 auto;display:block;border-radius:8px;border:2px solid rgba(76,175,80,0.8);font-size:14px;background:rgba(0,0,0,0.8);color:#fff;';
+        
+        const savedDeviceId = localStorage.getItem('iosSelectedCameraDeviceId');
+        
+        try {
+            const devices = await navigator.mediaDevices.enumerateDevices();
+            const videoDevices = devices.filter(d => d.kind === 'videoinput');
             
-            const label = device.label.toLowerCase();
-            let displayName = `Камера ${index + 1}`;
+            videoDevices.forEach((device, index) => {
+                const option = document.createElement('option');
+                option.value = device.deviceId;
+                
+                const label = device.label.toLowerCase();
+                let displayName = `Камера ${index + 1}`;
+                
+                if (label.includes('front') || label.includes('фронт') || label.includes('user')) {
+                    displayName += ' (Фронтальная)';
+                } else if (label.includes('back') || label.includes('задняя') || label.includes('environment')) {
+                    displayName += ' (Задняя)';
+                }
+                
+                option.textContent = displayName;
+                
+                if (device.deviceId === savedDeviceId) {
+                    option.selected = true;
+                }
+                
+                selector.appendChild(option);
+            });
             
-            if (label.includes('front') || label.includes('фронт') || label.includes('user')) {
-                displayName += ' (Фронтальная)';
-            } else if (label.includes('back') || label.includes('задняя') || label.includes('environment')) {
-                displayName += ' (Задняя)';
+            // Вставляем селектор в ios-scanner-info
+            const scannerInfo = document.querySelector('.ios-scanner-info');
+            if (scannerInfo) {
+                scannerInfo.parentNode.insertBefore(hint, scannerInfo.nextSibling);
+                scannerInfo.parentNode.insertBefore(selector, hint.nextSibling);
             }
             
-            option.textContent = displayName;
-            
-            if (device.deviceId === savedDeviceId) {
-                option.selected = true;
-            }
-            
-            selector.appendChild(option);
-        });
-        
-        // Вставляем селектор перед кнопками управления
-        const controls = document.querySelector('.ios-modal-controls');
-        if (controls) {
-            controls.parentNode.insertBefore(selector, controls);
+            // Обработчик смены камеры
+            selector.addEventListener('change', function() {
+                const newDeviceId = this.value;
+                localStorage.setItem('iosSelectedCameraDeviceId', newDeviceId);
+                
+                // Перезапускаем iOS сканер с новой камерой
+                if (iosHtml5QrCode && iosIsScanning) {
+                    iosHtml5QrCode.stop().then(() => {
+                        iosHtml5QrCode.clear();
+                        iosHtml5QrCode = null;
+                        iosIsScanning = false;
+                        
+                        document.getElementById('iosScannerLoader').style.display = 'block';
+                        showIOSScannerStatus('Переключение камеры...');
+                        
+                        setTimeout(() => initIOSBarcodeScanner(), 300);
+                    }).catch(() => {
+                        iosHtml5QrCode = null;
+                        iosIsScanning = false;
+                        document.getElementById('iosScannerLoader').style.display = 'block';
+                        setTimeout(() => initIOSBarcodeScanner(), 300);
+                    });
+                }
+            });
+        } catch (e) {
+            console.error('Ошибка получения списка камер:', e);
         }
-        
-        // Обработчик смены камеры
-        selector.addEventListener('change', function() {
-            const newDeviceId = this.value;
-            localStorage.setItem('iosSelectedCameraDeviceId', newDeviceId);
-            
-            // Перезапускаем iOS сканер с новой камерой
-            if (iosHtml5QrCode && iosIsScanning) {
-                iosHtml5QrCode.stop().then(() => {
-                    iosHtml5QrCode.clear();
-                    iosHtml5QrCode = null;
-                    iosIsScanning = false;
-                    
-                    document.getElementById('iosScannerLoader').style.display = 'block';
-                    showIOSScannerStatus('Переключение камеры...');
-                    
-                    setTimeout(() => initIOSBarcodeScanner(), 300);
-                }).catch(() => {
-                    iosHtml5QrCode = null;
-                    iosIsScanning = false;
-                    document.getElementById('iosScannerLoader').style.display = 'block';
-                    setTimeout(() => initIOSBarcodeScanner(), 300);
-                });
-            }
-        });
-    });
+    }, 500);
 }
 
 function initIOSBarcodeScanner() {
