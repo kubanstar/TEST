@@ -2858,118 +2858,194 @@ function addCameraSelector(videoDevices, currentCamera) {
 
         // ===== ФУНКЦИИ ДЛЯ iOS СКАНЕРА =====
 
-        async function openIOSScanner() {
-            console.log('Открытие iOS сканера...');
-            
-            const iosModal = document.getElementById('iosScannerModal');
-            iosModal.style.display = 'block';
-            
-            document.getElementById('iosScannerLoader').style.display = 'block';
-            showIOSScannerStatus('Инициализация камеры...');
-      
+async function openIOSScanner() {
+    console.log('Открытие iOS сканера...');
+    
+    const iosModal = document.getElementById('iosScannerModal');
+    iosModal.style.display = 'block';
+    
+    document.getElementById('iosScannerLoader').style.display = 'block';
+    showIOSScannerStatus('Инициализация камеры...');
+    
+    // Добавляем селектор камер для iOS
+    addIOSCameraSelector();
 
-            setTimeout(() => {
-                initIOSBarcodeScanner();
-            }, 300);
+    setTimeout(() => {
+        initIOSBarcodeScanner();
+    }, 300);
+}
+
+function addIOSCameraSelector() {
+    // Удаляем старый селектор, если есть
+    const oldSelector = document.getElementById('iosCameraSelector');
+    if (oldSelector) oldSelector.remove();
+    
+    // Создаём селектор
+    const selector = document.createElement('select');
+    selector.id = 'iosCameraSelector';
+    selector.style.cssText = 'width:90%;padding:12px;margin:10px auto;display:block;border-radius:8px;border:2px solid rgba(76,175,80,0.8);font-size:14px;background:rgba(0,0,0,0.8);color:#fff;';
+    
+    const savedDeviceId = localStorage.getItem('iosSelectedCameraDeviceId');
+    
+    navigator.mediaDevices.enumerateDevices().then(devices => {
+        const videoDevices = devices.filter(d => d.kind === 'videoinput');
+        
+        videoDevices.forEach((device, index) => {
+            const option = document.createElement('option');
+            option.value = device.deviceId;
+            
+            const label = device.label.toLowerCase();
+            let displayName = `Камера ${index + 1}`;
+            
+            if (label.includes('front') || label.includes('фронт') || label.includes('user')) {
+                displayName += ' (Фронтальная)';
+            } else if (label.includes('back') || label.includes('задняя') || label.includes('environment')) {
+                displayName += ' (Задняя)';
+            }
+            
+            option.textContent = displayName;
+            
+            if (device.deviceId === savedDeviceId) {
+                option.selected = true;
+            }
+            
+            selector.appendChild(option);
+        });
+        
+        // Вставляем селектор перед кнопками управления
+        const controls = document.querySelector('.ios-modal-controls');
+        if (controls) {
+            controls.parentNode.insertBefore(selector, controls);
+        }
+        
+        // Обработчик смены камеры
+        selector.addEventListener('change', function() {
+            const newDeviceId = this.value;
+            localStorage.setItem('iosSelectedCameraDeviceId', newDeviceId);
+            
+            // Перезапускаем iOS сканер с новой камерой
+            if (iosHtml5QrCode && iosIsScanning) {
+                iosHtml5QrCode.stop().then(() => {
+                    iosHtml5QrCode.clear();
+                    iosHtml5QrCode = null;
+                    iosIsScanning = false;
+                    
+                    document.getElementById('iosScannerLoader').style.display = 'block';
+                    showIOSScannerStatus('Переключение камеры...');
+                    
+                    setTimeout(() => initIOSBarcodeScanner(), 300);
+                }).catch(() => {
+                    iosHtml5QrCode = null;
+                    iosIsScanning = false;
+                    document.getElementById('iosScannerLoader').style.display = 'block';
+                    setTimeout(() => initIOSBarcodeScanner(), 300);
+                });
+            }
+        });
+    });
+}
+
+function initIOSBarcodeScanner() {
+    try {
+        if (iosHtml5QrCode && iosIsScanning) {
+            iosHtml5QrCode.stop().then(() => {
+                iosHtml5QrCode.clear();
+                iosHtml5QrCode = null;
+            }).catch(() => {
+                iosHtml5QrCode = null;
+            });
         }
 
-        function initIOSBarcodeScanner() {
-            try {
+        const config = {
+            fps: 10,
+            qrbox: { width: 250, height: 150 },
+            rememberLastUsedCamera: true,
+            supportedScanTypes: [Html5QrcodeScanType.SCAN_TYPE_CAMERA],
+            videoConstraints: {
+                width: { min: 640, ideal: 1280, max: 1920 },
+                height: { min: 480, ideal: 720, max: 1080 },
+                facingMode: { ideal: "environment" },
+                advanced: [{
+                    focusMode: "continuous",
+                }]
+            }
+        };
+
+        iosHtml5QrCode = new Html5Qrcode("ios-qr-reader");
+
+        // Проверяем, есть ли сохранённая камера для iOS
+        const savedDeviceId = localStorage.getItem('iosSelectedCameraDeviceId');
+        const cameraConfig = savedDeviceId ? { deviceId: { exact: savedDeviceId } } : { };
+
+        iosHtml5QrCode.start(
+            cameraConfig,
+            config,
+            onIOSScanSuccess,
+            onIOSScanError
+        ).then(() => {
+            console.log('iOS сканирование запущено успешно');
+            iosIsScanning = true;
+
+            document.getElementById('iosScannerLoader').style.display = 'none';
+            document.getElementById('iosNoCameraMessage').style.display = 'none';
+            hideIOSScannerStatus();
+
+            setTimeout(() => {
                 if (iosHtml5QrCode && iosIsScanning) {
-                    iosHtml5QrCode.stop().then(() => {
-                        iosHtml5QrCode.clear();
-                        iosHtml5QrCode = null;
-                    }).catch(() => {
-                        iosHtml5QrCode = null;
-                    });
-                }
+                    try {
+                        iosHtml5QrCode.applyVideoConstraints({
+                            focusMode: "continuous"
+                        }).catch(e => console.warn('Не удалось установить focusMode:', e));
 
-                const config = {
-                    fps: 10,
-                    qrbox: { width: 250, height: 150 },
-                    rememberLastUsedCamera: true,
-                    supportedScanTypes: [Html5QrcodeScanType.SCAN_TYPE_CAMERA],
-                    videoConstraints: {
-                        width: { min: 640, ideal: 1280, max: 1920 },
-                        height: { min: 480, ideal: 720, max: 1080 },
-                        facingMode: { ideal: "environment" },
-                        advanced: [{
-                            focusMode: "continuous",
-                        }]
+                        const isNewIPhone = /iPhone 1[1-9]|iPhone 2[0-9]|iPhone 1[0-9] Pro/.test(navigator.userAgent);
+                        if (isNewIPhone) {
+                            setTimeout(() => {
+                                iosHtml5QrCode.applyVideoConstraints({
+                                    advanced: [{ zoom: 2.2 }]
+                                }).catch(e => console.warn('Зум не поддерживается:', e));
+                            }, 500);
+                        }
+
+                    } catch (e) {
+                        console.warn('Ошибка при настройке камеры:', e);
                     }
-                };
+                }
+            }, 1500);
 
-                iosHtml5QrCode = new Html5Qrcode("ios-qr-reader");
+        }).catch(err => {
+            console.error('Ошибка запуска iOS сканера:', err);
+
+            if (err.toString().includes('Overconstrained') || err.toString().includes('environment')) {
+                console.log('Запасной план: без сложных constraints');
+                showIOSScannerStatus('Настройка камеры...');
 
                 iosHtml5QrCode.start(
-                    { },
-                    config,
+                    { facingMode: "environment" },
+                    {
+                        fps: 10,
+                        qrbox: { width: 250, height: 150 },
+                        rememberLastUsedCamera: true
+                    },
                     onIOSScanSuccess,
                     onIOSScanError
                 ).then(() => {
-                    console.log('iOS сканирование запущено успешно');
                     iosIsScanning = true;
-
                     document.getElementById('iosScannerLoader').style.display = 'none';
-                    document.getElementById('iosNoCameraMessage').style.display = 'none';
                     hideIOSScannerStatus();
-
-                    setTimeout(() => {
-                        if (iosHtml5QrCode && iosIsScanning) {
-                            try {
-                                iosHtml5QrCode.applyVideoConstraints({
-                                    focusMode: "continuous"
-                                }).catch(e => console.warn('Не удалось установить focusMode:', e));
-
-                                const isNewIPhone = /iPhone 1[1-9]|iPhone 2[0-9]|iPhone 1[0-9] Pro/.test(navigator.userAgent);
-                                if (isNewIPhone) {
-                                    setTimeout(() => {
-                                        iosHtml5QrCode.applyVideoConstraints({
-                                            advanced: [{ zoom: 2.2 }]
-                                        }).catch(e => console.warn('Зум не поддерживается:', e));
-                                    }, 500);
-                                }
-
-                            } catch (e) {
-                                console.warn('Ошибка при настройке камеры:', e);
-                            }
-                        }
-                    }, 1500);
-
-                }).catch(err => {
-                    console.error('Ошибка запуска iOS сканера:', err);
-
-                    if (err.toString().includes('Overconstrained') || err.toString().includes('environment')) {
-                        console.log('Запасной план: без сложных constraints');
-                        showIOSScannerStatus('Настройка камеры...');
-
-                        iosHtml5QrCode.start(
-                            { facingMode: "environment" },
-                            {
-                                fps: 10,
-                                qrbox: { width: 250, height: 150 },
-                                rememberLastUsedCamera: true
-                            },
-                            onIOSScanSuccess,
-                            onIOSScanError
-                        ).then(() => {
-                            iosIsScanning = true;
-                            document.getElementById('iosScannerLoader').style.display = 'none';
-                            hideIOSScannerStatus();
-                        }).catch(err2 => {
-                            console.error('Запасной план тоже не сработал:', err2);
-                            showIOSNoCameraMessage();
-                        });
-                    } else {
-                        showIOSNoCameraMessage();
-                    }
+                }).catch(err2 => {
+                    console.error('Запасной план тоже не сработал:', err2);
+                    showIOSNoCameraMessage();
                 });
-
-            } catch (error) {
-                console.error('Критическая ошибка инициализации iOS сканера:', error);
+            } else {
                 showIOSNoCameraMessage();
             }
-        }
+        });
+
+    } catch (error) {
+        console.error('Критическая ошибка инициализации iOS сканера:', error);
+        showIOSNoCameraMessage();
+    }
+}
 
         function onIOSScanSuccess(decodedText, decodedResult) {
             console.log('iOS сканирование успешно:', decodedText);
